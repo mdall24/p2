@@ -5,17 +5,50 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0F172A"
     tools:context=".MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Remainig Group Time"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.02"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022" />
+
+    <Button
+        android:id="@+id/statsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#BBC3DE"
+        android:shadowColor="#BBC3DE"
+        android:textColor="#BBC3DE"
+        android:textColorHighlight="#BBC3DE"
+        android:textColorHint="#BBC3DE"
+        android:textColorLink="#BCC4DE"
+        app:rippleColor="#BEC6E0"
+        app:strokeColor="#BBC3DE"
+        tools:layout_editor_absoluteX="17dp"
+        tools:layout_editor_absoluteY="666dp" />
+
+    <Button
+        android:id="@+id/homeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#BBC3DE"
+        tools:layout_editor_absoluteX="160dp"
+        tools:layout_editor_absoluteY="666dp" />
+
+    <Button
+        android:id="@+id/blocklistButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#BBC3DE"
+        tools:layout_editor_absoluteX="305dp"
+        tools:layout_editor_absoluteY="666dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
