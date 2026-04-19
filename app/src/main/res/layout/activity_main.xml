@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="0F172A"
+    android:background="#0F172A"
     tools:context=".MainActivity">
 
     <TextView
@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:text="Welcome!"
         android:textSize="20sp"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +25,7 @@
         android:id="@+id/createAcc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#0A7987"
+        android:backgroundTint="#14BBAB"
         android:text="Create Account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ready to gain control of your time?"
+        android:textColor="#F59E0B"
         app:layout_constraintBottom_toTopOf="@+id/createAcc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
