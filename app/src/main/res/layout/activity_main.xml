@@ -9,71 +9,23 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/Welcome"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome!"
-        android:textSize="20sp"
-        android:textColor="#FFFFFF"
+        android:text="Hello World!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.203" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/createAcc"
+        android:id="@+id/btnGoToHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#14BBAB"
-        android:text="Create Account"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        android:text="Go to Home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Welcome"
-        app:layout_constraintVertical_bias="0.618" />
-
-    <TextView
-        android:id="@+id/Control"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ready to gain control of your time?"
-        android:textColor="#F59E0B"
-        app:layout_constraintBottom_toTopOf="@+id/createAcc"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Welcome" />
-
-    <TextView
-        android:id="@+id/Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:textColor="#9B9898"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createAcc"
-        app:layout_constraintVertical_bias="0.045" />
-
-    <Button
-        android:id="@+id/Login"
-        android:layout_width="107dp"
-        android:layout_height="52dp"
-        android:text="Login"
-        app:layout_constraintBottom_toTopOf="@+id/createAcc"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Control"
-        app:layout_constraintVertical_bias="0.711" />
-
-    <Button
-        android:id="@+id/statsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="fitEnd"
-        android:text="Statistics"
-        tools:layout_editor_absoluteX="305dp"
-        tools:layout_editor_absoluteY="680dp" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
