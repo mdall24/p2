@@ -94,18 +94,18 @@ public class Registration extends AppCompatActivity {
                     mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener< new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccesful())
+                            {
+                                Toast.makeText(Register.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(Register.this,"You are not registered. Try again", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        }
+                    }
 
-                        }
-                    }
-                        if(task.isSuccesful())
-                        {
-                            Toast.makeText(Register.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            Toast.makeText(Register.this,"You are not registered. Try again", Toast.LENGTH_SHORT).show();
-                        }
-                    }
             });
         });
     }
