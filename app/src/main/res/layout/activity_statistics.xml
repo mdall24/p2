@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0F172A"
+    android:scaleX="1"
     tools:context=".statistics">
 
     <TextView
@@ -29,8 +30,8 @@
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView" />
-    
-    
+
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -45,19 +46,29 @@
             android:id="@+id/statistics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/statsView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="175dp"
+                    android:scaleType="fitStart"
+                    app:srcCompat="@drawable/chart" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="placeholder"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="16dp"
+                    android:text="Best Time Savers"
                     android:textColor="#FFFFFF" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
