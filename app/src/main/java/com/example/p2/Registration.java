@@ -32,9 +32,10 @@ public class Registration extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registration);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+                    Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                    return insets;
+                });
             user_name = findViewById(R.id.Username);
             pass_word = findViewById(R.id.Password);
             e_mail = findViewById(R.id.EmailAddress);
@@ -91,22 +92,21 @@ public class Registration extends AppCompatActivity {
                         confirm_password.requestFocus();
                         return;
                     }
-                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener< new OnCompleteListener<AuthResult>() {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful())
+                            {
+                                Toast.makeText(Registration.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(Registration.this,"You are not registered. Try again", Toast.LENGTH_SHORT).show();
+                            }
+                             }
+                        });
+                    }
 
-                        }
-                    }
-                        if(task.isSuccesful())
-                        {
-                            Toast.makeText(Register.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            Toast.makeText(Register.this,"You are not registered. Try again", Toast.LENGTH_SHORT).show();
-                        }
-                    }
             });
-        });
     }
 }
