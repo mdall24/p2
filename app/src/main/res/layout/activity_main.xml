@@ -9,39 +9,51 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/Welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remainig Group Time"
+        android:text="Welcome!"
+        android:textSize="20sp"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.02"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintVertical_bias="0.203" />
 
     <Button
-        android:id="@+id/statsButton"
+        android:id="@+id/createAcc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#BBC3DE"
-        tools:layout_editor_absoluteX="17dp"
-        tools:layout_editor_absoluteY="666dp" />
+        android:backgroundTint="#14BBAB"
+        android:text="Create Account"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Welcome"
+        app:layout_constraintVertical_bias="0.618" />
 
-    <Button
-        android:id="@+id/homeButton"
+    <TextView
+        android:id="@+id/Control"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#BBC3DE"
-        tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="666dp" />
+        android:text="Ready to gain control of your time?"
+        android:textColor="#F59E0B"
+        app:layout_constraintBottom_toTopOf="@+id/createAcc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Welcome" />
 
-    <Button
-        android:id="@+id/blocklistButton"
+    <TextView
+        android:id="@+id/Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#BBC3DE"
-        tools:layout_editor_absoluteX="305dp"
-        tools:layout_editor_absoluteY="666dp" />
+        android:text="Cancel"
+        android:textColor="#9B9898"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createAcc"
+        app:layout_constraintVertical_bias="0.045" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
