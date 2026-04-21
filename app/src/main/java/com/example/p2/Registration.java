@@ -55,7 +55,7 @@ public class Registration extends AppCompatActivity {
                         e_mail.requestFocus();
                         return;
                     }
-                    if(!Patterns.EMAIL_ADDRESS.matcher(password).matches())
+                    if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
                     {
                         e_mail.setError("Enter a valid email address");
                         e_mail.requestFocus();
