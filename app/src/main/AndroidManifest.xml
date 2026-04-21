@@ -16,6 +16,9 @@
             android:exported="false" />
         <activity
             android:name=".Registration"
+            android:exported="true" />
+        <activity
+            android:name=".statistics"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -10,6 +10,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class statistics extends AppCompatActivity {
 
+    public static void setOnClickListener(Object o) {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
