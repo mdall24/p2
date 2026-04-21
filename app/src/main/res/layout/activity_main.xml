@@ -25,13 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#BBC3DE"
-        android:shadowColor="#BBC3DE"
-        android:textColor="#BBC3DE"
-        android:textColorHighlight="#BBC3DE"
-        android:textColorHint="#BBC3DE"
-        android:textColorLink="#BCC4DE"
-        app:rippleColor="#BEC6E0"
-        app:strokeColor="#BBC3DE"
         tools:layout_editor_absoluteX="17dp"
         tools:layout_editor_absoluteY="666dp" />
 
