@@ -13,9 +13,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    private Button createAcc;
-
-    private Button statistics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +34,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        createAcc = findViewById(R.id.createAcc);
+        Button createAcc = findViewById(R.id.createAcc);
         createAcc.setOnClickListener(View -> {
             Intent intent = new Intent(MainActivity.this, Registration.class);
                     startActivity(intent);
         });
 
-        statistics = findViewById(R.id.statsButton);
+        Button statistics = findViewById(R.id.statsButton);
         statistics.setOnClickListener(View -> {
             Intent intent = new Intent(MainActivity.this, statistics.class);
             startActivity(intent);
