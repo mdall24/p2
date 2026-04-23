@@ -61,6 +61,7 @@
         android:layout_width="107dp"
         android:layout_height="52dp"
         android:text="Login"
+        android:backgroundTint="#14BBAB"
         app:layout_constraintBottom_toTopOf="@+id/createAcc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,19 +76,14 @@
         android:text="Statistics"
         tools:layout_editor_absoluteX="305dp"
         tools:layout_editor_absoluteY="680dp" />
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+
     <Button
         android:id="@+id/btnGoToHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Go to Home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        tools:layout_editor_absoluteY="35dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
