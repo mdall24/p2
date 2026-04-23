@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cardGroupTime"
         android:layout_width="144dp"
@@ -15,12 +14,12 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
         tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="60dp">
+        tools:layout_editor_absoluteY="82dp">
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="147dp"
-            android:layout_height="147dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             tools:layout_editor_absoluteX="28dp"
             tools:layout_editor_absoluteY="57dp"
             tools:srcCompat="@tools:sample/avatars" />
@@ -30,6 +29,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             app:srcCompat="@drawable/pencil" />
+
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -39,8 +39,20 @@
         app:cardBackgroundColor="#1A2B3C"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        tools:layout_editor_absoluteX="231dp"
-        tools:layout_editor_absoluteY="60dp" />
+        tools:layout_editor_absoluteX="224dp"
+        tools:layout_editor_absoluteY="82dp" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="147dp"
+            android:layout_height="93dp"
+            android:text="Username Age"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardGroupTime"
@@ -52,17 +64,15 @@
         tools:layout_editor_absoluteX="28dp"
         tools:layout_editor_absoluteY="259dp">
 
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardGroupTime"
-        android:layout_width="274dp"
-        android:layout_height="73dp"
-        app:cardBackgroundColor="#1A2B3C"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="366dp" >
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="84dp"
+            android:text="Bedtime: "
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
     </androidx.cardview.widget.CardView>
 
@@ -74,7 +84,17 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
         tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="472dp" >
+        tools:layout_editor_absoluteY="375dp">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="227dp"
+            android:layout_height="93dp"
+            android:text="Group Settings"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
     </androidx.cardview.widget.CardView>
 
@@ -86,7 +106,59 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
         tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="576dp" />
+        tools:layout_editor_absoluteY="484dp">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="193dp"
+            android:layout_height="93dp"
+            android:text="Invite friend"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="178dp"
+        android:layout_height="89dp"
+        android:text="@string/profile"
+        android:textAllCaps="true"
+        android:textColor="#FFB95F"
+        android:textSize="36sp"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="18dp"
+        android:textStyle="italic|bold" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="258dp"
+        android:layout_height="99dp"
+        android:text="Set value "
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="179dp"
+        tools:layout_editor_absoluteY="276dp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardGroupTime"
+        android:layout_width="57dp"
+        android:layout_height="55dp"
+        app:cardBackgroundColor="#1A2B3C"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        tools:layout_editor_absoluteX="325dp"
+        tools:layout_editor_absoluteY="269dp">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/pencil" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
