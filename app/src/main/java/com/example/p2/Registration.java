@@ -1,10 +1,12 @@
 package com.example.p2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -21,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Registration extends AppCompatActivity {
     private Button sign_up;
-    private Button cancel;
+    private TextView cancel;
     private EditText user_name, pass_word, e_mail, confirm_password;
     FirebaseAuth mAuth;
 
@@ -42,6 +44,8 @@ public class Registration extends AppCompatActivity {
             sign_up = findViewById(R.id.SignUp);
             confirm_password = findViewById(R.id.ConfirmPassword);
             mAuth = FirebaseAuth.getInstance();
+            cancel = findViewById(R.id.cancel);
+            cancel.setOnClickListener(v -> finish());
             sign_up.setOnClickListener(new View.OnClickListener(){
                 @Override
                         public void onClick(View v){
@@ -106,7 +110,6 @@ public class Registration extends AppCompatActivity {
                              }
                         });
                     }
-
             });
     }
 }
