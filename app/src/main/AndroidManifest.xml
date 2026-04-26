@@ -14,6 +14,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.P2">
         <activity
+            android:name=".AppPicker"
+            android:exported="false" />
+        <activity
+            android:name=".JoinTeam"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="join"
+                    android:scheme="myapp" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".CreateTeam"
             android:exported="false" />
         <activity

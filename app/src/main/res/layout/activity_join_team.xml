@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0F172A"
+    tools:context=".JoinTeam">
+
+    <TextView
+        android:id="@+id/JoinTeam"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:text="@string/join"
+        android:textSize="35sp"
+        android:textColor="#F59E0B"
+        tools:layout_editor_absoluteX="120dp"
+        tools:layout_editor_absoluteY="48dp" />
+
+    <TextView
+        android:id="@+id/suggestedTime"
+        android:layout_width="220dp"
+        android:layout_height="33dp"
+        android:text="@string/suggestedtime"
+        android:textColor="#F59E0B"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="333dp" />
+
+    <Button
+        android:id="@+id/acceptBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#14BBAB"
+        android:text="@string/accept"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="648dp" />
+
+    <Button
+        android:id="@+id/declineBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#14BBAB"
+        android:text="@string/decline"
+        tools:layout_editor_absoluteX="153dp"
+        tools:layout_editor_absoluteY="648dp" />
+
+    <TextView
+        android:id="@+id/SuggestedApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Suggested apps to block"
+        android:textColor="#F59E0B"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="473dp" />
+
+    <Button
+        android:id="@+id/addApps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#14BBAB"
+        android:text="@string/addapps"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="530dp" />
+
+    <Button
+        android:id="@+id/acceptBtn3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#14BBAB"
+        android:text="@string/change"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="381dp" />
+
+    <TextView
+        android:id="@+id/joinMessage"
+        android:layout_width="311dp"
+        android:layout_height="109dp"
+        android:text="@string/joinMessage"
+        android:textColor="#F59E0B"
+        android:textSize="15sp"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="162dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

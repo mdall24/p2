@@ -32,6 +32,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.AppViewHolder> {
         holder.appName.setText(app.name);
         holder.appIcon.setImageDrawable(app.icon);
         holder.appCheck.setChecked(app.isSelected);
+        holder.appCheck.setOnCheckedChangeListener(null);
 
         holder.appCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
             app.isSelected = isChecked;
@@ -41,8 +42,18 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.AppViewHolder> {
     public int getItemCount(){
         return apps.size();
     }
+    public String getSelectedPackageNames() {
+        List<String> selected = new ArrayList<>();
 
-    public List<String> getSelectedPackages() {
+        for (AppInfo app : apps){
+            if (app.isSelected){
+                selected.add(app.packageName);
+            }
+        }
+        return String.join(",", selected);
+    }
+
+    public List<String> getSelectedPackagesList() {
         List<String> selected = new ArrayList<>();
         for (AppInfo app : apps) {
             if (app.isSelected){

@@ -40,15 +40,25 @@ public class CreateTeam extends AppCompatActivity {
         recycler.setAdapter(appAdapter);
 
         Button sendInvite = findViewById(R.id.SendInvite);
+
         sendInvite.setOnClickListener(View -> {
+            String teamCode = "ABC123";
+            String selectedApps = appAdapter.getSelectedPackageNames();
+            int suggestedTime = 60;
+
+            String deepLink = "myapp://join"
+                    + "?team=" + teamCode
+                    + "&apps=" + selectedApps
+                    + "&time=" + suggestedTime;
+
+            String inviteMessage ="Hey! Join my team against screen time!\n" + "Tap to join: " + deepLink;
+
+
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            String inviteMessage ="Hey! Join my team against screen time!";
-
             intent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
 
-            Intent chooser = Intent.createChooser(intent, "Send invite via");
-            startActivity(chooser);
+            startActivity(Intent.createChooser(intent, "Send invite via"));
         });
     }
 
@@ -69,4 +79,4 @@ public class CreateTeam extends AppCompatActivity {
         }
         return appList;
     }
-}
+   }
