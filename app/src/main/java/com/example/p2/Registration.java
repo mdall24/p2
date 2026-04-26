@@ -49,6 +49,9 @@ public class Registration extends AppCompatActivity {
             sign_up.setOnClickListener(new View.OnClickListener(){
                 @Override
                         public void onClick(View v){
+                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                    FirebaseFirestore.getInstance().collection("users").document(uid).set(new User(username, email));
                     String email = e_mail.getText().toString().trim();
                     String username = user_name.getText().toString().trim();
                     String password = pass_word.getText().toString().trim();
@@ -102,10 +105,12 @@ public class Registration extends AppCompatActivity {
                             if(task.isSuccessful())
                             {
                                 Toast.makeText(Registration.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(Registration.this, ActivityHome.class));
                             }
                             else
                             {
-                                Toast.makeText(Registration.this,"You are not registered. Try again", Toast.LENGTH_SHORT).show();
+                                String message = task.getException().getMessage();
+                                Toast.makeText(Registration.this,"Error: " + message, Toast.LENGTH_LONG).show();
                             }
                              }
                         });
