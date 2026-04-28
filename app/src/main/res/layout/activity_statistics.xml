@@ -14,9 +14,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:text="Statistics"
         android:textColor="#FFB95F"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="40sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="An overview of your groups statistics"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView" />
@@ -37,7 +39,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/descriptionView">
@@ -54,12 +56,151 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <ImageView
-                    android:id="@+id/statsView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="175dp"
-                    android:scaleType="fitStart"
-                    app:srcCompat="@drawable/chart" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardBarChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="179dp"
+                    android:layout_marginTop="20dp"
+                    app:cardBackgroundColor="#1A2B3C"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardGroupTime">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="4dp"
+                                android:background="#00C8A0" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="12dp"
+                                android:text="Your avg"
+                                android:textColor="#AABBCC"
+                                android:textSize="11sp" />
+
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="4dp"
+                                android:background="#F4A430" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Group avg"
+                                android:textColor="#AABBCC"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+
+                        <FrameLayout
+                            android:id="@+id/barChartContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="#0D1B2A">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Bar chart (dynamic)"
+                                android:textColor="#AABBCC"
+                                android:textSize="12sp" />
+                        </FrameLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:orientation="horizontal"
+                            android:weightSum="7">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="M"
+                                android:textColor="#AABBCC"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="T"
+                                android:textColor="#AABBCC"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="O"
+                                android:textColor="#AABBCC"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="T"
+                                android:textColor="#AABBCC"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="F"
+                                android:textColor="#AABBCC"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="L"
+                                android:textColor="#AABBCC"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="S"
+                                android:textColor="#AABBCC"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -69,8 +210,394 @@
                     android:text="Best Time Savers"
                     android:textColor="#FFFFFF" />
 
+                <LinearLayout
+                    android:id="@+id/groupLeaderboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:id="@+id/firstPlaceFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/groupFirstPlace"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="20dp"
+                            app:cardBackgroundColor="#1A2B3C"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <!-- For avatar icon-->
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_launcher_foreground" />
+
+                                <!-- Username -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="6dp"
+                                    android:text="Username Placeholder"
+                                    android:textColor="#AABBCC"
+                                    android:textSize="11sp" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/circle_gold"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:text="#1"
+                            android:textColor="#1A2B3C"
+                            android:textSize="9sp"
+                            android:textStyle="bold" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/secondPlaceFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/groupSecondPlace"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="20dp"
+                            app:cardBackgroundColor="#1A2B3C"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <!-- For avatar icon-->
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_launcher_foreground" />
+
+                                <!-- Username -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="6dp"
+                                    android:text="Username Placeholder"
+                                    android:textColor="#AABBCC"
+                                    android:textSize="11sp" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/circle_silver"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:text="#2"
+                            android:textColor="#1A2B3C"
+                            android:textSize="9sp"
+                            android:textStyle="bold" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/thirdPlaceFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/groupThirdPlace"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="20dp"
+                            app:cardBackgroundColor="#1A2B3C"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <!-- For avatar icon-->
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_launcher_foreground" />
+
+                                <!-- Username -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="6dp"
+                                    android:text="Username Placeholder"
+                                    android:textColor="#AABBCC"
+                                    android:textSize="11sp" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/circle_bronze"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:text="#3"
+                            android:textColor="#1A2B3C"
+                            android:textSize="9sp"
+                            android:textStyle="bold" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/fourthPlaceFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/groupFourthPlace"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="20dp"
+                            app:cardBackgroundColor="#1A2B3C"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <!-- For avatar icon-->
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_launcher_foreground" />
+
+                                <!-- Username -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="6dp"
+                                    android:text="Username Placeholder"
+                                    android:textColor="#AABBCC"
+                                    android:textSize="11sp" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/circle_grey"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:text="#4"
+                            android:textColor="#1A2B3C"
+                            android:textSize="9sp"
+                            android:textStyle="bold" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/fifthPlaceFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/groupFifthPlace"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="20dp"
+                            app:cardBackgroundColor="#1A2B3C"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <!-- For avatar icon-->
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_launcher_foreground" />
+
+                                <!-- Username -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="6dp"
+                                    android:text="Username Placeholder"
+                                    android:textColor="#AABBCC"
+                                    android:textSize="11sp" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/circle_grey"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:text="#5"
+                            android:textColor="#1A2B3C"
+                            android:textSize="9sp"
+                            android:textStyle="bold" />
+                    </FrameLayout>
+
+                    <Button
+                        android:id="@+id/btnAddFriends"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="15dp"
+                        android:backgroundTint="#00C8A0"
+                        android:text="+     Add Friend"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="24sp" />
+
+
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/previousTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:cardBackgroundColor="#1A2B3C"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp" />
+
+                <Button
+                    android:id="@+id/btnPrevTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Previous Time"
+                    android:textSize="16dp"
+                    android:drawableStart="@drawable/rounded_button" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#111E2B"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Search"
+            android:textColor="#AABBCC"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Home"
+            android:textColor="#AABBCC"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Block"
+            android:textColor="#AABBCC"
+            android:textSize="11sp" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
