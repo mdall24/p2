@@ -3,7 +3,6 @@ package com.example.p2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Registration extends AppCompatActivity {
     private Button sign_up;
@@ -46,12 +46,7 @@ public class Registration extends AppCompatActivity {
             mAuth = FirebaseAuth.getInstance();
             cancel = findViewById(R.id.cancel);
             cancel.setOnClickListener(v -> finish());
-            sign_up.setOnClickListener(new View.OnClickListener(){
-                @Override
-                        public void onClick(View v){
-                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                    FirebaseFirestore.getInstance().collection("users").document(uid).set(new User(username, email));
+            sign_up.setOnClickListener(v -> {
                     String email = e_mail.getText().toString().trim();
                     String username = user_name.getText().toString().trim();
                     String password = pass_word.getText().toString().trim();
@@ -99,22 +94,21 @@ public class Registration extends AppCompatActivity {
                         confirm_password.requestFocus();
                         return;
                     }
-                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful())
-                            {
-                                Toast.makeText(Registration.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Registration.this, ActivityHome.class));
-                            }
-                            else
-                            {
-                                String message = task.getException().getMessage();
-                                Toast.makeText(Registration.this,"Error: " + message, Toast.LENGTH_LONG).show();
-                            }
-                             }
-                        });
-                    }
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                        if(task.isSuccessful() && task.getResult().getUser() != null)
+                        {
+                            String uid = task.getResult().getUser().getUid();
+                            FirebaseFirestore.getInstance().collection("users").document(uid).set(new User(username, email));
+
+                            Toast.makeText(Registration.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Registration.this, ActivityHome.class));
+                        }
+                        else
+                        {
+                            String message = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+                            Toast.makeText(Registration.this,"Error: " + message, Toast.LENGTH_LONG).show();
+                        }
+                    });
             });
     }
 }

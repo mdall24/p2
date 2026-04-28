@@ -1,5 +1,8 @@
 package com.example.p2;
 
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -12,8 +15,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppPicker extends AppCompatActivity {
@@ -21,6 +25,7 @@ public class AppPicker extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AppAdapter appAdapter;
     private Button doneButton;
+    private String teamCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +37,8 @@ public class AppPicker extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        recyclerView = findViewById(R.id.appPickerRecycler);
-        doneButton = findViewById(R.id.doneButton);
+        recyclerView = findViewById(R.id.rvAppList);
+        doneButton = findViewById(R.id.btnSaveApps);
 
         teamCode = getIntent().getStringExtra("teamCode");
 
@@ -45,10 +50,29 @@ public class AppPicker extends AppCompatActivity {
 
         doneButton.setOnClickListener(v -> saveSelectedApps());
     }
+
+    private List<AppInfo> getInstalledApps() {
+        List<AppInfo> appList = new ArrayList<>();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, 0);
+
+        for (ResolveInfo info : resolveInfos) {
+            String appName = info.loadLabel(getPackageManager()).toString();
+            String packageName = info.activityInfo.packageName;
+            Drawable icon = info.loadIcon(getPackageManager());
+
+            appList.add(new AppInfo(appName, packageName, icon));
+        }
+        return appList;
+    }
+
     private void saveSelectedApps() {
         List<String> selectedApps = appAdapter.getSelectedPackagesList();
 
-        FirebaseFirestore.getInstance().collection("teams").document(teamCode).update("suggestedApps", selectedApps).addSuccessListener(a -> {
+        FirebaseFirestore.getInstance().collection("teams").document(teamCode).update("suggestedApps", selectedApps).addOnSuccessListener(a -> {
             Toast.makeText(this, "Apps added!", Toast.LENGTH_SHORT).show();
             finish();
         });

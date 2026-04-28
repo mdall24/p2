@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login extends AppCompatActivity {
 
@@ -36,10 +37,11 @@ private FirebaseFirestore db;
         pass_word = findViewById(R.id.Password);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         login.setOnClickListener(V -> loginUser());
         }
-    private loginUser(){
+    private void loginUser(){
 
             String username = user_name.getText().toString().trim();
             String password = pass_word.getText().toString().trim();
