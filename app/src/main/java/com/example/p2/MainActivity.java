@@ -17,6 +17,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SessionManager session = new SessionManager(this);
+        if(session.isLoggedIn()){
+            startActivity(new Intent(MainActivity.this, ActivityHome.class));
+            finish();
+        }
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -51,4 +56,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
 }
