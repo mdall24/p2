@@ -51,6 +51,7 @@ public class statistics extends AppCompatActivity {
             Intent intent = new Intent(statistics.this, CreateTeam.class);
             startActivity(intent);
         });
+        setupBarChart();
     }
     private void setupBarChart() {
         BarChart barChart = findViewById(R.id.barChart);
