@@ -31,6 +31,18 @@ public class CreateTeam extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
             });
+        findViewById(R.id.tvNavHome).setOnClickListener(v -> {
+            Intent intent = new Intent(CreateTeam.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(CreateTeam.this, statistics.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavBlock).setOnClickListener(v -> {
+            Intent intent = new Intent(CreateTeam.this, ActivityBlock.class);
+            startActivity(intent);
+        });
 
         RecyclerView recycler = findViewById(R.id.appRecycler);
         recycler.setLayoutManager(new LinearLayoutManager(this));
