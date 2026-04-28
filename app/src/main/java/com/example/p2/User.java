@@ -5,7 +5,6 @@ public class User {
     public String email;
 
     public User() {
-        // Required for Firestore
     }
 
     public User(String username, String email) {

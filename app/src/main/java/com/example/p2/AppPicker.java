@@ -1,22 +1,7 @@
 package com.example.p2;
 
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.Button;
@@ -30,7 +15,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -53,8 +37,8 @@ public class AppPicker extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        recyclerView = findViewById(R.id.appPickerRecycler);
-        doneButton = findViewById(R.id.doneButton);
+        recyclerView = findViewById(R.id.rvAppList);
+        doneButton = findViewById(R.id.btnSaveApps);
 
         teamCode = getIntent().getStringExtra("teamCode");
 
@@ -69,15 +53,18 @@ public class AppPicker extends AppCompatActivity {
 
     private List<AppInfo> getInstalledApps() {
         List<AppInfo> appList = new ArrayList<>();
-        PackageManager pm = getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-        for (ApplicationInfo packageInfo : packages) {
-            if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                String name = pm.getApplicationLabel(packageInfo).toString();
-                Drawable icon = pm.getApplicationIcon(packageInfo);
-                appList.add(new AppInfo(name, packageInfo.packageName, icon));
-            }
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, 0);
+
+        for (ResolveInfo info : resolveInfos) {
+            String appName = info.loadLabel(getPackageManager()).toString();
+            String packageName = info.activityInfo.packageName;
+            Drawable icon = info.loadIcon(getPackageManager());
+
+            appList.add(new AppInfo(appName, packageName, icon));
         }
         return appList;
     }

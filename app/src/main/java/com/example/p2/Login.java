@@ -2,6 +2,7 @@ package com.example.p2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.se.omapi.Session;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -72,6 +73,8 @@ private FirebaseFirestore db;
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
                         Toast.makeText(Login.this, "Login successful", Toast.LENGTH_SHORT).show();
+                        SessionManager session = new SessionManager(Login.this);
+                        session.saveLoginSession(username);
                         startActivity(new Intent(Login.this, ActivityHome.class));
                         finish();
                     }

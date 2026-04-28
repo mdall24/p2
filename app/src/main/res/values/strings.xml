@@ -14,4 +14,5 @@
     <string name="addapps">Add More</string>
     <string name="change">Change</string>
     <string name="joinMessage">Let us battle against screentime together! By joining me, you will accept a shared time during the week and apps to block during hours set by you! We will keep each other accountable by using the time evenly.</string>
+    <string name="profile">Profile</string>
 </resources>

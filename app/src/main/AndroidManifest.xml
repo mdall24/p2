@@ -14,6 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.P2">
         <activity
+            android:name=".ActivityBlock"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityAppPicker"
+            android:exported="false" />
+        <activity
             android:name=".AppPicker"
             android:exported="false" />
         <activity
@@ -40,6 +46,9 @@
             android:name=".ActivityHome"
             android:exported="false" />
         <activity
+            android:name=".Profile"
+            android:exported="false" />
+        <activity
             android:name=".Login"
             android:exported="false" />
         <activity
@@ -51,6 +60,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
