@@ -2,51 +2,62 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profile"
+        android:textAllCaps="true"
+        android:textColor="#FFB95F"
+        android:textSize="36sp"
+        android:textStyle="italic|bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardGroupTime"
+        android:id="@+id/cardProfileImage"
         android:layout_width="144dp"
         android:layout_height="146dp"
+        android:layout_marginTop="24dp"
         app:cardBackgroundColor="#1A2B3C"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="82dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView">
 
         <ImageView
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="28dp"
-            tools:layout_editor_absoluteY="57dp"
+            android:contentDescription="Profile Picture"
             tools:srcCompat="@tools:sample/avatars" />
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            app:srcCompat="@drawable/pencil" />
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardGroupTime"
-        android:layout_width="144dp"
+        android:id="@+id/cardUserInfo"
+        android:layout_width="0dp"
         android:layout_height="146dp"
+        android:layout_marginStart="16dp"
         app:cardBackgroundColor="#1A2B3C"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        tools:layout_editor_absoluteX="224dp"
-        tools:layout_editor_absoluteY="82dp" >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cardProfileImage"
+        app:layout_constraintTop_toTopOf="@id/cardProfileImage">
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="147dp"
-            android:layout_height="93dp"
-            android:text="Username Age"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Username\nAge"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="22sp"
@@ -55,110 +66,130 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardGroupTime"
-        android:layout_width="274dp"
-        android:layout_height="73dp"
+        android:id="@+id/cardGroupSettingsContainer"
+        android:layout_width="295dp"
+        android:layout_height="61dp"
         app:cardBackgroundColor="#1A2B3C"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="259dp">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="84dp"
-            android:text="Bedtime: "
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardGroupTime"
-        android:layout_width="274dp"
-        android:layout_height="73dp"
-        app:cardBackgroundColor="#1A2B3C"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="375dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.589">
 
         <TextView
             android:id="@+id/textView5"
-            android:layout_width="227dp"
-            android:layout_height="93dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
             android:text="Group Settings"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
-
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardGroupTime"
-        android:layout_width="274dp"
-        android:layout_height="73dp"
+        android:id="@+id/cardBedtimeContainer"
+        android:layout_width="294dp"
+        android:layout_height="65dp"
         app:cardBackgroundColor="#1A2B3C"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="484dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.682"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.468">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewBedtimeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Bedtime: "
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewBedtimeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Set value "
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/textViewBedtimeLabel"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardEditBedtime"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="#2A3B4C"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:contentDescription="Edit Bedtime"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/pencil" />
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardInviteFriendsContainer"
+        android:layout_width="293dp"
+        android:layout_height="63dp"
+        app:cardBackgroundColor="#1A2B3C"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.674"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.71">
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="193dp"
-            android:layout_height="93dp"
-            android:text="Invite friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:text="Invite friends"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="178dp"
-        android:layout_height="89dp"
-        android:text="@string/profile"
-        android:textAllCaps="true"
-        android:textColor="#FFB95F"
-        android:textSize="36sp"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="18dp"
-        android:textStyle="italic|bold" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="258dp"
-        android:layout_height="99dp"
-        android:text="Set value "
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        tools:layout_editor_absoluteX="179dp"
-        tools:layout_editor_absoluteY="276dp" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardGroupTime"
-        android:layout_width="57dp"
-        android:layout_height="55dp"
-        app:cardBackgroundColor="#1A2B3C"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        tools:layout_editor_absoluteX="325dp"
-        tools:layout_editor_absoluteY="269dp">
-
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/pencil" />
-    </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-
