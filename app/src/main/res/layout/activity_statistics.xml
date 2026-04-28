@@ -39,7 +39,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/descriptionView">
@@ -52,7 +52,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="651dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -213,70 +213,75 @@
                 <LinearLayout
                     android:id="@+id/groupLeaderboard"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <FrameLayout
                         android:id="@+id/firstPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp">
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/groupFirstPlace"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_marginTop="20dp"
-                        app:cardBackgroundColor="#1A2B3C"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/groupFirstPlace"
+                            android:layout_width="300dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
-                            android:layout_marginTop="6dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:layout_gravity="right"
+                            android:layout_marginTop="20dp"
+                            app:cardBackgroundColor="#1A2B3C"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
 
-                            <!-- For avatar icon-->
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_launcher_foreground" />
-
-                            <!-- Username -->
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="6dp"
-                                android:text="Username Placeholder"
-                                android:textColor="#AABBCC"
-                                android:textSize="11sp" />
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                        </LinearLayout>
+                                <!-- For avatar icon-->
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_launcher_foreground" />
 
-                    </androidx.cardview.widget.CardView>
+                                <!-- Username -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="6dp"
+                                    android:text="Username Placeholder"
+                                    android:textColor="#AABBCC"
+                                    android:textSize="11sp" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
                         <TextView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginTop="10dp"
                             android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
                             android:background="@drawable/circle_gold"
+                            android:elevation="6dp"
+                            android:gravity="center"
                             android:text="#1"
                             android:textColor="#1A2B3C"
                             android:textSize="9sp"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:elevation="6dp" />
+                            android:textStyle="bold" />
 
                     </FrameLayout>
+
                     <FrameLayout
                         android:id="@+id/secondPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp">
+
                         <androidx.cardview.widget.CardView
                             android:id="@+id/groupSecondPlace"
                             android:layout_width="300dp"
@@ -290,10 +295,10 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="6dp"
-                                android:layout_marginTop="6dp"
                                 android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
                                 android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
@@ -315,24 +320,27 @@
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
+
                         <TextView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginTop="10dp"
                             android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
                             android:background="@drawable/circle_silver"
+                            android:elevation="6dp"
+                            android:gravity="center"
                             android:text="#2"
                             android:textColor="#1A2B3C"
                             android:textSize="9sp"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:elevation="6dp" />
+                            android:textStyle="bold" />
                     </FrameLayout>
+
                     <FrameLayout
                         android:id="@+id/thirdPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp">
+
                         <androidx.cardview.widget.CardView
                             android:id="@+id/groupThirdPlace"
                             android:layout_width="300dp"
@@ -346,10 +354,10 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="6dp"
-                                android:layout_marginTop="6dp"
                                 android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
                                 android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
@@ -371,24 +379,27 @@
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
+
                         <TextView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginTop="10dp"
                             android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
                             android:background="@drawable/circle_bronze"
+                            android:elevation="6dp"
+                            android:gravity="center"
                             android:text="#3"
                             android:textColor="#1A2B3C"
                             android:textSize="9sp"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:elevation="6dp" />
+                            android:textStyle="bold" />
                     </FrameLayout>
+
                     <FrameLayout
                         android:id="@+id/fourthPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp">
+
                         <androidx.cardview.widget.CardView
                             android:id="@+id/groupFourthPlace"
                             android:layout_width="300dp"
@@ -402,10 +413,10 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="6dp"
-                                android:layout_marginTop="6dp"
                                 android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
                                 android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
@@ -427,24 +438,27 @@
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
+
                         <TextView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginTop="10dp"
                             android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
                             android:background="@drawable/circle_grey"
+                            android:elevation="6dp"
+                            android:gravity="center"
                             android:text="#4"
                             android:textColor="#1A2B3C"
                             android:textSize="9sp"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:elevation="6dp" />
+                            android:textStyle="bold" />
                     </FrameLayout>
+
                     <FrameLayout
                         android:id="@+id/fifthPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp">
+
                         <androidx.cardview.widget.CardView
                             android:id="@+id/groupFifthPlace"
                             android:layout_width="300dp"
@@ -458,10 +472,10 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="6dp"
-                                android:layout_marginTop="6dp"
                                 android:layout_marginLeft="10dp"
+                                android:layout_marginTop="6dp"
                                 android:layout_marginRight="10dp"
+                                android:layout_marginBottom="6dp"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
@@ -483,33 +497,64 @@
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
+
                         <TextView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginTop="10dp"
                             android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="10dp"
                             android:background="@drawable/circle_grey"
+                            android:elevation="6dp"
+                            android:gravity="center"
                             android:text="#5"
                             android:textColor="#1A2B3C"
                             android:textSize="9sp"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:elevation="6dp" />
+                            android:textStyle="bold" />
                     </FrameLayout>
+
                     <Button
                         android:id="@+id/btnAddFriends"
-                        android:layout_width="300dp"
+                        android:layout_width="match_parent"
                         android:layout_height="36dp"
-                        android:layout_gravity="right"
                         android:layout_marginTop="15dp"
                         android:backgroundTint="#00C8A0"
                         android:text="+     Add Friend"
-                        android:gravity="left|center_vertical"
                         android:textColor="#FFFFFF"
-                        android:textStyle = "bold"
                         android:textSize="14sp"
-                        app:cornerRadius="24sp"/>
+                        android:textStyle="bold"
+                        app:cornerRadius="24sp" />
+
+
                 </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/previousTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:cardBackgroundColor="#1A2B3C"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp" />
+
+                <Button
+                    android:id="@+id/btnPrevTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Previous Time"
+                    android:textSize="16dp"
+                    android:drawableStart="@drawable/rounded_button" />
 
             </LinearLayout>
         </LinearLayout>
