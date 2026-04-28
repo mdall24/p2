@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -15,8 +16,10 @@
         android:text="@string/welcome"
         android:textColor="#F59E0B"
         android:textSize="35sp"
-        tools:layout_editor_absoluteX="116dp"
-        tools:layout_editor_absoluteY="78dp" />
+        app:layout_constraintBottom_toTopOf="@+id/Username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/Username"
@@ -24,12 +27,14 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/username"
-        android:textColor="#F59E0B"
         android:inputType="text"
+        android:textColor="#F59E0B"
         android:textColorHint="#67F59E0B"
         android:textSize="20sp"
-        tools:layout_editor_absoluteX="100dp"
-        tools:layout_editor_absoluteY="259dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="397dp" />
 
     <EditText
         android:id="@+id/Password"
@@ -41,15 +46,20 @@
         android:textColor="#F59E0B"
         android:textColorHint="#67F59E0B"
         android:textSize="20sp"
-        tools:layout_editor_absoluteX="100dp"
-        tools:layout_editor_absoluteY="325dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="468dp" />
 
     <Button
         android:id="@+id/Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
         android:backgroundTint="#14BBAB"
-        tools:layout_editor_absoluteX="159dp"
-        tools:layout_editor_absoluteY="397dp" />
+        android:text="@string/login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Password"
+        app:layout_constraintVertical_bias="0.681" />
 </androidx.constraintlayout.widget.ConstraintLayout>

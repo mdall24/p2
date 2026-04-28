@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login extends AppCompatActivity {
 
@@ -36,10 +37,11 @@ private FirebaseFirestore db;
         pass_word = findViewById(R.id.Password);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         login.setOnClickListener(V -> loginUser());
         }
-    private loginUser(){
+    private void loginUser(){
 
             String username = user_name.getText().toString().trim();
             String password = pass_word.getText().toString().trim();
@@ -62,6 +64,10 @@ private FirebaseFirestore db;
                     return;
                 }
                 String email = doc.getString("email");
+                if (email == null) {
+                    Toast.makeText(Login.this, "Email not found for this username", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
@@ -71,7 +77,8 @@ private FirebaseFirestore db;
                     }
                     else
                     {
-                        Toast.makeText(Login.this, "Error: " + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                        String errorMsg = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+                        Toast.makeText(Login.this, "Error: " + errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 });
             })
