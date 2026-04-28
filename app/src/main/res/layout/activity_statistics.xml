@@ -59,14 +59,14 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardBarChart"
                     android:layout_width="match_parent"
-                    android:layout_height="179dp"
+                    android:layout_height="180dp"
                     android:layout_marginTop="20dp"
                     app:cardBackgroundColor="#1A2B3C"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardGroupTime"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cardGroupTime">
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -77,127 +77,20 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp">
 
-                            <View
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="4dp"
-                                android:background="#00C8A0" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="12dp"
-                                android:text="Your avg"
-                                android:textColor="#AABBCC"
-                                android:textSize="11sp" />
-
-                            <View
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="4dp"
-                                android:background="#F4A430" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Group avg"
-                                android:textColor="#AABBCC"
-                                android:textSize="11sp" />
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="#00C8A0" android:layout_marginEnd="4dp" android:layout_gravity="center_vertical"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Your avg" android:textColor="#AABBCC" android:textSize="11sp" android:layout_marginEnd="12dp"/>
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="#F4A430" android:layout_marginEnd="4dp" android:layout_gravity="center_vertical"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Group avg" android:textColor="#AABBCC" android:textSize="11sp"/>
                         </LinearLayout>
 
-
-                        <FrameLayout
-                            android:id="@+id/barChartContainer"
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/barChart"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:background="#0D1B2A">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="Bar chart (dynamic)"
-                                android:textColor="#AABBCC"
-                                android:textSize="12sp" />
-                        </FrameLayout>
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:orientation="horizontal"
-                            android:weightSum="7">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="M"
-                                android:textColor="#AABBCC"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="T"
-                                android:textColor="#AABBCC"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="O"
-                                android:textColor="#AABBCC"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="T"
-                                android:textColor="#AABBCC"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="F"
-                                android:textColor="#AABBCC"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="L"
-                                android:textColor="#AABBCC"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="S"
-                                android:textColor="#AABBCC"
-                                android:textSize="10sp" />
-                        </LinearLayout>
+                            android:layout_weight="1"/>
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -540,7 +433,7 @@
 
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="343dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -577,11 +470,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Search"
-            android:textColor="#AABBCC"
+            android:text="Statistics"
+            android:textColor="#00C8A0"
             android:textSize="11sp" />
 
         <TextView
+            android:id="@+id/tvNavHome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -591,6 +485,7 @@
             android:textSize="11sp" />
 
         <TextView
+            android:id="@+id/tvNavBlock"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

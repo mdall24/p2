@@ -47,6 +47,10 @@ public class ActivityBlock extends AppCompatActivity {
             Intent intent = new Intent(ActivityBlock.this, ActivityHome.class);
             startActivity(intent);
         });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(ActivityBlock.this, statistics.class);
+            startActivity(intent);
+        });
     }
 
     @Override

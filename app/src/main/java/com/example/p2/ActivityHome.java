@@ -39,6 +39,10 @@ public class ActivityHome extends AppCompatActivity {
             Intent intent = new Intent(ActivityHome.this, ActivityBlock.class);
             startActivity(intent);
         });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(ActivityHome.this, statistics.class);
+            startActivity(intent);
+        });
         // Check if we have permission to read usage stats
         if (!hasUsagePermission()) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
