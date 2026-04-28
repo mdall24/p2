@@ -12,7 +12,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +39,7 @@ private int suggestedTime;
 
         Uri data = getIntent().getData();
         if (data != null){
-            teamCode = data.getQueryParameter("team");
+            String teamCode = data.getQueryParameter("team");
             String appsString = data.getQueryParameter("apps");
             String timeString = data.getQueryParameter("time");
 

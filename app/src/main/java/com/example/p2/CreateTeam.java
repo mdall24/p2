@@ -14,8 +14,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,13 +40,8 @@ public class CreateTeam extends AppCompatActivity {
         recycler.setAdapter(appAdapter);
 
         Button sendInvite = findViewById(R.id.SendInvite);
-        FloatingActionButton suggestTimeBtn = findViewById(R.id.SuggestedTimeButton);
-        FloatingActionButton addAppsBtn = findViewById(R.id.AddAppButton);
 
         sendInvite.setOnClickListener(View -> {
-            suggestTimeBtn.hide();
-            addAppsBtn.hide();
-
             String teamCode = "ABC123";
             String selectedApps = appAdapter.getSelectedPackageNames();
             int suggestedTime = 60;
@@ -67,14 +60,6 @@ public class CreateTeam extends AppCompatActivity {
 
             startActivity(Intent.createChooser(intent, "Send invite via"));
         });
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        FloatingActionButton suggestTimeBtn = findViewById(R.id.SuggestedTimeButton);
-        FloatingActionButton addAppsBtn = findViewById(R.id.AddAppButton);
-        suggestTimeBtn.show();
-        addAppsBtn.show();
     }
 
     private List<AppInfo> getInstalledApps() {
