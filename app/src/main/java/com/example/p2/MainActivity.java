@@ -13,6 +13,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+    private Button btnCreateAcc;
+    private Button btnStatistics;
+    private Button btnProfile;
+    private Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         }
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -41,18 +46,34 @@ public class MainActivity extends AppCompatActivity {
 
         Button createAcc = findViewById(R.id.createAcc);
         createAcc.setOnClickListener(View -> {
+        btnCreateAcc = findViewById(R.id.createAcc);
+        btnCreateAcc.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, Registration.class);
-                    startActivity(intent);
+            startActivity(intent);
+        });
+
+        btnLogin = findViewById(R.id.Login);
+        btnLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
         });
 
         Button statistics = findViewById(R.id.statsButton);
         statistics.setOnClickListener(View -> {
+        btnStatistics = findViewById(R.id.statsButton);
+        btnStatistics.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, statistics.class);
             startActivity(intent);
         });
         Button login = findViewById(R.id.Login);
         statistics.setOnClickListener(View -> {
             Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
+        });
+
+        btnProfile = findViewById(R.id.profilebutton);
+        btnProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, Profile.class);
             startActivity(intent);
         });
     }
