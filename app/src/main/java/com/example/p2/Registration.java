@@ -101,6 +101,8 @@ public class Registration extends AppCompatActivity {
                             FirebaseFirestore.getInstance().collection("users").document(uid).set(new User(username, email));
 
                             Toast.makeText(Registration.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
+                            SessionManager session = new SessionManager(Registration.this);
+                            session.saveLoginSession(username);
                             startActivity(new Intent(Registration.this, ActivityHome.class));
                         }
                         else
