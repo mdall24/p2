@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--
-    ROOT: ScrollView
-    Allows the whole screen to scroll vertically if content
-    is taller than the phone screen. fillViewport="true" makes
-    it stretch to fill the screen even when content is short.
--->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -19,7 +12,6 @@
         android:background="#0D1B2A"
         android:fillViewport="true">
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +19,6 @@
             android:paddingEnd="16dp"
             android:paddingTop="16dp"
             android:paddingBottom="80dp">
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardGroupTime"
@@ -40,7 +31,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/cardProfileBedtime">
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -55,7 +45,6 @@
                         android:text="Remaining group time"
                         android:textColor="#AABBCC"
                         android:textSize="12sp" />
-
 
                     <FrameLayout
                         android:layout_width="80dp"
@@ -75,7 +64,6 @@
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardProfileBedtime"
@@ -125,7 +113,6 @@
                                 android:textSize="11sp" />
                         </LinearLayout>
 
-
                         <View
                             android:id="@+id/ivAvatar"
                             android:layout_width="40dp"
@@ -161,7 +148,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardBarChart"
                 android:layout_width="0dp"
@@ -192,43 +178,14 @@
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Group avg" android:textColor="#AABBCC" android:textSize="11sp"/>
                     </LinearLayout>
 
-
-                    <FrameLayout
-                        android:id="@+id/barChartContainer"
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/barChart"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#0D1B2A">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Bar chart (dynamic)"
-                            android:textColor="#AABBCC"
-                            android:textSize="12sp"/>
-                    </FrameLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="7"
-                        android:layout_marginTop="4dp">
-
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="M" android:textColor="#AABBCC" android:textSize="10sp" android:gravity="center"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T" android:textColor="#AABBCC" android:textSize="10sp" android:gravity="center"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="O" android:textColor="#AABBCC" android:textSize="10sp" android:gravity="center"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T" android:textColor="#AABBCC" android:textSize="10sp" android:gravity="center"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="F" android:textColor="#AABBCC" android:textSize="10sp" android:gravity="center"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="L" android:textColor="#AABBCC" android:textSize="10sp" android:gravity="center"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="S" android:textColor="#AABBCC" android:textSize="10sp" android:gravity="center"/>
-                    </LinearLayout>
+                        android:layout_weight="1"/>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardMembers"
@@ -292,7 +249,6 @@
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardWinner"
@@ -363,7 +319,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-
+    <!-- Bottom navigation bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -374,6 +330,7 @@
         android:weightSum="3">
 
         <TextView
+            android:id="@+id/tvNavSearch"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -383,6 +340,7 @@
             android:textSize="11sp"/>
 
         <TextView
+            android:id="@+id/tvNavHome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -392,6 +350,7 @@
             android:textSize="11sp"/>
 
         <TextView
+            android:id="@+id/tvNavBlock"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
