@@ -12,77 +12,99 @@
         android:id="@+id/JoinTeam"
         android:layout_width="170dp"
         android:layout_height="40dp"
+        android:layout_marginTop="44dp"
         android:text="@string/join"
-        android:textSize="35sp"
         android:textColor="#F59E0B"
-        tools:layout_editor_absoluteX="120dp"
-        tools:layout_editor_absoluteY="48dp" />
+        android:textSize="35sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/suggestedTime"
         android:layout_width="220dp"
         android:layout_height="33dp"
+        android:layout_marginTop="52dp"
         android:text="@string/suggestedtime"
         android:textColor="#F59E0B"
         android:textSize="20sp"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="333dp" />
-
-    <Button
-        android:id="@+id/acceptBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#14BBAB"
-        android:text="@string/accept"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="648dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.261"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/joinMessage" />
 
     <Button
         android:id="@+id/declineBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="156dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="#14BBAB"
         android:text="@string/decline"
-        tools:layout_editor_absoluteX="153dp"
-        tools:layout_editor_absoluteY="648dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/acceptBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#14BBAB"
+        android:text="@string/accept"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/declineBtn"
+        app:layout_constraintHorizontal_bias="0.611"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/SuggestedApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="112dp"
         android:text="Suggested apps to block"
         android:textColor="#F59E0B"
         android:textSize="20sp"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="473dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.257"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/suggestedTime" />
 
     <Button
         android:id="@+id/addApps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
         android:backgroundTint="#14BBAB"
         android:text="@string/addapps"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="530dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.166"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SuggestedApp" />
 
     <Button
         android:id="@+id/acceptBtn3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:backgroundTint="#14BBAB"
         android:text="@string/change"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="381dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.159"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/suggestedTime" />
 
     <TextView
         android:id="@+id/joinMessage"
         android:layout_width="311dp"
         android:layout_height="109dp"
+        android:layout_marginTop="84dp"
         android:text="@string/joinMessage"
         android:textColor="#F59E0B"
         android:textSize="15sp"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="162dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/JoinTeam" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
