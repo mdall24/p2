@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,6 +19,23 @@
         <activity
             android:name=".ActivityAppPicker"
             android:exported="false" />
+        <activity
+            android:name=".AppPicker"
+            android:exported="false" />
+        <activity
+            android:name=".JoinTeam"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="join"
+                    android:scheme="myapp" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".CreateTeam"
             android:exported="false" />

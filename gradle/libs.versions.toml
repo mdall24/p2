@@ -11,6 +11,7 @@ firebaseAuth = "24.0.1"
 googleServices = "4.4.2"
 cardview = "1.0.0"
 activityKtx = "1.8.0"
+firebaseFirestore = "26.2.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,6 +25,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "33.9.0" }
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
