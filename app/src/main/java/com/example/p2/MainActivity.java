@@ -2,7 +2,6 @@ package com.example.p2;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.view.View;
 import android.widget.Button;
 
@@ -44,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button createAcc = findViewById(R.id.createAcc);
-        createAcc.setOnClickListener(View -> {
         btnCreateAcc = findViewById(R.id.createAcc);
         btnCreateAcc.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, Registration.class);
@@ -58,16 +55,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Button statistics = findViewById(R.id.statsButton);
-        statistics.setOnClickListener(View -> {
         btnStatistics = findViewById(R.id.statsButton);
         btnStatistics.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, statistics.class);
-            startActivity(intent);
-        });
-        Button login = findViewById(R.id.Login);
-        statistics.setOnClickListener(View -> {
-            Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
         });
 
@@ -77,5 +67,4 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-
 }

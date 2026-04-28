@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +39,11 @@ public class Profile extends AppCompatActivity {
         if (editButton != null) {
             editButton.setOnClickListener(v -> showTimePickerDialog());
         }
+        findViewById(R.id.logoutCard).setOnClickListener(v ->{
+            SessionManager session = new SessionManager(this);
+            session.logout();
+            startActivity(new Intent(Profile.this, MainActivity.class));
+        });
     }
 
     private void showTimePickerDialog() {

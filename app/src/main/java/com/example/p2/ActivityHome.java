@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -43,6 +44,10 @@ public class ActivityHome extends AppCompatActivity {
             Intent intent = new Intent(ActivityHome.this, statistics.class);
             startActivity(intent);
         });
+        findViewById(R.id.btnShowProfile).setOnClickListener(v -> {
+            Intent intent = new Intent(ActivityHome.this, Profile.class);
+            startActivity(intent);
+        });
         // Check if we have permission to read usage stats
         if (!hasUsagePermission()) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
@@ -51,6 +56,9 @@ public class ActivityHome extends AppCompatActivity {
 
         // Set up the bar chart with real screen time data
         setupBarChart();
+        SessionManager session = new SessionManager(this);
+        TextView tvUsername = findViewById(R.id.tvUsername);
+        tvUsername.setText(session.getUsername());
     }
 
     private void setupBarChart() {
