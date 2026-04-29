@@ -34,6 +34,21 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+
+        Button btnGoToHome = findViewById(R.id.btnGoToHome);
+        btnGoToHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ActivityHome.class);
+                startActivity(intent);
+            }
+        });
+
+        Button loginBtn = findViewById(R.id.Login);
+        loginBtn.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, Login.class));
+        });
+
         btnCreateAcc = findViewById(R.id.createAcc);
         btnCreateAcc.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, Registration.class);
@@ -57,13 +72,5 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, Profile.class);
             startActivity(intent);
         });
-
-        // Start the overlay service
-        Intent serviceIntent = new Intent(this, OverlayService.class);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
-        }
     }
 }
