@@ -15,6 +15,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Locale;
 
 public class Profile extends AppCompatActivity {
@@ -35,6 +37,13 @@ public class Profile extends AppCompatActivity {
 
         ImageView editButton = findViewById(R.id.imageView5);
         tvBedtimeValue = findViewById(R.id.textViewBedtimeValue);
+        String username = new SessionManager(this).getUsername();
+        FirebaseFirestore.getInstance().collection("usernames").document(username).get().addOnSuccessListener(doc ->{
+            String bedtime = doc.getString("bedtime");
+            if(bedtime != null){
+                tvBedtimeValue.setText(bedtime);
+            }
+        });
 
         if (editButton != null) {
             editButton.setOnClickListener(v -> showTimePickerDialog());
@@ -92,6 +101,8 @@ public class Profile extends AppCompatActivity {
             String minuteStr = displayedValues[minutePicker.getValue()];
             String time = String.format(Locale.getDefault(), "%02d:%s", hour, minuteStr);
             tvBedtimeValue.setText(time);
+            String username = new SessionManager(Profile.this).getUsername();
+            FirebaseFirestore.getInstance().collection("usernames").document(username).update("bedtime", time);
         });
 
         builder.setNegativeButton("Cancel", null);

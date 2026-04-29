@@ -62,6 +62,7 @@ public class ActivityHome extends AppCompatActivity {
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvUsername.setText(session.getUsername());
         uploadScreenTime();
+        saveAfterBedtimeScreenTime();
     }
 
     private void setupBarChart() {
@@ -166,5 +167,57 @@ public class ActivityHome extends AppCompatActivity {
                         FirebaseFirestore.getInstance().collection("usernames").document(username).update("ScreenTime", totalMinutes);
                     }
                 });
+    }
+    private void saveAfterBedtimeScreenTime(){
+        String username = new SessionManager(this).getUsername();
+
+        FirebaseFirestore.getInstance().collection("usernames").document(username).get().
+                addOnSuccessListener(doc ->{
+                    String bedtime = doc.getString("bedtime");
+                    if(bedtime == null) return;
+
+                    //Bedtime string parse
+                    String[] parts = bedtime.split(":");
+                    int bedHour = Integer.parseInt(parts[0]);
+                    int bedMinute = Integer.parseInt(parts[1]);
+
+                    //Get yesterday date as the key
+                    Calendar yesterday = Calendar.getInstance();
+                    yesterday.add(Calendar.DAY_OF_YEAR, -1);
+                    String dateKey = yesterday.get(Calendar.YEAR) + "-"
+                            +(yesterday.get(Calendar.MONTH)+ 1)+ "-"
+                            + yesterday.get(Calendar.DAY_OF_MONTH);
+
+                    //Set bedtime start for yesterday
+                    Calendar bedtimeStart = (Calendar) yesterday.clone();
+                    bedtimeStart.set(Calendar.HOUR_OF_DAY, bedHour);
+                    bedtimeStart.set(Calendar.MINUTE, bedMinute);
+                    bedtimeStart.set(Calendar.SECOND, 0);
+                    bedtimeStart.set(Calendar.MILLISECOND, 0);
+
+                    //Set midnight end of yesterday
+                    Calendar midnight = (Calendar) yesterday.clone();
+                    midnight.set(Calendar.HOUR_OF_DAY, 23);
+                    midnight.set(Calendar.MINUTE, 59);
+                    midnight.set(Calendar.SECOND, 59);
+
+                    //Calculate screen time between bedtime and midnight
+                    long afterBedtimeMs = ScreenTimeHelper.getUsageForTimeRange(
+                            this, bedtimeStart.getTimeInMillis(), midnight.getTimeInMillis()
+                    );
+                    long afterBedtimeMinutes = afterBedtimeMs / 1000 / 60;
+
+                    //save to firestore (our database)
+                    FirebaseFirestore.getInstance().collection("usernames")
+                            .document(username)
+                            .collection("screenTimeHistory")
+                            .document(dateKey)
+                            .set(new java.util.HashMap<String, Object>(){{
+                                put("afterBedtimeMinutes", afterBedtimeMinutes);
+                                put("bedtime", bedtime);
+                                put("date", dateKey);
+                            }});
+                });
+
     }
 }
