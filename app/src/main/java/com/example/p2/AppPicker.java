@@ -48,7 +48,7 @@ public class AppPicker extends AppCompatActivity {
         appAdapter = new AppAdapter(apps);
         recyclerView.setAdapter(appAdapter);
 
-        doneButton.setOnClickListener(v -> saveSelectedApps());
+        doneButton.setOnClickListener(v -> returnSelectedApps());
     }
 
     private List<AppInfo> getInstalledApps() {
@@ -69,11 +69,15 @@ public class AppPicker extends AppCompatActivity {
         return appList;
     }
 
-    private void saveSelectedApps() {
+    private void returnSelectedApps() {
         List<String> selectedApps = appAdapter.getSelectedPackagesList();
 
         FirebaseFirestore.getInstance().collection("teams").document(teamCode).update("suggestedApps", selectedApps).addOnSuccessListener(a -> {
             Toast.makeText(this, "Apps added!", Toast.LENGTH_SHORT).show();
+
+           Intent resultIntent = new Intent();
+           resultIntent.putStringArrayListExtra("selectedApps", new ArrayList<>(selectedApps));
+           setResult(RESULT_OK, resultIntent);
             finish();
         });
     }
