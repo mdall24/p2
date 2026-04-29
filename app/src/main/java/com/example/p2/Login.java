@@ -65,6 +65,10 @@ private FirebaseFirestore db;
                     return;
                 }
                 String email = doc.getString("email");
+                if (email == null) {
+                    Toast.makeText(Login.this, "Email not found for this username", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
@@ -76,7 +80,8 @@ private FirebaseFirestore db;
                     }
                     else
                     {
-                        Toast.makeText(Login.this, "Error: " + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                        String errorMsg = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+                        Toast.makeText(Login.this, "Error: " + errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 });
             })

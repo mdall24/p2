@@ -1,9 +1,11 @@
 package com.example.p2;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -34,6 +36,7 @@ public class CreateTeam extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
             });
+
         findViewById(R.id.tvNavHome).setOnClickListener(v -> {
             Intent intent = new Intent(CreateTeam.this, ActivityHome.class);
             startActivity(intent);
@@ -47,16 +50,29 @@ public class CreateTeam extends AppCompatActivity {
             startActivity(intent);
         });
 
-        RecyclerView recycler = findViewById(R.id.appRecycler);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-
-        List<AppInfo> apps = getInstalledApps();
-        appAdapter = new AppAdapter(apps);
-        recycler.setAdapter(appAdapter);
-
         Button sendInvite = findViewById(R.id.SendInvite);
         FloatingActionButton suggestTimeBtn = findViewById(R.id.SuggestedTimeButton);
         FloatingActionButton addAppsBtn = findViewById(R.id.AddAppButton);
+
+        addAppsBtn.setOnClickListener(v-> {
+            addAppsBtn.setVisibility(View.GONE);
+            suggestTimeBtn.setVisibility(View.GONE);
+
+            Intent intent = new Intent(CreateTeam.this, AppPicker.class);
+            intent.putExtra("teamcode", "ABC123");
+            startActivity(intent);
+        });
+
+        suggestTimeBtn.setOnClickListener(v ->{
+
+            TimePickerDialog timePicker = new TimePickerDialog(
+                    CreateTeam.this, (view, hourOfDay, minute) -> {
+                        int totalMinutes = hourOfDay * 60 + minute;
+                    },
+                    0, 0, true
+                    );
+            timePicker.show();
+        });
 
         sendInvite.setOnClickListener(View -> {
             suggestTimeBtn.hide();
@@ -84,6 +100,7 @@ public class CreateTeam extends AppCompatActivity {
             startActivity(Intent.createChooser(intent, "Send invite via"));
         });
     }
+}
     @Override
     protected void onResume(){
         super.onResume();
