@@ -12,7 +12,6 @@ googleServices = "4.4.2"
 cardview = "1.0.0"
 activityKtx = "1.8.0"
 firebaseFirestore = "26.2.0"
-cardview = "1.0.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,7 +24,6 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "33.9.0" }
-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 

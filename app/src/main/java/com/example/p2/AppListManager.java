@@ -12,6 +12,7 @@ public class AppListManager {
     private static final String PREFS_NAME = "app_list_prefs";
     // The key we store the set of packages under
     private static final String KEY_APPS = "tracked_apps";
+    private static final String KEY_SOFT = "soft_blocked_apps";
 
     // Save a set of package names
     public static void saveApps(Context context, Set<String> packages) {

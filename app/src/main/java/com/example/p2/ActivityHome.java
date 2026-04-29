@@ -57,8 +57,8 @@ public class ActivityHome extends AppCompatActivity {
         }
 
         // For testing: Click the time circle or long-press title to set budget
-        findViewById(R.id.flGroupTimeCircle).setOnClickListener(v -> showBudgetDialog());
-        findViewById(R.id.tvRemainingTitle).setOnLongClickListener(v -> {
+        findViewById(R.id.tvGroupTimeRemaining).setOnClickListener(v -> showBudgetDialog());
+        findViewById(R.id.tvGroupTimeRemaining).setOnLongClickListener(v -> {
             showBudgetDialog();
             return true;
         });
