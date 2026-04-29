@@ -55,14 +55,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, Registration.class);
             startActivity(intent);
         });
-<<<<<<< Updated upstream
 
         btnLogin = findViewById(R.id.Login);
         btnLogin.setOnClickListener(view -> {
-=======
-        Button Login = findViewById(R.id.Login);
-        Login.setOnClickListener(View -> {
->>>>>>> Stashed changes
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
         });

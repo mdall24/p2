@@ -51,76 +51,7 @@ public class Registration extends AppCompatActivity {
             db = FirebaseFirestore.getInstance();
             cancel = findViewById(R.id.cancel);
             cancel.setOnClickListener(v -> finish());
-
             sign_up.setOnClickListener(v -> registerUser());
-
-            sign_up.setOnClickListener(v -> {
-                    String email = e_mail.getText().toString().trim();
-                    String username = user_name.getText().toString().trim();
-                    String password = pass_word.getText().toString().trim();
-                    String cpassword = confirm_password.getText().toString().trim();
-                    if(email.isEmpty())
-                    {
-                        e_mail.setError("Email is empty");
-                        e_mail.requestFocus();
-                        return;
-                    }
-                    if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-                    {
-                        e_mail.setError("Enter a valid email address");
-                        e_mail.requestFocus();
-                        return;
-
-                    }
-                    if(username.isEmpty())
-                    {
-                        user_name.setError("Please enter a username");
-                        user_name.requestFocus();
-                        return;
-                    }
-                    if(password.isEmpty())
-                    {
-                        pass_word.setError("Please enter a password");
-                        pass_word.requestFocus();
-                        return;
-                    }
-                    if(password.length()<6)
-                    {
-                        pass_word.setError("Password needs minimum 6 characters");
-                        pass_word.requestFocus();
-                        return;
-                    }
-                    if(cpassword.isEmpty())
-                    {
-                        confirm_password.setError("Please confirm password");
-                        confirm_password.requestFocus();
-                        return;
-                    }
-                    if(!cpassword.matches(password))
-                    {
-                        confirm_password.setError("Passwords doesn't match");
-                        confirm_password.requestFocus();
-                        return;
-                    }
-                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                        if(task.isSuccessful() && task.getResult().getUser() != null)
-                        {
-                            String uid = task.getResult().getUser().getUid();
-                            FirebaseFirestore.getInstance().collection("users").document(uid).set(new User(username, email));
-                            FirebaseFirestore.getInstance().collection("usernames").document(username).set(new User(username, email));
-
-                            Toast.makeText(Registration.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
-                            SessionManager session = new SessionManager(Registration.this);
-                            session.saveLoginSession(username);
-                            startActivity(new Intent(Registration.this, ActivityHome.class));
-                        }
-                        else
-                        {
-                            String message = task.getException() != null ? task.getException().getMessage() : "Unknown error";
-                            Toast.makeText(Registration.this,"Error: " + message, Toast.LENGTH_LONG).show();
-                        }
-                    });
-            });
     }
 
     private void registerUser() {
