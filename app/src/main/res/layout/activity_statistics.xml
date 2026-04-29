@@ -113,6 +113,7 @@
                         android:id="@+id/firstPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:layout_marginTop="0dp">
 
                         <androidx.cardview.widget.CardView
@@ -143,6 +144,7 @@
 
                                 <!-- Username -->
                                 <TextView
+                                    android:id="@+id/tvFirstPlace"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="6dp"
@@ -173,6 +175,7 @@
                         android:id="@+id/secondPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:layout_marginTop="0dp">
 
                         <androidx.cardview.widget.CardView
@@ -203,6 +206,7 @@
 
                                 <!-- Username -->
                                 <TextView
+                                    android:id="@+id/tvSecondPlace"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="6dp"
@@ -232,6 +236,7 @@
                         android:id="@+id/thirdPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:layout_marginTop="0dp">
 
                         <androidx.cardview.widget.CardView
@@ -262,6 +267,7 @@
 
                                 <!-- Username -->
                                 <TextView
+                                    android:id="@+id/tvThirdPlace"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="6dp"
@@ -291,6 +297,7 @@
                         android:id="@+id/fourthPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:layout_marginTop="0dp">
 
                         <androidx.cardview.widget.CardView
@@ -321,6 +328,7 @@
 
                                 <!-- Username -->
                                 <TextView
+                                    android:id="@+id/tvFourthPlace"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="6dp"
@@ -350,6 +358,7 @@
                         android:id="@+id/fifthPlaceFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:layout_marginTop="0dp">
 
                         <androidx.cardview.widget.CardView
@@ -380,6 +389,7 @@
 
                                 <!-- Username -->
                                 <TextView
+                                    android:id="@+id/tvFifthPlace"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="6dp"

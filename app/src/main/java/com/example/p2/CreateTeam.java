@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,10 @@ public class CreateTeam extends AppCompatActivity {
             suggestTimeBtn.hide();
             addAppsBtn.hide();
 
-            String teamCode = "ABC123";
+            String teamCode = generateTeamCode();
+            String username = new SessionManager(CreateTeam.this).getUsername();
+            FirebaseFirestore.getInstance().collection("usernames").document(username)
+                    .update("teamCode", teamCode);
             String selectedApps = appAdapter.getSelectedPackageNames();
             int suggestedTime = 60;
 
@@ -105,5 +109,13 @@ public class CreateTeam extends AppCompatActivity {
             appList.add(new AppInfo(appName, packageName, icon));
         }
         return appList;
+    }
+    private String generateTeamCode(){
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder code = new StringBuilder();
+        for(int i = 0; i <6; i++){
+            code.append(chars.charAt((int)(Math.random()*chars.length())));
+        }
+        return code.toString();
     }
    }

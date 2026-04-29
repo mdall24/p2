@@ -98,9 +98,7 @@ public class Registration extends AppCompatActivity {
                         if(task.isSuccessful() && task.getResult().getUser() != null)
                         {
                             String uid = task.getResult().getUser().getUid();
-                            FirebaseFirestore.getInstance().collection("users").document(uid).set(new User(username, email));
-                            FirebaseFirestore.getInstance().collection("usernames").document(username).set(new User(username, email));
-
+                            FirebaseFirestore.getInstance().collection("usernames").document(username).set(new User(username, email, uid));
                             Toast.makeText(Registration.this,"You are successfully registered", Toast.LENGTH_SHORT).show();
                             SessionManager session = new SessionManager(Registration.this);
                             session.saveLoginSession(username);

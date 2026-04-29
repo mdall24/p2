@@ -59,8 +59,16 @@ private int suggestedTime;
     private void acceptInvite() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        FirebaseFirestore.getInstance().collection("teams").document(teamCode).collection("members").document(uid).set(new MemberStatus("accepted", suggestedApps, suggestedTime)).addOnSuccessListener(a -> finish());
-    }
+        FirebaseFirestore.getInstance().collection("teams").document(teamCode)
+                .collection("members").document(uid)
+                .set(new MemberStatus("accepted", suggestedApps, suggestedTime))
+                .addOnSuccessListener(a -> {
+                    String username = new SessionManager(JoinTeam.this).getUsername();
+                    FirebaseFirestore.getInstance().collection("usernames").document(username)
+                            .update("teamCode", teamCode);
+                    finish();
+                });
+        }
     private void openAppPicker() {
         Intent intent = new Intent(this, AppPicker.class);
         intent.putExtra("teamCode", teamCode);
