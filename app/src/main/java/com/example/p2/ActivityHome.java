@@ -18,6 +18,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,17 +55,13 @@ public class ActivityHome extends AppCompatActivity {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivity(intent);
         }
-        // Request overlay permission if not granted
-        if (!android.provider.Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            startActivity(intent);
-        }
 
         // Set up the bar chart with real screen time data
         setupBarChart();
         SessionManager session = new SessionManager(this);
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvUsername.setText(session.getUsername());
+        uploadScreenTime();
     }
 
     private void setupBarChart() {
@@ -154,5 +152,19 @@ public class ActivityHome extends AppCompatActivity {
                 getPackageName()
         );
         return mode == AppOpsManager.MODE_ALLOWED;
+    }
+    private void uploadScreenTime(){
+        long totalMS = ScreenTimeHelper.getTotalUsageForDay(this, Calendar.getInstance());
+        long totalMinutes = totalMS / 1000 / 60;
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore.getInstance().collection("usernames")
+                .whereEqualTo("uid", uid)
+                .get().addOnSuccessListener(query ->{
+                    if(!query.isEmpty()){
+                        String username = query.getDocuments().get(0).getId();
+                        FirebaseFirestore.getInstance().collection("usernames").document(username).update("ScreenTime", totalMinutes);
+                    }
+                });
     }
 }

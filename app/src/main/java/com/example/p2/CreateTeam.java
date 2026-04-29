@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class CreateTeam extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
-            });
+        });
 
         findViewById(R.id.tvNavHome).setOnClickListener(v -> {
             Intent intent = new Intent(CreateTeam.this, ActivityHome.class);
@@ -56,31 +55,36 @@ public class CreateTeam extends AppCompatActivity {
         FloatingActionButton suggestTimeBtn = findViewById(R.id.SuggestedTimeButton);
         FloatingActionButton addAppsBtn = findViewById(R.id.AddAppButton);
 
-        addAppsBtn.setOnClickListener(v-> {
+        addAppsBtn.setOnClickListener(v -> {
             addAppsBtn.setVisibility(View.GONE);
             suggestTimeBtn.setVisibility(View.GONE);
-
             Intent intent = new Intent(CreateTeam.this, AppPicker.class);
             intent.putExtra("teamcode", "ABC123");
             startActivity(intent);
         });
 
-        suggestTimeBtn.setOnClickListener(v ->{
-
+        suggestTimeBtn.setOnClickListener(v -> {
             TimePickerDialog timePicker = new TimePickerDialog(
                     CreateTeam.this, (view, hourOfDay, minute) -> {
+                int totalMinutes = hourOfDay * 60 + minute;
+            },
                         int totalMinutes = hourOfDay * 60 + minute;
 
                         FirebaseFirestore.getInstance().collection("teams").document("teamCode").update("suggestedtime", totalMinutes).addOnSuccessListener(a -> Toast.makeText(CreateTeam.this, "Time saved!", Toast.LENGTH_SHORT).show()).addOnFailureListener(e -> Toast.makeText(CreateTeam.this, "Failed to save", Toast.LENGTH_SHORT).show());
                     },
                     0, 0, true
-                    );
+            );
             timePicker.show();
         });
 
         sendInvite.setOnClickListener(View -> {
             suggestTimeBtn.hide();
             addAppsBtn.hide();
+
+            String teamCode = generateTeamCode();
+            String username = new SessionManager(CreateTeam.this).getUsername();
+            FirebaseFirestore.getInstance().collection("usernames").document(username)
+                    .update("teamCode", teamCode);
 
             String teamCode = "";
             String selectedApps = appAdapter.getSelectedPackageNames();
@@ -91,8 +95,7 @@ public class CreateTeam extends AppCompatActivity {
                     + "&apps=" + selectedApps
                     + "&time=" + suggestedTime;
 
-            String inviteMessage ="Hey! Join my team against screen time!\n" + "Tap to join: " + deepLink;
-
+            String inviteMessage = "Hey! Join my team against screen time!\n" + "Tap to join: " + deepLink;
 
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
@@ -100,5 +103,37 @@ public class CreateTeam extends AppCompatActivity {
 
             startActivity(Intent.createChooser(intent, "Send invite via"));
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FloatingActionButton suggestTimeBtn = findViewById(R.id.SuggestedTimeButton);
+        FloatingActionButton addAppsBtn = findViewById(R.id.AddAppButton);
+        suggestTimeBtn.show();
+        addAppsBtn.show();
+    }
+
+    private List<AppInfo> getInstalledApps() {
+        List<AppInfo> appList = new ArrayList<>();
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo info : resolveInfos) {
+            String appName = info.loadLabel(getPackageManager()).toString();
+            String packageName = info.activityInfo.packageName;
+            Drawable icon = info.loadIcon(getPackageManager());
+            appList.add(new AppInfo(appName, packageName, icon));
+        }
+        return appList;
+    }
+
+    private String generateTeamCode() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            code.append(chars.charAt((int) (Math.random() * chars.length())));
+        }
+        return code.toString();
     }
 }

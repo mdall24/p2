@@ -53,7 +53,7 @@
         app:layout_constraintTop_toTopOf="@id/cardProfileImage">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvUsername"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -213,7 +213,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:text="Temporary logout button"
+            android:text="LOGOUT"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="18sp"
