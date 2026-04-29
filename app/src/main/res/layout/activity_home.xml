@@ -40,6 +40,7 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvRemainingTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Remaining group time"
@@ -47,12 +48,16 @@
                         android:textSize="12sp" />
 
                     <FrameLayout
+                        android:id="@+id/flGroupTimeCircle"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/circle_outline_placeholder">
+                        android:background="@drawable/circle_outline_placeholder"
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <TextView
+                            android:id="@+id/tvGroupTimeRemaining"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"

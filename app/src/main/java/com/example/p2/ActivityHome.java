@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -50,8 +51,40 @@ public class ActivityHome extends AppCompatActivity {
             startActivity(intent);
         }
 
-        // Set up the bar chart with real screen time data
+        // For testing: Click the time circle or long-press title to set budget
+        findViewById(R.id.flGroupTimeCircle).setOnClickListener(v -> showBudgetDialog());
+        findViewById(R.id.tvRemainingTitle).setOnLongClickListener(v -> {
+            showBudgetDialog();
+            return true;
+        });
+
+
+        // Set up the bar chart with real screen time data and update remaining time.
         setupBarChart();
+        updateGroupTimeCircle();
+
+    }
+
+    private void showBudgetDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Set daily group budget (hours)");
+
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        int currentBudget = AppListManager.getDailyBudget(this) / 60;
+        input.setText(String.valueOf(currentBudget));
+        builder.setView(input);
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String val = input.getText().toString();
+            if (!val.isEmpty()) {
+                int hours = Integer.parseInt(val);
+                AppListManager.saveDailyBudget(this, hours * 60);
+                updateGroupTimeCircle(); // Refresh UI immediately
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
     }
 
     private void setupBarChart() {
@@ -142,5 +175,32 @@ public class ActivityHome extends AppCompatActivity {
                 getPackageName()
         );
         return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+    private void updateGroupTimeCircle() {
+        // Get today's total usage across all tracked apps
+        Calendar today = Calendar.getInstance();
+        long usedMs = ScreenTimeHelper.getTotalUsageForDay(this, today);
+        int usedMinutes = (int) (usedMs / 1000 / 60);
+
+        // Get the budget and calculate remaining
+        int budgetMinutes = AppListManager.getDailyBudget(this);
+        int remainingMinutes = Math.max(0, budgetMinutes - usedMinutes);
+
+        // Format as "1h 30m" or just "45m"
+        String display;
+        if (remainingMinutes >= 60) {
+            int h = remainingMinutes / 60;
+            int m = remainingMinutes % 60;
+            display = m > 0 ? h + "h " + m + "m" : h + "h";
+        } else {
+            display = remainingMinutes + "m";
+        }
+
+        // Update the TextView in the circle
+        TextView tvGroupTime = findViewById(R.id.tvGroupTimeRemaining);
+        if (tvGroupTime != null) {
+            tvGroupTime.setText(display);
+        }
     }
 }

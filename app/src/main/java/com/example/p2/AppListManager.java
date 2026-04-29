@@ -51,4 +51,17 @@ public class AppListManager {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return new HashSet<>(prefs.getStringSet(KEY_SOFT, new HashSet<>()));
     }
+
+    // Save the daily budget in minutes
+    public static void saveDailyBudget(Context context, int minutes) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putInt("daily_budget_minutes", minutes).apply();
+    }
+
+    // Get the daily budget in minutes (default 3 hours = 180 minutes)
+    public static int getDailyBudget(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt("daily_budget_minutes", 180);
+    }
+
 }
