@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        /*
+
         Button btnGoToHome = findViewById(R.id.btnGoToHome);
         btnGoToHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        */
 
         Button loginBtn = findViewById(R.id.Login);
         loginBtn.setOnClickListener(v -> {
