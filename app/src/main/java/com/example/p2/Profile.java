@@ -53,6 +53,9 @@ public class Profile extends AppCompatActivity {
             session.logout();
             startActivity(new Intent(Profile.this, MainActivity.class));
         });
+        TextView tvUsername = findViewById(R.id.tvUsername);
+        SessionManager session = new SessionManager(this);
+        tvUsername.setText(session.getUsername());
     }
 
     private void showTimePickerDialog() {
