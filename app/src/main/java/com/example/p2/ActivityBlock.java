@@ -36,6 +36,18 @@ public class ActivityBlock extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
 
+
+        // Toggle to start/stop the overlay service for testing
+        androidx.appcompat.widget.SwitchCompat serviceToggle = findViewById(R.id.switchService);
+        serviceToggle.setChecked(isServiceRunning());
+        serviceToggle.setOnCheckedChangeListener((btn, isChecked) -> {
+            Intent service = new Intent(this, OverlayService.class);
+            if (isChecked) {
+                startForegroundService(service);
+            } else {
+                stopService(service);
+            }
+        });
         // Add Apps button
         findViewById(R.id.btnAddApps).setOnClickListener(v -> {
             Intent intent = new Intent(ActivityBlock.this, ActivityAppPicker.class);
@@ -56,5 +68,15 @@ public class ActivityBlock extends AppCompatActivity {
         blockedAppsList.clear();
         blockedAppsList.addAll(AppListManager.getSavedApps(this));
         adapter.notifyDataSetChanged();
+    }
+
+    private boolean isServiceRunning() {
+        android.app.ActivityManager am = (android.app.ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (android.app.ActivityManager.RunningServiceInfo s : am.getRunningServices(Integer.MAX_VALUE)) {
+            if (OverlayService.class.getName().equals(s.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

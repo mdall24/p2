@@ -30,7 +30,32 @@
             android:text="Manage your blocking preferences"
             android:textColor="#AABBCC"
             android:textSize="12sp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Service toggle for testing -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Block service"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"/>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:thumbTint="#FFFFFF"
+                android:trackTint="#00C8A0"/>
+
+        </LinearLayout>
 
         <!-- List of blocked apps -->
         <androidx.recyclerview.widget.RecyclerView
@@ -41,6 +66,7 @@
 
     </LinearLayout>
 
+    <!-- Add Apps button -->
     <Button
         android:id="@+id/btnAddApps"
         android:layout_width="match_parent"

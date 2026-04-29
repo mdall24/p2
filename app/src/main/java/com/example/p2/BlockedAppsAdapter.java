@@ -62,15 +62,32 @@ public class BlockedAppsAdapter extends RecyclerView.Adapter<BlockedAppsAdapter.
             }
         });
 
-        // Hard/Soft toggle logic
+        // Load saved state for this app
+        boolean isSoft = AppListManager.isSoftBlocked(context, packageName);
+        if (isSoft) {
+            holder.tvSoft.setBackgroundResource(R.drawable.toggle_selected);
+            holder.tvSoft.setTextColor(0xFFFFFFFF);
+            holder.tvHard.setBackground(null);
+            holder.tvHard.setTextColor(0xFFAABBCC);
+        } else {
+            holder.tvHard.setBackgroundResource(R.drawable.toggle_selected);
+            holder.tvHard.setTextColor(0xFFFFFFFF);
+            holder.tvSoft.setBackground(null);
+            holder.tvSoft.setTextColor(0xFFAABBCC);
+        }
+
+// Hard click — save as hard block
         holder.tvHard.setOnClickListener(v -> {
+            AppListManager.setSoftBlock(context, packageName, false);
             holder.tvHard.setBackgroundResource(R.drawable.toggle_selected);
             holder.tvHard.setTextColor(0xFFFFFFFF);
             holder.tvSoft.setBackground(null);
             holder.tvSoft.setTextColor(0xFFAABBCC);
         });
 
+// Soft click — save as soft block
         holder.tvSoft.setOnClickListener(v -> {
+            AppListManager.setSoftBlock(context, packageName, true);
             holder.tvSoft.setBackgroundResource(R.drawable.toggle_selected);
             holder.tvSoft.setTextColor(0xFFFFFFFF);
             holder.tvHard.setBackground(null);
