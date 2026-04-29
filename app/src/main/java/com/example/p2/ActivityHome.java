@@ -56,12 +56,45 @@ public class ActivityHome extends AppCompatActivity {
             startActivity(intent);
         }
 
-        // Set up the bar chart with real screen time data
+        // For testing: Click the time circle or long-press title to set budget
+        findViewById(R.id.tvGroupTimeRemaining).setOnClickListener(v -> showBudgetDialog());
+        findViewById(R.id.tvGroupTimeRemaining).setOnLongClickListener(v -> {
+            showBudgetDialog();
+            return true;
+        });
+
+
+        // Set up the bar chart with real screen time data and update remaining time.
         setupBarChart();
         SessionManager session = new SessionManager(this);
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvUsername.setText(session.getUsername());
         uploadScreenTime();
+        saveAfterBedtimeScreenTime();
+        updateGroupTimeCircle();
+
+    }
+
+    private void showBudgetDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Set daily group budget (hours)");
+
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        int currentBudget = AppListManager.getDailyBudget(this) / 60;
+        input.setText(String.valueOf(currentBudget));
+        builder.setView(input);
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String val = input.getText().toString();
+            if (!val.isEmpty()) {
+                int hours = Integer.parseInt(val);
+                AppListManager.saveDailyBudget(this, hours * 60);
+                updateGroupTimeCircle(); // Refresh UI immediately
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
     }
 
     private void setupBarChart() {
@@ -166,5 +199,84 @@ public class ActivityHome extends AppCompatActivity {
                         FirebaseFirestore.getInstance().collection("usernames").document(username).update("ScreenTime", totalMinutes);
                     }
                 });
+    }
+    private void saveAfterBedtimeScreenTime(){
+        String username = new SessionManager(this).getUsername();
+
+        FirebaseFirestore.getInstance().collection("usernames").document(username).get().
+                addOnSuccessListener(doc ->{
+                    String bedtime = doc.getString("bedtime");
+                    if(bedtime == null) return;
+
+                    //Bedtime string parse
+                    String[] parts = bedtime.split(":");
+                    int bedHour = Integer.parseInt(parts[0]);
+                    int bedMinute = Integer.parseInt(parts[1]);
+
+                    //Get yesterday date as the key
+                    Calendar yesterday = Calendar.getInstance();
+                    yesterday.add(Calendar.DAY_OF_YEAR, -1);
+                    String dateKey = yesterday.get(Calendar.YEAR) + "-"
+                            +(yesterday.get(Calendar.MONTH)+ 1)+ "-"
+                            + yesterday.get(Calendar.DAY_OF_MONTH);
+
+                    //Set bedtime start for yesterday
+                    Calendar bedtimeStart = (Calendar) yesterday.clone();
+                    bedtimeStart.set(Calendar.HOUR_OF_DAY, bedHour);
+                    bedtimeStart.set(Calendar.MINUTE, bedMinute);
+                    bedtimeStart.set(Calendar.SECOND, 0);
+                    bedtimeStart.set(Calendar.MILLISECOND, 0);
+
+                    //Set midnight end of yesterday
+                    Calendar midnight = (Calendar) yesterday.clone();
+                    midnight.set(Calendar.HOUR_OF_DAY, 23);
+                    midnight.set(Calendar.MINUTE, 59);
+                    midnight.set(Calendar.SECOND, 59);
+
+                    //Calculate screen time between bedtime and midnight
+                    long afterBedtimeMs = ScreenTimeHelper.getUsageForTimeRange(
+                            this, bedtimeStart.getTimeInMillis(), midnight.getTimeInMillis()
+                    );
+                    long afterBedtimeMinutes = afterBedtimeMs / 1000 / 60;
+
+                    //save to firestore (our database)
+                    FirebaseFirestore.getInstance().collection("usernames")
+                            .document(username)
+                            .collection("screenTimeHistory")
+                            .document(dateKey)
+                            .set(new java.util.HashMap<String, Object>(){{
+                                put("afterBedtimeMinutes", afterBedtimeMinutes);
+                                put("bedtime", bedtime);
+                                put("date", dateKey);
+                            }});
+                });
+
+    }
+
+    private void updateGroupTimeCircle() {
+        // Get today's total usage across all tracked apps
+        Calendar today = Calendar.getInstance();
+        long usedMs = ScreenTimeHelper.getTotalUsageForDay(this, today);
+        int usedMinutes = (int) (usedMs / 1000 / 60);
+
+        // Get the budget and calculate remaining
+        int budgetMinutes = AppListManager.getDailyBudget(this);
+        int remainingMinutes = Math.max(0, budgetMinutes - usedMinutes);
+
+        // Format as "1h 30m" or just "45m"
+        String display;
+        if (remainingMinutes >= 60) {
+            int h = remainingMinutes / 60;
+            int m = remainingMinutes % 60;
+            display = m > 0 ? h + "h " + m + "m" : h + "h";
+        } else {
+            display = remainingMinutes + "m";
+        }
+
+        // Update the TextView in the circle
+        TextView tvGroupTime = findViewById(R.id.tvGroupTimeRemaining);
+        if (tvGroupTime != null) {
+            tvGroupTime.setText(display);
+        }
     }
 }
