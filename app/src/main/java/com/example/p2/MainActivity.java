@@ -34,16 +34,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Button btnGoToHome = findViewById(R.id.btnGoToHome);
-        btnGoToHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ActivityHome.class);
-                startActivity(intent);
-            }
-        });
-        */
-
         btnCreateAcc = findViewById(R.id.createAcc);
         btnCreateAcc.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, Registration.class);
