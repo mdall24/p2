@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +70,8 @@ public class CreateTeam extends AppCompatActivity {
             TimePickerDialog timePicker = new TimePickerDialog(
                     CreateTeam.this, (view, hourOfDay, minute) -> {
                         int totalMinutes = hourOfDay * 60 + minute;
+
+                        FirebaseFirestore.getInstance().collection("teams").document("teamCode").update("suggestedtime", totalMinutes).addOnSuccessListener(a -> Toast.makeText(CreateTeam.this, "Time saved!", Toast.LENGTH_SHORT).show()).addOnFailureListener(e -> Toast.makeText(CreateTeam.this, "Failed to save", Toast.LENGTH_SHORT).show());
                     },
                     0, 0, true
                     );
@@ -77,7 +82,7 @@ public class CreateTeam extends AppCompatActivity {
             suggestTimeBtn.hide();
             addAppsBtn.hide();
 
-            String teamCode = "ABC123";
+            String teamCode = "";
             String selectedApps = appAdapter.getSelectedPackageNames();
             int suggestedTime = 60;
 
