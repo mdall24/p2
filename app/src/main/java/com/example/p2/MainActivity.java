@@ -45,11 +45,6 @@ public class MainActivity extends AppCompatActivity {
         });
         */
 
-        Button loginBtn = findViewById(R.id.Login);
-        loginBtn.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, Login.class));
-        });
-
         btnCreateAcc = findViewById(R.id.createAcc);
         btnCreateAcc.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, Registration.class);
