@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        /*
         Button btnGoToHome = findViewById(R.id.btnGoToHome);
         btnGoToHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,5 +67,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, Profile.class);
             startActivity(intent);
         });
+
+        // Start the overlay service
+        Intent serviceIntent = new Intent(this, OverlayService.class);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
     }
 }
