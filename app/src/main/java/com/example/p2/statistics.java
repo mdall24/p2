@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,10 +58,32 @@ public class statistics extends AppCompatActivity {
             Intent intent = new Intent(statistics.this, ActivityHome.class);
             startActivity(intent);
         });
-        findViewById(id.btnCreateTeam).setOnClickListener(v -> {
-            Intent intent = new Intent(statistics.this, CreateTeam.class);
-            startActivity(intent);
-        });
+        String username = new SessionManager(this).getUsername();
+        FirebaseFirestore.getInstance().collection("usernames").document(username).get()
+                .addOnSuccessListener(doc -> {
+                    String teamCode = doc.getString("teamCode");
+                    Button btnCreateTeam = findViewById(R.id.btnCreateTeam);
+                    if (teamCode != null) {
+                        btnCreateTeam.setText("+ Invite Friends");
+                        btnCreateTeam.setOnClickListener(v -> {
+                            String deepLink = "myapp://join"
+                                    + "?team=" + teamCode;
+
+                            String inviteMessage = "Hey! Join my team against screen time!\n" + "Tap to join: " + deepLink;
+
+                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+                            startActivity(Intent.createChooser(shareIntent, "Send invite via"));
+                        });
+                    } else {
+                        btnCreateTeam.setText("+     Create Team");
+                        btnCreateTeam.setOnClickListener(v -> {
+                            Intent intent = new Intent(statistics.this, CreateTeam.class);
+                            startActivity(intent);
+                        });
+                    }
+                });
         setupBarChart();
         loadLeaderboard();
 
