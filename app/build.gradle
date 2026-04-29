@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.google.services)
 }
 
-task prepareKotlinBuildScriptModel {}
-
 android {
     namespace 'com.example.p2'
     compileSdk {
@@ -33,7 +31,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-    enableKotlin = false
 }
 
 dependencies {
@@ -46,9 +43,12 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.firebase.auth
     implementation libs.cardview
+    implementation libs.cardview
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-    implementation libs.firebase.analytics
+    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation libs.firebase.firestore
 }
