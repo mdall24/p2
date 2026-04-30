@@ -15,9 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
     private Button btnCreateAcc;
-    private Button btnStatistics;
-    private Button btnProfile;
-    private Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,43 +39,16 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-
-        Button btnGoToHome = findViewById(R.id.btnGoToHome);
-        btnGoToHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ActivityHome.class);
-                startActivity(intent);
-            }
-        });
-
         Button loginBtn = findViewById(R.id.Login);
         loginBtn.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, Login.class));
         });
-
+        
         btnCreateAcc = findViewById(R.id.createAcc);
         btnCreateAcc.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, Registration.class);
             startActivity(intent);
         });
 
-        btnLogin = findViewById(R.id.Login);
-        btnLogin.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivity(intent);
-        });
-
-        btnStatistics = findViewById(R.id.statsButton);
-        btnStatistics.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, statistics.class);
-            startActivity(intent);
-        });
-
-        btnProfile = findViewById(R.id.profilebutton);
-        btnProfile.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, Profile.class);
-            startActivity(intent);
-        });
     }
 }
