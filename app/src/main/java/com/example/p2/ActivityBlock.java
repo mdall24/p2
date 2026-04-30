@@ -2,6 +2,7 @@ package com.example.p2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -58,6 +59,10 @@ public class ActivityBlock extends AppCompatActivity {
         // Home nav button
         findViewById(R.id.tvNavHome).setOnClickListener(v -> {
             Intent intent = new Intent(ActivityBlock.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v ->{
+            Intent intent = new Intent(ActivityBlock.this, statistics.class);
             startActivity(intent);
         });
     }

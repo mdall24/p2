@@ -53,6 +53,18 @@ public class Profile extends AppCompatActivity {
             session.logout();
             startActivity(new Intent(Profile.this, MainActivity.class));
         });
+        findViewById(R.id.tvNavHome).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, statistics.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavBlock).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, ActivityBlock.class);
+            startActivity(intent);
+        });
         TextView tvUsername = findViewById(R.id.tvUsername);
         SessionManager session = new SessionManager(this);
         tvUsername.setText(session.getUsername());
