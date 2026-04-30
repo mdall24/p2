@@ -7,12 +7,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Locale;
 
@@ -34,10 +37,37 @@ public class Profile extends AppCompatActivity {
 
         ImageView editButton = findViewById(R.id.imageView5);
         tvBedtimeValue = findViewById(R.id.textViewBedtimeValue);
+        String username = new SessionManager(this).getUsername();
+        FirebaseFirestore.getInstance().collection("usernames").document(username).get().addOnSuccessListener(doc ->{
+            String bedtime = doc.getString("bedtime");
+            if(bedtime != null){
+                tvBedtimeValue.setText(bedtime);
+            }
+        });
 
         if (editButton != null) {
             editButton.setOnClickListener(v -> showTimePickerDialog());
         }
+        findViewById(R.id.logoutCard).setOnClickListener(v ->{
+            SessionManager session = new SessionManager(this);
+            session.logout();
+            startActivity(new Intent(Profile.this, MainActivity.class));
+        });
+        findViewById(R.id.tvNavHome).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, statistics.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavBlock).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, ActivityBlock.class);
+            startActivity(intent);
+        });
+        TextView tvUsername = findViewById(R.id.tvUsername);
+        SessionManager session = new SessionManager(this);
+        tvUsername.setText(session.getUsername());
     }
 
     private void showTimePickerDialog() {
@@ -86,6 +116,8 @@ public class Profile extends AppCompatActivity {
             String minuteStr = displayedValues[minutePicker.getValue()];
             String time = String.format(Locale.getDefault(), "%02d:%s", hour, minuteStr);
             tvBedtimeValue.setText(time);
+            String username = new SessionManager(Profile.this).getUsername();
+            FirebaseFirestore.getInstance().collection("usernames").document(username).update("bedtime", time);
         });
 
         builder.setNegativeButton("Cancel", null);

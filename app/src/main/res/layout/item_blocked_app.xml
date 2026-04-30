@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="#1A2B3C"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Top row: icon, name, toggle switch -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:id="@+id/ivAppIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
+                android:id="@+id/tvAppName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <!-- Toggle switch — on = blocked, off = removed -->
+            <Switch
+                android:id="@+id/switchBlock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:thumbTint="#FFFFFF"
+                android:trackTint="#00C8A0"/>
+
+        </LinearLayout>
+
+        <!-- Avg daily use -->
+        <TextView
+            android:id="@+id/tvAvgUse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Avg. daily use: --"
+            android:textColor="#AABBCC"
+            android:textSize="12sp"
+            android:layout_marginStart="52dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Hard / Soft toggle -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="52dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Restriction mode"
+                android:textColor="#AABBCC"
+                android:textSize="11sp"
+                android:layout_marginBottom="4dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/toggle_background"
+                android:padding="3dp">
+
+                <TextView
+                    android:id="@+id/tvHard"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:text="Hard"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:background="@drawable/toggle_selected"/>
+
+                <TextView
+                    android:id="@+id/tvSoft"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:text="Soft"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:textColor="#AABBCC"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
