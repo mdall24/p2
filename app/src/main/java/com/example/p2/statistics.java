@@ -58,6 +58,10 @@ public class statistics extends AppCompatActivity {
             Intent intent = new Intent(statistics.this, ActivityHome.class);
             startActivity(intent);
         });
+        findViewById(id.btnPrevTime).setOnClickListener(v -> {
+            Intent intent = new Intent(statistics.this, ScreenTimeHistory.class);
+            startActivity(intent);
+        });
         String username = new SessionManager(this).getUsername();
         FirebaseFirestore.getInstance().collection("usernames").document(username).get()
                 .addOnSuccessListener(doc -> {
