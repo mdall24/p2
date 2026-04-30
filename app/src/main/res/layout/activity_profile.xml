@@ -29,7 +29,7 @@
         android:layout_marginStart="16dp"
         app:cardBackgroundColor="#1A2B3C"
         app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
+        app:cardElevation="-1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView">
 
