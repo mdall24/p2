@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -43,7 +44,7 @@ public class ActivityBlock extends AppCompatActivity {
         serviceToggle.setOnCheckedChangeListener((btn, isChecked) -> {
             Intent service = new Intent(this, OverlayService.class);
             if (isChecked) {
-                startForegroundService(service);
+                ContextCompat.startForegroundService(this, service);
             } else {
                 stopService(service);
             }

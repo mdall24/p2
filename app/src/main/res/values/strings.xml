@@ -20,4 +20,5 @@
     <string name="thirdPlace">Third Place</string>
     <string name="fourthPlace">Fourth Place</string>
     <string name="fifthPlace">Fifth Place</string>
+    <string name="service_status">Service Status</string>
 </resources>

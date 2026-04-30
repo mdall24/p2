@@ -12,6 +12,7 @@ public class AppListManager {
     private static final String KEY_APPS = "tracked_apps";
     // New — stores which apps are set to soft block
     private static final String KEY_SOFT = "soft_block_apps";
+    private static final String KEY_BUDGET = "daily_budget";
 
     public static void saveApps(Context context, Set<String> packages) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -50,5 +51,16 @@ public class AppListManager {
     public static Set<String> getSoftBlockedApps(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return new HashSet<>(prefs.getStringSet(KEY_SOFT, new HashSet<>()));
+    }
+
+    public static void saveDailyBudget(Context context, int minutes) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putInt(KEY_BUDGET, minutes).apply();
+    }
+
+    public static int getDailyBudget(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        // Default to 120 minutes (2 hours) if not set
+        return prefs.getInt(KEY_BUDGET, 120);
     }
 }
