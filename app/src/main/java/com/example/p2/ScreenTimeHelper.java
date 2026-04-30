@@ -108,6 +108,7 @@ public class ScreenTimeHelper {
         }
         return total;
     }
+
     public static long getUsageForTimeRange(Context context, long startTime, long endTime) {
         UsageStatsManager usageStatsManager =
                 (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
@@ -117,8 +118,9 @@ public class ScreenTimeHelper {
         );
 
         Set<String> trackedApps = AppListManager.getSavedApps(context);
-
-        if (trackedApps.isEmpty()) return 0;
+        if (trackedApps.isEmpty()) {
+            return 0;
+        }
 
         long total = 0;
         for (Map.Entry<String, UsageStats> entry : statsMap.entrySet()) {

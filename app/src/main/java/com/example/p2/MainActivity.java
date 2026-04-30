@@ -11,6 +11,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity {
     private Button btnCreateAcc;
     private Button btnStatistics;
@@ -21,9 +23,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SessionManager session = new SessionManager(this);
-        if(session.isLoggedIn()){
-            startActivity(new Intent(MainActivity.this, ActivityHome.class));
-            finish();
+        if (session.isLoggedIn()) {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                startActivity(new Intent(MainActivity.this, ActivityHome.class));
+                finish();
+            } else {
+                session.logout();
+                startActivity(new Intent(MainActivity.this, Login.class));
+                finish();
+            }
         }
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);

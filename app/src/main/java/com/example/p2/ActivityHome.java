@@ -52,13 +52,17 @@ public class ActivityHome extends AppCompatActivity {
         });
         // Check if we have permission to read usage stats
         if (!hasUsagePermission()) {
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivity(intent);
+            SessionManager permSession = new SessionManager(this);
+            if (!permSession.hasAskedPermission()) {
+                permSession.setAskedPermission(true);
+                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                startActivity(intent);
+            }
         }
 
         // For testing: Click the time circle or long-press title to set budget
-        findViewById(R.id.tvGroupTimeRemaining).setOnClickListener(v -> showBudgetDialog());
-        findViewById(R.id.tvGroupTimeRemaining).setOnLongClickListener(v -> {
+        findViewById(R.id.flGroupTimeCircle).setOnClickListener(v -> showBudgetDialog());
+        findViewById(R.id.tvRemainingTitle).setOnLongClickListener(v -> {
             showBudgetDialog();
             return true;
         });

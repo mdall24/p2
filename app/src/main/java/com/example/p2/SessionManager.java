@@ -36,4 +36,11 @@ public class SessionManager {
         editor.clear();
         editor.apply();
     }
+    public boolean hasAskedPermission() {
+        return prefs.getBoolean("askedPermission", false);
+    }
+    public void setAskedPermission(boolean asked) {
+        editor.putBoolean("askedPermission", asked);
+        editor.apply();
+    }
 }

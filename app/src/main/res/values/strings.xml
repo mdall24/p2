@@ -21,4 +21,5 @@
     <string name="fourthPlace">Fourth Place</string>
     <string name="fifthPlace">Fifth Place</string>
     <string name="forgot">Forgot Password?</string>
+    <string name="service_status">Service Status</string>
 </resources>
