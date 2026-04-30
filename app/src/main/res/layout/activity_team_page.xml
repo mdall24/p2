@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
-    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0F172A"
@@ -21,6 +19,7 @@
         tools:layout_editor_absoluteX="113dp"
         tools:layout_editor_absoluteY="16dp" />
 
+
     <TextView
         android:id="@+id/TeamStats"
         android:layout_width="146dp"
@@ -28,9 +27,9 @@
         android:text="Team Usage"
         android:textColor="#F59E0B"
         android:textSize="20sp"
-        tools:layout_editor_absoluteX="31dp"
-        tools:layout_editor_absoluteY="111dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="279dp" />
 
     <TextView
         android:id="@+id/tvTeamTotal"
@@ -39,9 +38,9 @@
         android:text="Team Time Left:"
         android:textColor="#F59E0B"
         android:textSize="20sp"
-        tools:layout_editor_absoluteX="38dp"
-        tools:layout_editor_absoluteY="263dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="97dp" />
 
     <TextView
         android:id="@+id/tvTeamUsed"
@@ -56,8 +55,42 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMembers"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="419dp"
+        android:layout_height="281dp"
+        tools:layout_editor_absoluteX="-7dp"
+        tools:layout_editor_absoluteY="450dp"
+        tools:ignore="MissingConstraints" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/teamProgress"
+        android:layout_width="576dp"
+        android:layout_height="177dp"
+        android:layout_gravity="center"
+        android:padding="40dp"
+        app:indeterminate="false"
+        app:indicatorColor="0D1B2A"
+        app:indicatorSize="150dp"
+        app:max="100"
+        app:progress="0"
+        app:trackColor="#00C8A0"
+        app:trackThickness="12dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="140dp"
+        tools:layout_editor_absoluteY="72dp" />
+
+    <TextView
+        android:id="@+id/tvCircleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="-- min"
+        android:textColor="#F59E0B"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/teamProgress"
+        app:layout_constraintEnd_toEndOf="@+id/teamProgress"
+        app:layout_constraintStart_toStartOf="@+id/teamProgress"
+        app:layout_constraintTop_toTopOf="@+id/teamProgress" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

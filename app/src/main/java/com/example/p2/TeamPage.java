@@ -40,20 +40,33 @@ public class TeamPage extends AppCompatActivity {
         tvTeamUsed = findViewById(R.id.tvTeamUsed);
         rvMembers = findViewById(R.id.rvMembers);
 
-        teamCode = new SessionManager(this).getUsername();
+        teamCode = new SessionManager(this).getTeamCode();
 
         loadTeamTotals();
         loadMembers();
     }
     private void loadTeamTotals(){
-        db.collection("teams").document().get().addOnSuccessListener(doc ->{
+        db.collection("teams").document(teamCode).get().addOnSuccessListener(doc ->{
             if (doc.exists()){
-                long total = doc.getLong("totalTimeMinutes");
-                long used = doc.getLong("timeUsedMinutes");
-                long left = total - used;
+                Long total = doc.getLong("totalTimeMinutes");
+                Long used = doc.getLong("timeUsedMinutes");
 
-                tvTeamTotal.setText("Team Time Left:" + left + " min");
-                tvTeamUsed.setText("Total Used:" + used + " min");
+                if (total != null && used != null) {
+
+                    long left = total - used;
+
+                    tvTeamTotal.setText("Team Time Left:" + left + " min");
+                    tvTeamUsed.setText("Total Used:" + used + " min");
+
+                    TextView tvCircleText = findViewById(R.id.tvCircleText);
+                    tvCircleText.setText(left + " min");
+
+                    com.google.android.material.progressindicator.CircularProgressIndicator progress = findViewById(R.id.teamProgress);
+
+                    int percent = (int) ((double) used / total * 100);
+
+                    progress.setProgress(percent, true);
+                }
             }
         });
     }
@@ -61,7 +74,7 @@ public class TeamPage extends AppCompatActivity {
         db.collection("teams").document(teamCode).collection("members").get().addOnSuccessListener(query ->{
             List<MemberModel> list = new ArrayList<>();
 
-            for(QueryDocumentSnapshot) doc : query) {
+            for(QueryDocumentSnapshot doc : query) {
             String username = doc.getId();
             long timeUsed = doc.getLong("timeUsed");
             List<String> apps = (List<String>) doc.get("appsUsed");

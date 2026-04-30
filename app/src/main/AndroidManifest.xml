@@ -14,9 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.P2">
         <activity
-            android:name=".MemberAdapter"
-            android:exported="false" />
-        <activity
             android:name=".ScreenTimeHistory"
             android:exported="false" />
         <activity
@@ -30,7 +27,7 @@
             android:exported="false" />
         <activity
             android:name=".JoinTeam"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

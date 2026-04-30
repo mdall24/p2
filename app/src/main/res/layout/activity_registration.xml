@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Cancel"
-        android:textColor="#9B9898"
+        android:textColor="#67F59E0B"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
