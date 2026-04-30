@@ -45,10 +45,11 @@
                         android:layout_height="wrap_content"
                         android:text="Remaining group time"
                         android:textColor="#AABBCC"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:clickable="true"/>
 
                     <FrameLayout
-                        android:id="@+id/groupTimeCircle"
+                        android:id="@+id/flGroupTimeCircle"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_marginTop="8dp"

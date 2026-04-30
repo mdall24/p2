@@ -468,41 +468,47 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#111E2B"
-        android:gravity="center"
         android:orientation="horizontal"
+        android:gravity="center"
         android:weightSum="3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
+            android:id="@+id/tvNavStatistics"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:paddingBottom="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Statistics"
             android:textColor="#00C8A0"
-            android:textSize="11sp" />
+            android:textSize="11sp"/>
 
         <TextView
             android:id="@+id/tvNavHome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:paddingBottom="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Home"
             android:textColor="#AABBCC"
-            android:textSize="11sp" />
+            android:textSize="11sp"/>
 
         <TextView
             android:id="@+id/tvNavBlock"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:paddingBottom="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Block"
             android:textColor="#AABBCC"
-            android:textSize="11sp" />
-
+            android:textSize="11sp"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
