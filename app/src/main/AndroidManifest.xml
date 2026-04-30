@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.P2">
         <activity
+            android:name=".MemberAdapter"
+            android:exported="false" />
+        <activity
             android:name=".ScreenTimeHistory"
             android:exported="false" />
         <activity

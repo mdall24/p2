@@ -20,6 +20,9 @@
     <string name="thirdPlace">Third Place</string>
     <string name="fourthPlace">Fourth Place</string>
     <string name="fifthPlace">Fifth Place</string>
+<<<<<<< HEAD
     <string name="forgot">Forgot Password?</string>
     <string name="service_status">Service Status</string>
+=======
+>>>>>>> parent of ca5315a (TeamPage with (hopefully) working shared time)
 </resources>

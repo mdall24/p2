@@ -6,7 +6,6 @@ import android.se.omapi.Session;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,7 +21,6 @@ public class Login extends AppCompatActivity {
 
 private Button login;
 private EditText pass_word, user_name;
-private TextView forgot_password;
 private FirebaseAuth mAuth;
 private FirebaseFirestore db;
     @Override
