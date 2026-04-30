@@ -197,28 +197,24 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/logoutCard"
-        android:layout_width="0dp"
+        android:id="@+id/PSettingsCard"
+        android:layout_width="312dp"
         android:layout_height="63dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
         app:cardBackgroundColor="#1A2B3C"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        app:layout_constraintTop_toBottomOf="@id/cardInviteFriendsContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:clickable="true"
-        android:foreground="?attr/selectableItemBackground">
+        tools:layout_editor_absoluteX="49dp"
+        tools:layout_editor_absoluteY="523dp">
 
         <TextView
-            android:id="@+id/tvLogout"
+            android:id="@+id/ProfileSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:text="LOGOUT"
+            android:text="Profile settings"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -273,5 +269,30 @@
             android:textColor="#AABBCC"
             android:textSize="11sp"/>
     </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/logoutCard"
+        android:layout_width="312dp"
+        android:layout_height="63dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardBackgroundColor="#1A2B3C"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        tools:layout_editor_absoluteX="49dp"
+        tools:layout_editor_absoluteY="601dp">
+
+        <TextView
+            android:id="@+id/tvLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:text="LOGOUT"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
