@@ -6,6 +6,11 @@
     android:gravity="center_vertical"
     android:padding="12dp">
 
+<ImageView
+    android:id="@+id/appIcon"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_marginEnd="12dp" />
     <!-- App icon -->
     <ImageView
         android:id="@+id/ivAppIcon"
@@ -13,6 +18,12 @@
         android:layout_height="40dp"
         android:layout_marginEnd="12dp"/>
 
+<TextView
+    android:id="@+id/appName"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:textSize="16sp" />
     <!-- App name -->
     <TextView
         android:id="@+id/tvAppName"
@@ -22,6 +33,10 @@
         android:textColor="#FFFFFF"
         android:textSize="14sp"/>
 
+<CheckBox
+    android:id="@+id/appCheck"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
     <!-- Checkbox -->
     <CheckBox
         android:id="@+id/cbApp"
