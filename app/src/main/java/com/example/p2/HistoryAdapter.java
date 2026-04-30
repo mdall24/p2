@@ -39,12 +39,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         Map<String, Object> item = historyList.get(position);
         String date = (String) item.get("date");
-        String bedtime = (String) item.get("bedtime");
-        Long minutes = (Long) item.get("afterBedtimeMinutes");
-
         holder.tvDate.setText(date);
-        holder.tvBedtime.setText("Bedtime: " + bedtime);
-        holder.tvAfterBedtime.setText(minutes + "m");
+        holder.tvBedtime.setText((String) item.get("label"));
+        Long minutes = (Long) item.get("minutes");
+        holder.tvAfterBedtime.setText((minutes != null ? minutes : 0) + "m");
     }
 
     @Override

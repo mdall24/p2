@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="12dp"
     app:cardBackgroundColor="#1A2B3C"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp">
@@ -11,40 +11,47 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFB95F"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#2A3B4C"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tvBedtime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#AABBCC"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvAfterBedtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#AABBCC"
-                android:textSize="12sp" />
+                android:textColor="#00C8A0"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvAfterBedtime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#00C8A0"
-            android:textSize="16sp"
-            android:textStyle="bold" />
 
     </LinearLayout>
 
