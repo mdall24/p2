@@ -22,32 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.P2">
-        <activity
-            android:name=".ScreenTimeHistory"
-            android:exported="false" />
-        <activity
-            android:name=".ActivityBlock"
-            android:exported="false" />
-        <activity
-            android:name=".ActivityAppPicker"
-            android:exported="false" />
-        <activity
-            android:name=".AppPicker"
-            android:exported="false" />
-        <activity
-            android:name=".JoinTeam"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="join"
-                    android:scheme="myapp" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".CreateTeam"
             android:exported="false" />
@@ -78,6 +53,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".OverlayService"
             android:foregroundServiceType="specialUse"
@@ -94,6 +70,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
