@@ -1,6 +1,7 @@
 package com.example.p2;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -15,6 +16,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TeamPage extends AppCompatActivity {
 
@@ -46,14 +48,26 @@ public class TeamPage extends AppCompatActivity {
         loadMembers();
     }
     private void loadTeamTotals(){
-        db.collection("teams").document().get().addOnSuccessListener(doc ->{
+        db.collection("teams").document(teamCode).get().addOnSuccessListener(doc ->{
             if (doc.exists()){
-                long total = doc.getLong("totalTimeMinutes");
-                long used = doc.getLong("timeUsedMinutes");
+                Long totalRaw = (Long) doc.get("totalTimeMinutes");
+                long total = totalRaw != null ? totalRaw : 0L;
+
+                Long usedRaw = (Long) doc.get("timeUsedMinutes");
+                long used = usedRaw != null ? usedRaw : 0L;
+
                 long left = total - used;
 
                 tvTeamTotal.setText("Team Time Left:" + left + " min");
                 tvTeamUsed.setText("Total Used:" + used + " min");
+
+                TextView tvCircleText = findViewById(R.id.tvCircleText);
+                tvCircleText.setText(left + " min");
+
+                com.google.android.material.progressindicator.CircularProgressIndicator progress = findViewById(R.id.teamProgress);
+
+                int percent = total > 0 ? (int) ((double) used / total * 100) : 0;
+                progress.setProgress(percent, true); //animates it
             }
         });
     }
@@ -61,14 +75,23 @@ public class TeamPage extends AppCompatActivity {
         db.collection("teams").document(teamCode).collection("members").get().addOnSuccessListener(query ->{
             List<MemberModel> list = new ArrayList<>();
 
-            for(QueryDocumentSnapshot) doc : query) {
+            for(QueryDocumentSnapshot doc : query) {
             String username = doc.getId();
-            long timeUsed = doc.getLong("timeUsed");
+
+            //Handles a potential null from Firestore
+            Long timeUsedRaw = doc.getLong("timeUsed");
+            long timeUsed = timeUsedRaw != null ? timeUsedRaw : 0L;
+
+            @SuppressWarnings("unchecked") //Suppresses the compiler warnings
             List<String> apps = (List<String>) doc.get("appsUsed");
 
             list.add(new MemberModel(username, timeUsed, apps));
             }
             memberadapter.updateList(list);
+        })
+                //Adds a log if Firestore fails to load
+        .addOnFailureListener(e -> {
+            Log.e("loadMembers", "Failed to load members", e);
         });
     }
 }
