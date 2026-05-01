@@ -58,10 +58,6 @@ public class statistics extends AppCompatActivity {
             Intent intent = new Intent(statistics.this, ActivityHome.class);
             startActivity(intent);
         });
-        findViewById(id.btnPrevTime).setOnClickListener(v -> {
-            Intent intent = new Intent(statistics.this, ScreenTimeHistory.class);
-            startActivity(intent);
-        });
         findViewById(R.id.btnPrevTime).setOnClickListener(v -> {
             Intent intent = new Intent(statistics.this, ScreenTimeHistory.class);
             startActivity(intent);
@@ -197,8 +193,8 @@ public class statistics extends AppCompatActivity {
 
                                 // Sort by lowest screen time first (best time savers)
                                 members.sort((a, b) -> Long.compare(
-                                        (Long) a.get("screenTime"),
-                                        (Long) b.get("screenTime")
+                                        (Long) a.get("ScreenTime"),
+                                        (Long) b.get("ScreenTime")
                                 ));
 
                                 int[] frames = {R.id.firstPlaceFrame, R.id.secondPlaceFrame,
@@ -208,8 +204,15 @@ public class statistics extends AppCompatActivity {
 
                                 for (int i = 0; i < members.size() && i < 5; i++) {
                                     String name = (String) members.get(i).get("username");
-                                    long time = (Long) members.get(i).get("screenTime");
-                                    String display = name + " • " + time + "m";
+                                    long time = (Long) members.get(i).get("ScreenTime");
+                                    String display;
+                                    if (time >= 60) {
+                                        long hours = time / 60;
+                                        long mins = time % 60;
+                                        display = name + " • " + hours + "h " + mins + "m";
+                                    } else {
+                                        display = name + " • " + time + "m";
+                                    }
 
                                     findViewById(frames[i]).setVisibility(View.VISIBLE);
                                     ((TextView) findViewById(textViews[i])).setText(display);
