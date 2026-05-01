@@ -190,8 +190,8 @@ public class statistics extends AppCompatActivity {
                                 for (QueryDocumentSnapshot d : query) {
                                     Map<String, Object> member = new HashMap<>();
                                     member.put("username", d.getId());
-                                    Long screenTime = d.getLong("screenTime");
-                                    member.put("screenTime", screenTime != null ? screenTime : 0L);
+                                    Long screenTime = d.getLong("ScreenTime");
+                                    member.put("ScreenTime", screenTime != null ? screenTime : 0L);
                                     members.add(member);
                                 }
 
