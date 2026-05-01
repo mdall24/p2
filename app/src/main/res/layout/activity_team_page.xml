@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:orientation="vertical"
-    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0F172A"
@@ -29,8 +28,8 @@
         android:textColor="#F59E0B"
         android:textSize="20sp"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="106dp"
-        tools:layout_editor_absoluteY="283dp" />
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="301dp" />
 
     <TextView
         android:id="@+id/tvTeamTotal"
@@ -51,15 +50,16 @@
         android:textColor="#F59E0B"
         android:textSize="20sp"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="106dp"
-        tools:layout_editor_absoluteY="439dp" />
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="494dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMembers"
         android:layout_width="392dp"
         android:layout_height="154dp"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="557dp" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="340dp" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/teamProgress"
@@ -91,5 +91,104 @@
         app:layout_constraintEnd_toEndOf="@+id/teamProgress"
         app:layout_constraintStart_toStartOf="@+id/teamProgress"
         app:layout_constraintTop_toTopOf="@+id/teamProgress" />
+
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:background="#111E2B"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvNavStatistics"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Statistics"
+            android:textColor="#AABBCC"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvNavHome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Home"
+            android:textColor="#AABBCC"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvNavBlock"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Block"
+            android:textColor="#AABBCC"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/agreedTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/agreed_time"
+        android:textColor="#F59E0B"
+        app:layout_constraintBottom_toTopOf="@+id/TeamStats"
+        app:layout_constraintEnd_toStartOf="@+id/teamProgress"
+        app:layout_constraintHorizontal_bias="0.229"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTeamTotal"
+        app:layout_constraintVertical_bias="0.88" />
+
+    <TextView
+        android:id="@+id/blockedApps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/blocked_apps"
+        android:textColor="#F59E0B"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="594dp"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btnAddApps"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:backgroundTint="#14BBAB"
+        android:padding="0dp"
+        android:text="+"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.583"
+        app:layout_constraintStart_toEndOf="@+id/blockedApps"
+        app:layout_constraintTop_toBottomOf="@+id/tvTeamUsed"
+        app:layout_constraintVertical_bias="0.414" />
+
+    <Button
+        android:id="@+id/btnRemoveApps"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:backgroundTint="#14BBAB"
+        android:padding="0dp"
+        android:text="-"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.323"
+        app:layout_constraintStart_toEndOf="@+id/btnAddApps"
+        app:layout_constraintTop_toBottomOf="@+id/tvTeamUsed"
+        app:layout_constraintVertical_bias="0.414" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

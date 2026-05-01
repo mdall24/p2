@@ -1,21 +1,30 @@
 package com.example.p2;
 
+import android.app.AlertDialog;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.PackageManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class TeamPage extends AppCompatActivity {
@@ -23,6 +32,8 @@ public class TeamPage extends AppCompatActivity {
     private TextView tvTeamTotal, tvTeamUsed;
     private RecyclerView rvMembers;
     private MemberAdapter memberadapter;
+
+    private Button btnAddApps, btnRemoveApps;
 
     private String teamCode;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -44,11 +55,99 @@ public class TeamPage extends AppCompatActivity {
 
         teamCode = new SessionManager(this).getUsername();
 
+        memberadapter = new MemberAdapter(new ArrayList<>());
+        rvMembers.setLayoutManager(new LinearLayoutManager(this));
+        rvMembers.setAdapter(memberadapter);
+
+        btnAddApps = findViewById(R.id.btnAddApps);
+        btnRemoveApps = findViewById(R.id.btnRemoveApps);
+
+        btnAddApps.setOnClickListener(v -> {
+            //Gets all installed apps
+            PackageManager pm = getPackageManager();
+            List<ApplicationInfo> installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+
+            //Builds a readable name list and Filters out system apps
+            List<String> appNames = new ArrayList<>();
+            for (ApplicationInfo app : installedApps) {
+                if ((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                    appNames.add(pm.getApplicationLabel(app).toString());
+                }
+            }
+            //Sorts it alphabetically
+            Collections.sort(appNames);
+
+            String[] appArray = appNames.toArray(new String[0]);
+
+            new AlertDialog.Builder(this).setTitle("Suggest an app").setItems(appArray, (dialog, which)->{
+                String selectedApps = appArray[which];
+                suggestApp(selectedApps);
+            })
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss()).show();
+        });
+
+        btnRemoveApps.setOnClickListener(v ->{
+            //Gets the current suggested apps list from Firestore
+            db.collection("teams").document("teamCode").get()
+                    .addOnSuccessListener(doc -> {
+                        List<String> suggestedApps = (List<String>) doc.get("suggestedApps");
+
+                        if (suggestedApps == null || suggestedApps.isEmpty()){
+                            new AlertDialog.Builder(this)
+                                    .setTitle("No apps to remove")
+                                    .setMessage("There are no suggested apps in the list yet.")
+                                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                    .show();
+                            return;
+                        }
+                        String[] appArray = suggestedApps.toArray(new String[0]);
+
+                        new AlertDialog.Builder(this)
+                                .setTitle("Suggest removing an app")
+                                .setItems(appArray, (dialog, which) -> {
+                                    String selectedApp = appArray[which];
+                                    suggestRemoveApp(selectedApp);
+                                })
+                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                                .show();
+                    })
+                    .addOnFailureListener(e -> Log.e("btnRemoveApps", "Failed to load apps", e));
+        });
+
         loadTeamTotals();
         loadMembers();
     }
+    private void suggestApp(String appName){
+        String currentUsername = new SessionManager(this).getUsername();
+
+        Map<String, Object> pending = new HashMap<>();
+        pending.put("proposedBy", currentUsername);
+        pending.put("approvals", Collections.singletonList(currentUsername));
+        pending.put("rejections", new ArrayList<>());
+
+        db.collection("teams").document(teamCode)
+                .update("pendingApps.", appName + "suggested")
+                .addOnSuccessListener(a -> Log.d("suggestApp", appName + "suggested"))
+                .addOnFailureListener(e -> Log.e("suggestApp", "Failed", e));
+    }
+
+    private void suggestRemoveApp(String appName){
+        String currentUsername = new SessionManager(this).getUsername();
+
+        Map<String, Object> pending = new HashMap<>();
+        pending.put("proposedBy", currentUsername);
+        pending.put("approvals", Collections.singletonList(currentUsername));
+        pending.put("rejections", new ArrayList<>());
+        pending.put("action", "remove"); //marks as removal suggestion
+
+        db.collection("teams").document("teamCode")
+                .update(("pendingApps.") + appName, pending)
+                .addOnSuccessListener(a -> Log.d("suggestRemoveApp", appName + " removal suggested"))
+                .addOnFailureListener(e -> Log.e("suggestRemoveApp", "Failed", e));
+    }
     private void loadTeamTotals(){
-        db.collection("teams").document(teamCode).get().addOnSuccessListener(doc ->{
+        db.collection("teams").document(teamCode).get()
+                .addOnSuccessListener(doc ->{
             if (doc.exists()){
                 Long totalRaw = (Long) doc.get("totalTimeMinutes");
                 long total = totalRaw != null ? totalRaw : 0L;
@@ -71,6 +170,7 @@ public class TeamPage extends AppCompatActivity {
             }
         });
     }
+
     private void loadMembers(){
         db.collection("teams").document(teamCode).collection("members").get().addOnSuccessListener(query ->{
             List<MemberModel> list = new ArrayList<>();
@@ -83,7 +183,7 @@ public class TeamPage extends AppCompatActivity {
             long timeUsed = timeUsedRaw != null ? timeUsedRaw : 0L;
 
             @SuppressWarnings("unchecked") //Suppresses the compiler warnings
-            List<String> apps = (List<String>) doc.get("appsUsed");
+            Map<String, Map<String, Long>> apps = (Map<String, Map<String, Long>>) doc.get("appsUsed");
 
             list.add(new MemberModel(username, timeUsed, apps));
             }

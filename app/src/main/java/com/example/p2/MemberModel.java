@@ -1,13 +1,13 @@
 package com.example.p2;
 
-import java.util.List;
+import java.util.Map;
 
 public class MemberModel {
     public String username;
     public long timeUsed;
-    public List<String> appsUsed;
+    public Map<String, Map<String, Long>> appsUsed;
 
-    public MemberModel(String username, long timeUsed, List<String> appsUsed){
+    public MemberModel(String username, long timeUsed, Map<String, Map<String, Long>> appsUsed){
         this.username = username;
         this.timeUsed = timeUsed;
         this.appsUsed = appsUsed;
