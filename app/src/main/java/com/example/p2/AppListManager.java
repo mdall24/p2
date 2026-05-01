@@ -63,4 +63,32 @@ public class AppListManager {
         // Default to 120 minutes (2 hours) if not set
         return prefs.getInt(KEY_BUDGET, 120);
     }
+
+    public static void saveBedtimeString(Context context, String bedtime) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString("bedtime_string", bedtime).apply();
+    }
+
+    public static String getBedtimeString(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString("bedtime_string", "22:00");
+    }
+
+    public static int getBedtimeHour(Context context) {
+        String time = getBedtimeString(context);
+        try {
+            return Integer.parseInt(time.split(":")[0]);
+        } catch (Exception e) {
+            return 22;
+        }
+    }
+
+    public static Set<String> getHardBlockedApps(Context context) {
+        Set<String> allApps = getSavedApps(context);
+        Set<String> softApps = getSoftBlockedApps(context);
+        Set<String> hardApps = new HashSet<>(allApps);
+        hardApps.removeAll(softApps);
+        return hardApps;
+    }
+
 }

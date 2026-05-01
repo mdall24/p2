@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.Calendar;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -82,7 +83,6 @@ public class OverlayService extends Service {
     }
 
     private void checkForegroundApp() {
-        // Don't try to show overlay if we don't have permission
         if (!android.provider.Settings.canDrawOverlays(this)) return;
 
         UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
@@ -95,15 +95,39 @@ public class OverlayService extends Service {
 
         if (sortedMap.isEmpty()) return;
 
-        UsageStats lastStats = sortedMap.get(sortedMap.lastKey());
-        if (lastStats == null) return;
-        String foregroundApp = lastStats.getPackageName();
-
+        String foregroundApp = sortedMap.get(sortedMap.lastKey()).getPackageName();
         if (foregroundApp.equals(getPackageName())) return;
 
         Set<String> softBlocked = AppListManager.getSoftBlockedApps(this);
-        if (softBlocked.contains(foregroundApp) && !overlayShowing
-                && !foregroundApp.equals(lastBlockedApp)) {
+        Set<String> hardBlocked = AppListManager.getHardBlockedApps(this);
+
+        boolean isPastBedtime = isPastBedtime();
+
+        // If overlay is already showing, check if we need to switch from Soft to Hard block
+        // or if the foreground app has changed
+        if (overlayShowing) {
+            if (!foregroundApp.equals(lastBlockedApp)) {
+                removeOverlay();
+            } else if (isPastBedtime && hardBlocked.contains(foregroundApp)) {
+                // Check if we are currently showing the "hard" block or just the soft "popup"
+                // If the current view is the popup but it should be hardblock, swap them
+                if (overlayView != null && overlayView.findViewById(R.id.btnHardBlockLeave) == null) {
+                    removeOverlay();
+                    showHardBlock(foregroundApp);
+                }
+            }
+            return; 
+        }
+
+        // If no overlay is showing, check if we should show one
+        if (hardBlocked.contains(foregroundApp)) {
+            lastBlockedApp = foregroundApp;
+            if (isPastBedtime) {
+                showHardBlock(foregroundApp);
+            } else {
+                showOverlay(foregroundApp);
+            }
+        } else if (softBlocked.contains(foregroundApp)) {
             lastBlockedApp = foregroundApp;
             showOverlay(foregroundApp);
         }
@@ -111,6 +135,61 @@ public class OverlayService extends Service {
         if (!foregroundApp.equals(lastBlockedApp)) {
             lastBlockedApp = "";
         }
+    }
+
+    private boolean isPastBedtime() {
+        String bedtimeStr = AppListManager.getBedtimeString(this);
+        try {
+            String[] parts = bedtimeStr.split(":");
+            int bedHour = Integer.parseInt(parts[0]);
+            int bedMinute = Integer.parseInt(parts[1]);
+
+            Calendar now = Calendar.getInstance();
+            int currentHour = now.get(Calendar.HOUR_OF_DAY);
+            int currentMinute = now.get(Calendar.MINUTE);
+
+            // Block from bedtime (e.g. 22:00) until morning (e.g. 06:00)
+            boolean afterBedtime = currentHour > bedHour || (currentHour == bedHour && currentMinute >= bedMinute);
+            boolean beforeMorning = currentHour < 6; // Block until 6 AM
+
+            return afterBedtime || beforeMorning;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void showHardBlock(String packageName) {
+        overlayShowing = true;
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        overlayView = inflater.inflate(R.layout.overlay_hardblock, null);
+
+        try {
+            PackageManager pm = getPackageManager();
+            android.content.pm.ApplicationInfo info = pm.getApplicationInfo(packageName, 0);
+            ((android.widget.TextView) overlayView.findViewById(R.id.tvHardBlockMessage))
+                    .setText(pm.getApplicationLabel(info) + " is blocked until morning.");
+        } catch (PackageManager.NameNotFoundException e) {
+            // keep default message
+        }
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_DIM_BEHIND,
+                PixelFormat.TRANSLUCENT);
+        params.dimAmount = 0.8f;
+
+        windowManager.addView(overlayView, params);
+
+        overlayView.findViewById(R.id.btnHardBlockLeave).setOnClickListener(v -> {
+            removeOverlay();
+            Intent home = new Intent(Intent.ACTION_MAIN);
+            home.addCategory(Intent.CATEGORY_HOME);
+            home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(home);
+        });
     }
 
     private void showOverlay(String packageName) {

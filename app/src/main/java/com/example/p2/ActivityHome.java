@@ -212,6 +212,15 @@ public class ActivityHome extends AppCompatActivity {
                     String bedtime = doc.getString("bedtime");
                     if(bedtime == null) return;
 
+                    // Save locally for OverlayService to use
+                    AppListManager.saveBedtimeString(this, bedtime);
+
+                    // Update UI
+                    TextView tvBedtime = findViewById(R.id.tvBedtime);
+                    if (tvBedtime != null) {
+                        tvBedtime.setText(bedtime);
+                    }
+
                     //Bedtime string parse
                     String[] parts = bedtime.split(":");
                     int bedHour = Integer.parseInt(parts[0]);
