@@ -59,8 +59,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
             }
         }
 
-        holder.tvDaily.setText("Daily: " + totalDaily " min");
-        holder.tvWeekly.setText("Weekly: " . totalWeekly " min");
+        holder.tvDaily.setText("Daily: " + totalDaily + " min");
+        holder.tvWeekly.setText("Weekly: " + totalWeekly + " min");
         holder.tvApps.setText("Apps: " + (appNames.length() > 0 ? appNames : "None"));
     }
 
