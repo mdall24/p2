@@ -1,6 +1,7 @@
 package com.example.p2;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -52,6 +53,18 @@ public class TeamPage extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+        findViewById(R.id.tvNavHome).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, statistics.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavBlock).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, ActivityBlock.class);
+            startActivity(intent);
         });
 
         tvTeamTotal = findViewById(R.id.tvTeamTotal);
@@ -245,7 +258,15 @@ public class TeamPage extends AppCompatActivity {
                 .setTitle("Disband Team?")
                 .setMessage("This will permanently disband team for everyone. Are you sure?")
                 .setPositiveButton("Disband", (dialog, which) -> {
-                    // Handles disband logic
+                    db.collection("teams").document(teamCode).delete().addOnSuccessListener(unused ->{
+                        Toast.makeText(this, "Team Disbanded", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(TeamPage.this, ActivityHome.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    })
+                            .addOnFailureListener(e->
+                                    Toast.makeText(this, "Failed to disband team", Toast.LENGTH_SHORT).show());
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
@@ -296,8 +317,8 @@ public class TeamPage extends AppCompatActivity {
 
                 long left = total - used;
 
-                tvTeamTotal.setText("Team Time Left:" + left + " min");
-                tvTeamUsed.setText("Total Used:" + used + " min");
+                tvTeamTotal.setText("Team Time Left: " + left + " min");
+                tvTeamUsed.setText("Total Used: " + used + " min");
 
                 TextView tvCircleText = findViewById(R.id.tvCircleText);
                 tvCircleText.setText(left + " min");
