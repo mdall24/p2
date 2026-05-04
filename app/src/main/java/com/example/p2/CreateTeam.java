@@ -93,7 +93,7 @@ public class CreateTeam extends AppCompatActivity {
                     .set(new java.util.HashMap<String, Object>() {{
                         put("members", java.util.Arrays.asList(uid));
                         put("createdBy", uid);
-                        put("name", "");
+                        put("name", ((android.widget.EditText) findViewById(R.id.GroupName)).getText().toString().trim());
                         put("suggestedApps", selectedApps);
                         put("suggestedTime", suggestedTime);
                     }});
