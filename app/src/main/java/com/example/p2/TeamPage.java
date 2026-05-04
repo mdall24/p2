@@ -57,6 +57,13 @@ public class TeamPage extends AppCompatActivity {
         tvTeamTotal = findViewById(R.id.tvTeamTotal);
         tvTeamUsed = findViewById(R.id.tvTeamUsed);
         rvMembers = findViewById(R.id.rvMembers);
+        btnAddApps = findViewById(R.id.btnAddApps);
+        btnRemoveApps = findViewById(R.id.btnRemoveApps);
+        ImageButton btnOptions = findViewById(R.id.btnTeamOptions);
+
+        memberadapter = new MemberAdapter(new ArrayList<>());
+        rvMembers.setLayoutManager(new LinearLayoutManager(this));
+        rvMembers.setAdapter(memberadapter);
 
         String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore.getInstance().collection("teams")
@@ -73,27 +80,11 @@ public class TeamPage extends AppCompatActivity {
                     }
                 });
 
-        if (teamCode == null) {
-            Toast.makeText(this, "No team found. Please join or create a team.", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
-        memberadapter = new MemberAdapter(new ArrayList<>());
-        rvMembers.setLayoutManager(new LinearLayoutManager(this));
-        rvMembers.setAdapter(memberadapter);
-
-        btnAddApps = findViewById(R.id.btnAddApps);
-        btnRemoveApps = findViewById(R.id.btnRemoveApps);
-
-        ImageButton btnOptions = findViewById(R.id.btnTeamOptions);
-
         btnOptions.setOnClickListener(v -> {
             View bottomSheetView = getLayoutInflater().inflate(R.layout.team_options, null);
             BottomSheetDialog bottomSheet = new BottomSheetDialog(this, R.style.BottomSheetTheme);
             bottomSheet.setContentView(bottomSheetView);
 
-            //This will check if someone is leader and show only leader options
             boolean isLeader = true;
 
             TextView btnKickMember = bottomSheetView.findViewById(R.id.btnKickMember);
@@ -125,18 +116,15 @@ public class TeamPage extends AppCompatActivity {
         });
 
         btnAddApps.setOnClickListener(v -> {
-            //Gets all installed apps
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-            //Builds a readable name list and Filters out system apps
             List<String> appNames = new ArrayList<>();
             for (ApplicationInfo app : installedApps) {
                 if ((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     appNames.add(pm.getApplicationLabel(app).toString());
                 }
             }
-            //Sorts it alphabetically
             Collections.sort(appNames);
 
             String[] appArray = appNames.toArray(new String[0]);
@@ -149,7 +137,6 @@ public class TeamPage extends AppCompatActivity {
         });
 
         btnRemoveApps.setOnClickListener(v -> {
-            //Gets the current suggested apps list from Firestore
             db.collection("teams").document(teamCode).get()
                     .addOnSuccessListener(doc -> {
                         List<String> suggestedApps = (List<String>) doc.get("suggestedApps");
@@ -175,9 +162,6 @@ public class TeamPage extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> Log.e("btnRemoveApps", "Failed to load apps", e));
         });
-
-        loadTeamTotals();
-        loadMembers();
     }
 
     private void showLeaveConfirmation() {
@@ -275,7 +259,7 @@ public class TeamPage extends AppCompatActivity {
                 .addOnSuccessListener(doc ->{
             if (doc.exists()){
 
-                String teamName = doc.getString("teamName");
+                String teamName = doc.getString("name");
                 TextView tvTeamName = findViewById(R.id.TeamPage);
                 tvTeamName.setText(teamName != null ? teamName : "No Name");
 
