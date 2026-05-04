@@ -64,18 +64,11 @@ private int suggestedTime;
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         FirebaseFirestore.getInstance().collection("teams").document(teamCode)
-                .collection("members").document(uid)
-                .set(new MemberStatus("accepted", suggestedApps, suggestedTime))
+                .update("members", com.google.firebase.firestore.FieldValue.arrayUnion(uid))
                 .addOnSuccessListener(a -> {
-                    SessionManager session = new SessionManager(JoinTeam.this);
-                    String username = session.getUsername();
-                    session.saveTeamCode(teamCode);
-
-                    FirebaseFirestore.getInstance().collection("usernames").document(username)
-                            .update("teamCode", teamCode);
                     finish();
                 });
-        }
+    }
     private void openAppPicker() {
         Intent intent = new Intent(this, AppPicker.class);
         intent.putExtra("teamCode", teamCode);
