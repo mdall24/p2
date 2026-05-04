@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class CreateTeam extends AppCompatActivity {
     private final String teamCode = generateTeamCode();
 
     private List<String> selectedApps = new ArrayList<>();
+    private int suggestedTime = 60;
 
     private final ActivityResultLauncher<Intent> appPickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->{
         if(result.getResultCode() == RESULT_OK && result.getData() != null){
@@ -71,7 +73,6 @@ public class CreateTeam extends AppCompatActivity {
             intent.putExtra("teamCode", teamCode);
             appPickerLauncher.launch(intent);
         });
-
         suggestTimeBtn.setOnClickListener(v ->{
 
             TimePickerDialog timePicker = new TimePickerDialog(
@@ -87,12 +88,18 @@ public class CreateTeam extends AppCompatActivity {
             suggestTimeBtn.hide();
             addAppsBtn.hide();
 
-            String username = new SessionManager(CreateTeam.this).getUsername();
-            FirebaseFirestore.getInstance().collection("usernames").document(username)
-                    .update("teamCode", teamCode);
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            FirebaseFirestore.getInstance().collection("teams").document(teamCode)
+                    .set(new java.util.HashMap<String, Object>() {{
+                        put("members", java.util.Arrays.asList(uid));
+                        put("createdBy", uid);
+                        put("name", "");
+                        put("suggestedApps", selectedApps);
+                        put("suggestedTime", suggestedTime);
+                    }});
 
             String appsString = String.join(",", selectedApps);
-            int suggestedTime = 60;
+
 
             String deepLink = "myapp://join"
                     + "?team=" + teamCode
