@@ -317,8 +317,8 @@ public class TeamPage extends AppCompatActivity {
 
                 long left = total - used;
 
-                tvTeamTotal.setText("Team Time Left:" + left + " min");
-                tvTeamUsed.setText("Total Used:" + used + " min");
+                tvTeamTotal.setText("Team Time Left: " + left + " min");
+                tvTeamUsed.setText("Total Used: " + used + " min");
 
                 TextView tvCircleText = findViewById(R.id.tvCircleText);
                 tvCircleText.setText(left + " min");
