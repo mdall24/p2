@@ -29,7 +29,7 @@
         android:layout_marginStart="16dp"
         app:cardBackgroundColor="#1A2B3C"
         app:cardCornerRadius="16dp"
-        app:cardElevation="-1dp"
+        app:cardElevation="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView">
 
@@ -136,7 +136,7 @@
                     android:focusable="true"
                     android:padding="8dp"
                     app:srcCompat="@drawable/pencil"
-                    android:tint="#FFFF"/>
+                    app:tint="@color/white"/>
             </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

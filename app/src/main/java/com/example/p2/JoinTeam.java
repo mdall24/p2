@@ -18,11 +18,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JoinTeam extends AppCompatActivity {
-Button accept = findViewById(R.id.acceptBtn);
-Button decline = findViewById(R.id.declineBtn);
-Button addApps = findViewById(R.id.addApps);
+    private Button accept;
+    private Button decline;
+    private Button addApps;
 
-private String teamCode;
+    private String teamCode;
 private List<String> suggestedApps;
 private int suggestedTime;
 
@@ -31,6 +31,10 @@ private int suggestedTime;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_join_team);
+
+        accept = findViewById(R.id.acceptBtn);
+        decline = findViewById(R.id.declineBtn);
+        addApps = findViewById(R.id.addApps);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -63,7 +67,10 @@ private int suggestedTime;
                 .collection("members").document(uid)
                 .set(new MemberStatus("accepted", suggestedApps, suggestedTime))
                 .addOnSuccessListener(a -> {
-                    String username = new SessionManager(JoinTeam.this).getUsername();
+                    SessionManager session = new SessionManager(JoinTeam.this);
+                    String username = session.getUsername();
+                    session.saveTeamCode(teamCode);
+
                     FirebaseFirestore.getInstance().collection("usernames").document(username)
                             .update("teamCode", teamCode);
                     finish();

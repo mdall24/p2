@@ -88,6 +88,9 @@ public class CreateTeam extends AppCompatActivity {
             addAppsBtn.hide();
 
             String username = new SessionManager(CreateTeam.this).getUsername();
+            SessionManager session = new SessionManager(CreateTeam.this);
+            session.saveTeamCode(teamCode);
+
             FirebaseFirestore.getInstance().collection("usernames").document(username)
                     .update("teamCode", teamCode);
 

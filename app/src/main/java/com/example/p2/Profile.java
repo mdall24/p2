@@ -36,8 +36,6 @@ public class Profile extends AppCompatActivity {
             return insets;
         });
 
-        CardView groupSettings = findViewById(R.id.cardGroupSettingsContainer);
-
         ImageView editButton = findViewById(R.id.imageView5);
         tvBedtimeValue = findViewById(R.id.textViewBedtimeValue);
         String username = new SessionManager(this).getUsername();
@@ -89,7 +87,7 @@ public class Profile extends AppCompatActivity {
 
         final NumberPicker hourPicker = new NumberPicker(this);
         hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(24);
+        hourPicker.setMaxValue(23);
         hourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
 
         final NumberPicker minutePicker = new NumberPicker(this);
@@ -98,15 +96,6 @@ public class Profile extends AppCompatActivity {
         final String[] displayedValues = {"00", "10", "20", "30", "40", "50"};
         minutePicker.setDisplayedValues(displayedValues);
 
-        // If 24 is selected, minute can only be 00
-        hourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-            if (newVal == 24) {
-                minutePicker.setValue(0);
-                minutePicker.setEnabled(false);
-            } else {
-                minutePicker.setEnabled(true);
-            }
-        });
 
         // Add a colon text view between pickers
         TextView colon = new TextView(this);

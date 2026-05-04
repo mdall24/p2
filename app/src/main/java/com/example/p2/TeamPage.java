@@ -60,6 +60,12 @@ public class TeamPage extends AppCompatActivity {
 
         teamCode = new SessionManager(this).getTeamCode();
 
+        if (teamCode == null) {
+            Toast.makeText(this, "No team found. Please join or create a team.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
         memberadapter = new MemberAdapter(new ArrayList<>());
         rvMembers.setLayoutManager(new LinearLayoutManager(this));
         rvMembers.setAdapter(memberadapter);
@@ -246,7 +252,7 @@ public class TeamPage extends AppCompatActivity {
         pending.put("rejections", new ArrayList<>());
         pending.put("action", "remove"); //marks as removal suggestion
 
-        db.collection("teams").document("teamCode")
+        db.collection("teams").document(teamCode)
                 .update(("pendingApps.") + appName, pending)
                 .addOnSuccessListener(a -> Log.d("suggestRemoveApp", appName + " removal suggested"))
                 .addOnFailureListener(e -> Log.e("suggestRemoveApp", "Failed", e));
