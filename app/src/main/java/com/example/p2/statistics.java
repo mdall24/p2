@@ -62,10 +62,12 @@ public class statistics extends AppCompatActivity {
             Intent intent = new Intent(statistics.this, ScreenTimeHistory.class);
             startActivity(intent);
         });
-        String username = new SessionManager(this).getUsername();
-        FirebaseFirestore.getInstance().collection("usernames").document(username).get()
-                .addOnSuccessListener(doc -> {
-                    String teamCode = doc.getString("teamCode");
+        String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore.getInstance().collection("teams")
+                .whereArrayContains("members", currentUid)
+                .get()
+                .addOnSuccessListener(query -> {
+                    String teamCode = query.isEmpty() ? null : query.getDocuments().get(0).getId();
                     Button btnCreateTeam = findViewById(R.id.btnCreateTeam);
                     if (teamCode != null) {
                         btnCreateTeam.setText("+ Invite Friends");
@@ -171,53 +173,63 @@ public class statistics extends AppCompatActivity {
         barChart.invalidate();
     }
     private void loadLeaderboard() {
-        String username = new SessionManager(this).getUsername();
+        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        FirebaseFirestore.getInstance().collection("usernames").document(username).get()
-                .addOnSuccessListener(doc -> {
-                    String teamCode = doc.getString("teamCode");
-                    if (teamCode == null) return;
+        FirebaseFirestore.getInstance().collection("teams")
+                .whereArrayContains("members", uid)
+                .get()
+                .addOnSuccessListener(teamQuery -> {
+                    if (teamQuery.isEmpty()) return;
 
-                    FirebaseFirestore.getInstance().collection("usernames")
-                            .whereEqualTo("teamCode", teamCode)
-                            .get()
-                            .addOnSuccessListener(query -> {
-                                List<Map<String, Object>> members = new ArrayList<>();
-                                for (QueryDocumentSnapshot d : query) {
-                                    Map<String, Object> member = new HashMap<>();
-                                    member.put("username", d.getId());
-                                    Long screenTime = d.getLong("ScreenTime");
-                                    member.put("ScreenTime", screenTime != null ? screenTime : 0L);
-                                    members.add(member);
-                                }
+                    String teamCode = teamQuery.getDocuments().get(0).getId();
+                    List<String> memberUids = (List<String>) teamQuery.getDocuments().get(0).get("members");
 
-                                // Sort by lowest screen time first (best time savers)
-                                members.sort((a, b) -> Long.compare(
-                                        (Long) a.get("ScreenTime"),
-                                        (Long) b.get("ScreenTime")
-                                ));
+                    if (memberUids == null) return;
 
-                                int[] frames = {R.id.firstPlaceFrame, R.id.secondPlaceFrame,
-                                        R.id.thirdPlaceFrame, R.id.fourthPlaceFrame, R.id.fifthPlaceFrame};
-                                int[] textViews = {R.id.tvFirstPlace, R.id.tvSecondPlace,
-                                        R.id.tvThirdPlace, R.id.tvFourthPlace, R.id.tvFifthPlace};
+                    List<Map<String, Object>> members = new ArrayList<>();
 
-                                for (int i = 0; i < members.size() && i < 5; i++) {
-                                    String name = (String) members.get(i).get("username");
-                                    long time = (Long) members.get(i).get("ScreenTime");
-                                    String display;
-                                    if (time >= 60) {
-                                        long hours = time / 60;
-                                        long mins = time % 60;
-                                        display = name + " • " + hours + "h " + mins + "m";
-                                    } else {
-                                        display = name + " • " + time + "m";
+                    for (String memberUid : memberUids) {
+                        FirebaseFirestore.getInstance().collection("usernames")
+                                .whereEqualTo("uid", memberUid)
+                                .get()
+                                .addOnSuccessListener(userQuery -> {
+                                    if (!userQuery.isEmpty()) {
+                                        String username = userQuery.getDocuments().get(0).getId();
+                                        Long screenTime = userQuery.getDocuments().get(0).getLong("ScreenTime");
+                                        Map<String, Object> member = new HashMap<>();
+                                        member.put("username", username);
+                                        member.put("screenTime", screenTime != null ? screenTime : 0L);
+                                        members.add(member);
+
+                                        if (members.size() == memberUids.size()) {
+                                            members.sort((a, b) -> Long.compare(
+                                                    (Long) a.get("screenTime"),
+                                                    (Long) b.get("screenTime")
+                                            ));
+
+                                            int[] frames = {R.id.firstPlaceFrame, R.id.secondPlaceFrame,
+                                                    R.id.thirdPlaceFrame, R.id.fourthPlaceFrame, R.id.fifthPlaceFrame};
+                                            int[] textViews = {R.id.tvFirstPlace, R.id.tvSecondPlace,
+                                                    R.id.tvThirdPlace, R.id.tvFourthPlace, R.id.tvFifthPlace};
+
+                                            for (int i = 0; i < members.size() && i < 5; i++) {
+                                                String name = (String) members.get(i).get("username");
+                                                long time = (Long) members.get(i).get("screenTime");
+                                                String display;
+                                                if (time >= 60) {
+                                                    long hours = time / 60;
+                                                    long mins = time % 60;
+                                                    display = name + " • " + hours + "h " + mins + "m";
+                                                } else {
+                                                    display = name + " • " + time + "m";
+                                                }
+                                                findViewById(frames[i]).setVisibility(View.VISIBLE);
+                                                ((TextView) findViewById(textViews[i])).setText(display);
+                                            }
+                                        }
                                     }
-
-                                    findViewById(frames[i]).setVisibility(View.VISIBLE);
-                                    ((TextView) findViewById(textViews[i])).setText(display);
-                                }
-                            });
+                                });
+                    }
                 });
     }
 }
