@@ -259,7 +259,7 @@ public class TeamPage extends AppCompatActivity {
                 .addOnSuccessListener(doc ->{
             if (doc.exists()){
 
-                String teamName = doc.getString("teamName");
+                String teamName = doc.getString("name");
                 TextView tvTeamName = findViewById(R.id.TeamPage);
                 tvTeamName.setText(teamName != null ? teamName : "No Name");
 
