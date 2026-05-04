@@ -136,7 +136,7 @@
                     android:focusable="true"
                     android:padding="8dp"
                     app:srcCompat="@drawable/pencil"
-                    app:tint="@color/white"/>
+                    app:tint="@color/white" />
             </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
