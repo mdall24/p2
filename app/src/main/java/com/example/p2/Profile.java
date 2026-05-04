@@ -11,6 +11,7 @@ import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -34,6 +35,8 @@ public class Profile extends AppCompatActivity {
             v.setPadding(0, systemBars.top, 0, 0);
             return insets;
         });
+
+        CardView groupSettings = findViewById(R.id.cardGroupSettingsContainer);
 
         ImageView editButton = findViewById(R.id.imageView5);
         tvBedtimeValue = findViewById(R.id.textViewBedtimeValue);
@@ -68,6 +71,11 @@ public class Profile extends AppCompatActivity {
         TextView tvUsername = findViewById(R.id.tvUsername);
         SessionManager session = new SessionManager(this);
         tvUsername.setText(session.getUsername());
+
+        findViewById(R.id.cardGroupSettingsContainer).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, TeamPage.class);
+            startActivity(intent);
+        });
     }
 
     private void showTimePickerDialog() {
