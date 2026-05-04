@@ -58,7 +58,20 @@ public class TeamPage extends AppCompatActivity {
         tvTeamUsed = findViewById(R.id.tvTeamUsed);
         rvMembers = findViewById(R.id.rvMembers);
 
-        teamCode = new SessionManager(this).getTeamCode();
+        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore.getInstance().collection("teams")
+                .whereArrayContains("members", uid)
+                .get()
+                .addOnSuccessListener(query -> {
+                    if (!query.isEmpty()) {
+                        teamCode = query.getDocuments().get(0).getId();
+                        loadTeamTotals();
+                        loadMembers();
+                    } else {
+                        Toast.makeText(this, "No team found. Please join or create a team.", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                });
 
         if (teamCode == null) {
             Toast.makeText(this, "No team found. Please join or create a team.", Toast.LENGTH_LONG).show();
