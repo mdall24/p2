@@ -47,7 +47,8 @@
             android:layout_height="wrap_content"
             android:text="Team Time Left:"
             android:textColor="#F59E0B"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"/>
 
         <TextView
             android:id="@+id/agreedTime"
@@ -55,7 +56,16 @@
             android:layout_height="wrap_content"
             android:text="@string/agreed_time"
             android:textColor="#F59E0B"
-            android:layout_marginTop="8dp"/>
+            android:textSize="14sp"
+            android:layout_marginTop="10dp"/>
+        <TextView
+            android:id="@+id/tvTeamUsed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Time Used: --"
+            android:textColor="#F59E0B"
+            android:textSize="14sp"
+            android:layout_marginTop="10dp"/>
     </LinearLayout>
 
     <FrameLayout
@@ -106,16 +116,6 @@
         android:layout_height="154dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="4dp"/>
-
-    <TextView
-        android:id="@+id/tvTeamUsed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total Used: --"
-        android:textColor="#F59E0B"
-        android:textSize="20sp"
-        android:layout_marginStart="9dp"
-        android:layout_marginTop="8dp"/>
     
     <LinearLayout
         android:layout_width="match_parent"
