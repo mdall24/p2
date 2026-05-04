@@ -85,18 +85,24 @@ public class TeamPage extends AppCompatActivity {
             BottomSheetDialog bottomSheet = new BottomSheetDialog(this, R.style.BottomSheetTheme);
             bottomSheet.setContentView(bottomSheetView);
 
-            boolean isLeader = true;
 
             TextView btnKickMember = bottomSheetView.findViewById(R.id.btnKickMember);
             TextView btnDisbandTeam = bottomSheetView.findViewById(R.id.btnDisbandTeam);
             View dividerDisband = bottomSheetView.findViewById(R.id.dividerDisband);
             TextView btnLeaveTeam = bottomSheetView.findViewById(R.id.btnLeaveTeam);
 
-            if (isLeader) {
-                btnKickMember.setVisibility(View.VISIBLE);
-                btnDisbandTeam.setVisibility(View.VISIBLE);
-                dividerDisband.setVisibility(View.VISIBLE);
-            }
+            String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+            db.collection("teams").document(teamCode).get()
+                    .addOnSuccessListener(doc -> {
+                        String createdBy = doc.getString("createdBy");
+                        boolean isLeader = currentUid.equals(createdBy);
+
+                        if (isLeader) {
+                            btnKickMember.setVisibility(View.VISIBLE);
+                            btnDisbandTeam.setVisibility(View.VISIBLE);
+                            dividerDisband.setVisibility(View.VISIBLE);
+                        }
+                    });
 
             btnLeaveTeam.setOnClickListener(view -> {
                 bottomSheet.dismiss();
@@ -176,41 +182,60 @@ public class TeamPage extends AppCompatActivity {
     }
 
     private void showKickMemberDialog() {
-        db.collection("teams").document(teamCode).collection("members")
-                .get()
-                .addOnSuccessListener(querySnapshot ->{
-                    List<String> memberNames = new ArrayList<>();
-                    String currentUsername = new SessionManager(this).getUsername();
+        db.collection("teams").document(teamCode).get()
+                .addOnSuccessListener(doc -> {
+                    List<String> memberUids = (List<String>) doc.get("members");
+                    if (memberUids == null || memberUids.isEmpty()) {
+                        Toast.makeText(this, "No members found", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                    for (DocumentSnapshot doc : querySnapshot.getDocuments()){
-                        String uid = doc.getId();
-                        if(!uid.equals(currentUsername)){
-                            memberNames.add(uid);
+                    String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    List<String> otherUids = new ArrayList<>();
+                    for (String memberUid : memberUids) {
+                        if (!memberUid.equals(currentUid)) {
+                            otherUids.add(memberUid);
                         }
                     }
 
-                    String[] namesArray = memberNames.toArray(new String[0]);
+                    if (otherUids.isEmpty()) {
+                        Toast.makeText(this, "No other members to kick", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                    new AlertDialog.Builder(this).setTitle("Kick a Member")
-                            .setItems(namesArray, (dialog, which) -> {
-                                String kickedName = memberNames.get(which);
-                                new AlertDialog.Builder(this)
-                                        .setTitle("Kick " + kickedName + "?")
-                                        .setMessage("Are you sure you want to kick " + kickedName + " from the team?")
-                                        .setPositiveButton("Kick", (d, w) -> kickMember(kickedName))
-                                        .setNegativeButton("Cancel", null)
-                                        .show();
-                            })
-                            .show();
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to load members", Toast.LENGTH_SHORT).show());
+                    List<String> usernames = new ArrayList<>();
+                    for (String memberUid : otherUids) {
+                        db.collection("usernames").whereEqualTo("uid", memberUid).get()
+                                .addOnSuccessListener(userQuery -> {
+                                    if (!userQuery.isEmpty()) {
+                                        usernames.add(userQuery.getDocuments().get(0).getId());
+                                    } else {
+                                        usernames.add(memberUid);
+                                    }
+
+                                    if (usernames.size() == otherUids.size()) {
+                                        String[] namesArray = usernames.toArray(new String[0]);
+                                        new AlertDialog.Builder(this).setTitle("Kick a Member")
+                                                .setItems(namesArray, (dialog, which) -> {
+                                                    String kickedUid = otherUids.get(which);
+                                                    new AlertDialog.Builder(this)
+                                                            .setTitle("Kick " + usernames.get(which) + "?")
+                                                            .setMessage("Are you sure you want to kick " + usernames.get(which) + "?")
+                                                            .setPositiveButton("Kick", (d, w) -> kickMember(kickedUid))
+                                                            .setNegativeButton("Cancel", null)
+                                                            .show();
+                                                })
+                                                .show();
+                                    }
+                                });
+                    }
+                });
     }
-    private void kickMember(String username){
+    private void kickMember(String uid) {
         db.collection("teams").document(teamCode)
-                .collection("members").document(username)
-                .delete()
+                .update("members", com.google.firebase.firestore.FieldValue.arrayRemove(uid))
                 .addOnSuccessListener(unused ->
-                    Toast.makeText(this, username + " has been kicked", Toast.LENGTH_SHORT).show())
+                        Toast.makeText(this, "Member kicked", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Failed to kick member", Toast.LENGTH_SHORT).show());
     }
