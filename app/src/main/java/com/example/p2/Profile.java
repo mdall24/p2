@@ -28,10 +28,10 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
-        
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(0, systemBars.top, 0, 0);
             return insets;
         });
 
@@ -52,6 +52,18 @@ public class Profile extends AppCompatActivity {
             SessionManager session = new SessionManager(this);
             session.logout();
             startActivity(new Intent(Profile.this, MainActivity.class));
+        });
+        findViewById(R.id.tvNavHome).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, statistics.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavBlock).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, ActivityBlock.class);
+            startActivity(intent);
         });
         TextView tvUsername = findViewById(R.id.tvUsername);
         SessionManager session = new SessionManager(this);
