@@ -1,6 +1,7 @@
 package com.example.p2;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -52,6 +53,18 @@ public class TeamPage extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+        findViewById(R.id.tvNavHome).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, statistics.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavBlock).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, ActivityBlock.class);
+            startActivity(intent);
         });
 
         tvTeamTotal = findViewById(R.id.tvTeamTotal);
