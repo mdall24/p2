@@ -54,6 +54,18 @@ public class TeamPage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        findViewById(R.id.tvNavHome).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, statistics.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavBlock).setOnClickListener(v -> {
+            Intent intent = new Intent(TeamPage.this, ActivityBlock.class);
+            startActivity(intent);
+        });
 
         tvTeamTotal = findViewById(R.id.tvTeamTotal);
         tvTeamUsed = findViewById(R.id.tvTeamUsed);
