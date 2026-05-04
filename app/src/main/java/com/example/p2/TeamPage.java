@@ -1,6 +1,7 @@
 package com.example.p2;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -245,7 +246,15 @@ public class TeamPage extends AppCompatActivity {
                 .setTitle("Disband Team?")
                 .setMessage("This will permanently disband team for everyone. Are you sure?")
                 .setPositiveButton("Disband", (dialog, which) -> {
-                    // Handles disband logic
+                    db.collection("teams").document(teamCode).delete().addOnSuccessListener(unused ->{
+                        Toast.makeText(this, "Team Disbanded", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(TeamPage.this, ActivityHome.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    })
+                            .addOnFailureListener(e->
+                                    Toast.makeText(this, "Failed to disband team", Toast.LENGTH_SHORT).show());
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
