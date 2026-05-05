@@ -29,9 +29,6 @@
             android:name=".CreateTeam"
             android:exported="false" />
         <activity
-            android:name=".LeaderboardTest"
-            android:exported="false" />
-        <activity
             android:name=".ActivityHome"
             android:exported="false" />
         <activity
