@@ -43,7 +43,8 @@
         android:backgroundTint="#14BBAB"
         android:text="@string/decline"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"/>
 
     <Button
         android:id="@+id/acceptBtn"
@@ -55,7 +56,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/declineBtn"
         app:layout_constraintHorizontal_bias="0.611"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"/>
+
 
     <TextView
         android:id="@+id/SuggestedApp"
@@ -74,7 +77,7 @@
         android:id="@+id/addApps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="#14BBAB"
         android:text="@string/addapps"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,5 +109,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/JoinTeam" />
 
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="#111E2B"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="3">
 
+        <TextView
+            android:id="@+id/tvNavStatistics"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Statistics"
+            android:textColor="#AABBCC"
+            android:textSize="11sp"/>
+
+        <TextView
+            android:id="@+id/tvNavHome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Home"
+            android:textColor="#AABBCC"
+            android:textSize="11sp"/>
+
+        <TextView
+            android:id="@+id/tvNavBlock"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Block"
+            android:textColor="#AABBCC"
+            android:textSize="11sp"/>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
