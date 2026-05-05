@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.PackageManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -31,7 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class TeamPage extends AppCompatActivity {
 
@@ -332,8 +329,9 @@ public class TeamPage extends AppCompatActivity {
     }
 
     private void loadMembers(){
-        db.collection("teams").document(teamCode).collection("members")
-                .get().addOnSuccessListener(query ->{
+        db.collection("teams").document(teamCode)
+                .get().addOnSuccessListener(doc ->{
+                    if(!doc)
             List<MemberModel> list = new ArrayList<>();
 
             for(QueryDocumentSnapshot doc : query) {
