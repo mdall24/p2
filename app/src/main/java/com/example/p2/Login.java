@@ -65,6 +65,7 @@ private FirebaseFirestore db;
                     return;
                 }
                 String email = doc.getString("email");
+                String teamCode = doc.getString("teamCode");
                 if (email == null) {
                     Toast.makeText(Login.this, "Email not found for this username", Toast.LENGTH_SHORT).show();
                     return;
@@ -75,6 +76,9 @@ private FirebaseFirestore db;
                         Toast.makeText(Login.this, "Login successful", Toast.LENGTH_SHORT).show();
                         SessionManager session = new SessionManager(Login.this);
                         session.saveLoginSession(username);
+                        if (teamCode != null) {
+                            session.saveTeamCode(teamCode);
+                        }
                         startActivity(new Intent(Login.this, ActivityHome.class));
                         finish();
                     }

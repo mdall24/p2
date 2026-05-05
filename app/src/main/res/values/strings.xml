@@ -20,5 +20,9 @@
     <string name="thirdPlace">Third Place</string>
     <string name="fourthPlace">Fourth Place</string>
     <string name="fifthPlace">Fifth Place</string>
+    <string name="forgot">Forgot Password?</string>
     <string name="service_status">Service Status</string>
+    <string name="agreed_time">Time for the week</string>
+    <string name="blocked_apps">Blocked Apps</string>
+
 </resources>

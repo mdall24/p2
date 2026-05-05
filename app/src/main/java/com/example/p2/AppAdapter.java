@@ -69,9 +69,9 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.AppViewHolder> {
 
         public AppViewHolder(@NonNull View itemView) {
             super(itemView);
-            appIcon = itemView.findViewById(R.id.appIcon);
-            appName = itemView.findViewById(R.id.appName);
-            appCheck = itemView.findViewById(R.id.appCheck);
+            appIcon = itemView.findViewById(R.id.ivAppIcon);
+            appName = itemView.findViewById(R.id.tvAppName);
+            appCheck = itemView.findViewById(R.id.cbApp);
         }
     }
 }

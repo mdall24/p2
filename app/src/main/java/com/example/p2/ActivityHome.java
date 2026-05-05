@@ -92,7 +92,7 @@ public class ActivityHome extends AppCompatActivity {
         uploadScreenTime();
         saveAfterBedtimeScreenTime();
         updateGroupTimeCircle();
-
+        saveDailyScreenTime();
     }
 
     private void showBudgetDialog() {
@@ -298,5 +298,25 @@ public class ActivityHome extends AppCompatActivity {
         if (tvGroupTime != null) {
             tvGroupTime.setText(display);
         }
+    }
+    private void saveDailyScreenTime() {
+        String username = new SessionManager(this).getUsername();
+
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DAY_OF_YEAR, -1);
+        String dateKey = yesterday.get(Calendar.YEAR) + "-"
+                + (yesterday.get(Calendar.MONTH) + 1) + "-"
+                + yesterday.get(Calendar.DAY_OF_MONTH);
+
+        long totalMinutes = ScreenTimeHelper.getTotalUsageForDay(this, yesterday) / 1000 / 60;
+
+        FirebaseFirestore.getInstance().collection("usernames")
+                .document(username)
+                .collection("screenTimeHistory")
+                .document(dateKey)
+                .set(new java.util.HashMap<String, Object>() {{
+                    put("totalMinutes", totalMinutes);
+                    put("date", dateKey);
+                }}, com.google.firebase.firestore.SetOptions.merge());
     }
 }

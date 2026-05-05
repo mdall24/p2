@@ -11,6 +11,7 @@ import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -35,10 +36,10 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
-        
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(0, systemBars.top, 0, 0);
             return insets;
         });
 
@@ -91,6 +92,11 @@ public class Profile extends AppCompatActivity {
         TextView tvUsername = findViewById(R.id.tvUsername);
         SessionManager session = new SessionManager(this);
         tvUsername.setText(session.getUsername());
+
+        findViewById(R.id.cardGroupSettingsContainer).setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, TeamPage.class);
+            startActivity(intent);
+        });
     }
 
     private void showAvatarPickerDialog() {
@@ -177,7 +183,7 @@ public class Profile extends AppCompatActivity {
 
         final NumberPicker hourPicker = new NumberPicker(this);
         hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(24);
+        hourPicker.setMaxValue(23);
         hourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
 
         final NumberPicker minutePicker = new NumberPicker(this);
@@ -186,15 +192,6 @@ public class Profile extends AppCompatActivity {
         final String[] displayedValues = {"00", "10", "20", "30", "40", "50"};
         minutePicker.setDisplayedValues(displayedValues);
 
-        // If 24 is selected, minute can only be 00
-        hourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-            if (newVal == 24) {
-                minutePicker.setValue(0);
-                minutePicker.setEnabled(false);
-            } else {
-                minutePicker.setEnabled(true);
-            }
-        });
 
         // Add a colon text view between pickers
         TextView colon = new TextView(this);
