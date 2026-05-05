@@ -122,7 +122,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/blocked_apps"
                 android:textColor="#F59E0B"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:layout_marginStart="12dp"/>
 
             <Button
                 android:id="@+id/btnAddApps"
