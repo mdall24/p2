@@ -542,7 +542,6 @@ public class TeamPage extends AppCompatActivity {
                         ImageView ivIcon = itemView.findViewById(R.id.ivAppIcon);
                         TextView tvName = itemView.findViewById(R.id.tvAppName);
                         TextView tvProposedBy = itemView.findViewById(R.id.tvProposedBy);
-                        Button btnRemove = itemView.findViewById(R.id.btnRemoveApp);
 
                         tvName.setText(appName);
                         tvProposedBy.setText("");
@@ -552,8 +551,6 @@ public class TeamPage extends AppCompatActivity {
                         } catch (PackageManager.NameNotFoundException e) {
                             ivIcon.setImageResource(android.R.drawable.sym_def_app_icon);
                         }
-
-                        btnRemove.setOnClickListener(v -> suggestRemoveApp(appName));
 
                         container.addView(itemView);
                     }

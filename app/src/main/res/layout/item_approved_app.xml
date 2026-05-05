@@ -26,14 +26,4 @@
         android:textColor="#AABBCC"
         android:textSize="11sp"
         android:layout_marginEnd="8dp" />
-
-    <Button
-        android:id="@+id/btnRemoveApp"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:backgroundTint="#EF4444"
-        android:text="✗"
-        android:textColor="#FFFFFF"
-        android:insetTop="0dp"
-        android:insetBottom="0dp" />
 </LinearLayout>
