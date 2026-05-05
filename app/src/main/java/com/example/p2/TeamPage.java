@@ -6,11 +6,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.LinearLayout;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,14 +69,9 @@ public class TeamPage extends AppCompatActivity {
 
         tvTeamTotal = findViewById(R.id.tvTeamTotal);
         tvTeamUsed = findViewById(R.id.tvTeamUsed);
-        rvMembers = findViewById(R.id.rvMembers);
         btnAddApps = findViewById(R.id.btnAddApps);
         btnRemoveApps = findViewById(R.id.btnRemoveApps);
         ImageButton btnOptions = findViewById(R.id.btnTeamOptions);
-
-        memberadapter = new MemberAdapter(new ArrayList<>());
-        rvMembers.setLayoutManager(new LinearLayoutManager(this));
-        rvMembers.setAdapter(memberadapter);
 
         String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore.getInstance().collection("teams")
@@ -84,6 +82,7 @@ public class TeamPage extends AppCompatActivity {
                         teamCode = query.getDocuments().get(0).getId();
                         loadTeamTotals();
                         loadMembers();
+                        loadPendingApps();
                     } else {
                         Toast.makeText(this, "No team found. Please join or create a team.", Toast.LENGTH_LONG).show();
                         finish();
@@ -378,29 +377,111 @@ public class TeamPage extends AppCompatActivity {
                 .get().addOnSuccessListener(doc -> {
                     if (!doc.exists()) return;
                     List<String> memberUids = (List<String>) doc.get("members");
-                    if (memberUids == null || memberUids.isEmpty()) {
-                        Log.d("loadMembers", "No members found");
-                        return;
-                    }
-                    List<MemberModel> list = new ArrayList<>();
+                    if (memberUids == null || memberUids.isEmpty()) return;
+
+                    LinearLayout container = findViewById(R.id.memberContainer);
+                    container.removeAllViews();
 
                     for (String memberUid : memberUids) {
                         db.collection("usernames").whereEqualTo("uid", memberUid).get()
                                 .addOnSuccessListener(userQuery -> {
                                     String displayName = !userQuery.isEmpty()
                                             ? userQuery.getDocuments().get(0).getId()
-                                            : memberUid; //Falls back to UID if username isn't found
+                                            : memberUid;
 
-                                    list.add(new MemberModel(displayName, 0L, null));
+                                    View itemView = LayoutInflater.from(this)
+                                            .inflate(R.layout.activity_member_adapter, container, false);
 
-                                    //This only updates the recyclerview when all members are loaded
-                                    if (list.size() == memberUids.size()) {
-                                        memberadapter.updateList(list);
-                                    }
-                                })
-                                .addOnFailureListener(e -> Log.e("loadMembers", "Failed to load user: " + memberUid, e));
+                                    TextView tvName = itemView.findViewById(R.id.tvMemberName);
+                                    TextView tvTime = itemView.findViewById(R.id.tvMemberTime);
+                                    TextView tvDaily = itemView.findViewById(R.id.tvMemberDaily);
+                                    TextView tvWeekly = itemView.findViewById(R.id.tvMemberWeekly);
+                                    TextView tvApps = itemView.findViewById(R.id.tvMemberApps);
+
+                                    tvName.setText(displayName);
+                                    tvTime.setText("Used: 0 min");
+                                    tvDaily.setText("Daily: 0 min");
+                                    tvWeekly.setText("Weekly: 0 min");
+                                    tvApps.setText("Apps: None");
+
+                                    container.addView(itemView);
+                                });
                     }
-                })
-                .addOnFailureListener(e -> Log.e("loadMembers", "Failed to load team", e));
+                });
+    }
+    private void loadPendingApps() {
+        db.collection("teams").document(teamCode).get()
+                .addOnSuccessListener(doc -> {
+                    Map<String, Object> pendingApps = (Map<String, Object>) doc.get("pendingApps");
+                    List<String> memberUids = (List<String>) doc.get("members");
+                    int totalMembers = memberUids != null ? memberUids.size() : 1;
+
+                    if (pendingApps == null || pendingApps.isEmpty()) return;
+
+                    List<Map.Entry<String, Map<String, Object>>> pendingList = new ArrayList<>();
+                    for (Map.Entry<String, Object> entry : pendingApps.entrySet()) {
+                        pendingList.add(new java.util.AbstractMap.SimpleEntry<>(
+                                entry.getKey(),
+                                (Map<String, Object>) entry.getValue()
+                        ));
+                    }
+
+                    RecyclerView rvPendingApps = findViewById(R.id.rvPendingApps);
+                    rvPendingApps.setLayoutManager(new LinearLayoutManager(this));
+                    rvPendingApps.setAdapter(new PendingAppAdapter(pendingList, new PendingAppAdapter.PendingAppListener() {
+                        @Override
+                        public void onApprove(String appName) {
+                            String username = new SessionManager(TeamPage.this).getUsername();
+                            db.collection("teams").document(teamCode)
+                                    .update("pendingApps." + appName + ".approvals",
+                                            com.google.firebase.firestore.FieldValue.arrayUnion(username))
+                                    .addOnSuccessListener(a -> checkAndFinalizePendingApp(appName, totalMembers));
+                        }
+
+                        @Override
+                        public void onReject(String appName) {
+                            String username = new SessionManager(TeamPage.this).getUsername();
+                            db.collection("teams").document(teamCode)
+                                    .update("pendingApps." + appName + ".rejections",
+                                            com.google.firebase.firestore.FieldValue.arrayUnion(username))
+                                    .addOnSuccessListener(a -> checkAndFinalizePendingApp(appName, totalMembers));
+                        }
+                    }, totalMembers));
+                });
+    }
+
+    private void checkAndFinalizePendingApp(String appName, int totalMembers) {
+        db.collection("teams").document(teamCode).get()
+                .addOnSuccessListener(doc -> {
+                    Map<String, Object> pendingApps = (Map<String, Object>) doc.get("pendingApps");
+                    if (pendingApps == null) return;
+
+                    Map<String, Object> appData = (Map<String, Object>) pendingApps.get(appName);
+                    if (appData == null) return;
+
+                    List<String> approvals = (List<String>) appData.get("approvals");
+                    List<String> rejections = (List<String>) appData.get("rejections");
+                    String action = (String) appData.get("action");
+
+                    int approvalCount = approvals != null ? approvals.size() : 0;
+                    int rejectionCount = rejections != null ? rejections.size() : 0;
+
+                    if (approvalCount + rejectionCount < totalMembers) return;
+
+                    if (approvalCount > rejectionCount) {
+                        if (action != null && action.equals("remove")) {
+                            db.collection("teams").document(teamCode)
+                                    .update("suggestedApps", com.google.firebase.firestore.FieldValue.arrayRemove(appName));
+                        } else {
+                            db.collection("teams").document(teamCode)
+                                    .update("suggestedApps", com.google.firebase.firestore.FieldValue.arrayUnion(appName));
+                        }
+                    }
+
+                    // Remove from pending regardless
+                    db.collection("teams").document(teamCode)
+                            .update("pendingApps." + appName, com.google.firebase.firestore.FieldValue.delete())
+                            .addOnSuccessListener(a -> loadPendingApps());
+                });
     }
 }
