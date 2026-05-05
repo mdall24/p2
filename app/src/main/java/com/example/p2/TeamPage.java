@@ -103,6 +103,7 @@ public class TeamPage extends AppCompatActivity {
             TextView btnDisbandTeam = bottomSheetView.findViewById(R.id.btnDisbandTeam);
             View dividerDisband = bottomSheetView.findViewById(R.id.dividerDisband);
             TextView btnLeaveTeam = bottomSheetView.findViewById(R.id.btnLeaveTeam);
+            TextView btnInviteMember = bottomSheetView.findViewById(R.id.btnInviteMember);
 
             String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
             db.collection("teams").document(teamCode).get()
@@ -122,6 +123,11 @@ public class TeamPage extends AppCompatActivity {
                 showLeaveConfirmation();
             });
 
+            btnInviteMember.setOnClickListener(view -> {
+                bottomSheet.dismiss();
+                showInviteByUsernameDialog();
+            });
+
             btnKickMember.setOnClickListener(view -> {
                 bottomSheet.dismiss();
                 showKickMemberDialog();
@@ -133,7 +139,6 @@ public class TeamPage extends AppCompatActivity {
             });
             bottomSheet.show();
         });
-
         btnAddApps.setOnClickListener(v -> {
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -243,6 +248,43 @@ public class TeamPage extends AppCompatActivity {
                                 });
                     }
                 });
+    }
+    private void showInviteByUsernameDialog() {
+        android.widget.EditText input = new android.widget.EditText(this);
+        input.setHint("Enter username");
+
+        new AlertDialog.Builder(this)
+                .setTitle("Invite by Username")
+                .setView(input)
+                .setPositiveButton("Send Invite", (dialog, which) -> {
+                    String invitedUsername = input.getText().toString().trim();
+                    if (invitedUsername.isEmpty()) return;
+
+                    // Check if user exists
+                    db.collection("usernames").document(invitedUsername).get()
+                            .addOnSuccessListener(doc -> {
+                                if (!doc.exists()) {
+                                    Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                // Save invite to their document
+                                java.util.Map<String, Object> invite = new java.util.HashMap<>();
+                                invite.put("teamCode", teamCode);
+                                invite.put("teamName", doc.getString("name"));
+                                invite.put("from", new SessionManager(this).getUsername());
+
+                                db.collection("usernames").document(invitedUsername)
+                                        .collection("invites").document(teamCode)
+                                        .set(invite)
+                                        .addOnSuccessListener(a ->
+                                                Toast.makeText(this, "Invite sent to " + invitedUsername, Toast.LENGTH_SHORT).show())
+                                        .addOnFailureListener(e ->
+                                                Toast.makeText(this, "Failed to send invite", Toast.LENGTH_SHORT).show());
+                            });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
     private void kickMember(String uid) {
         db.collection("teams").document(teamCode)
