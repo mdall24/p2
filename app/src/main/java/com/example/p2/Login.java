@@ -58,7 +58,8 @@ private FirebaseFirestore db;
                 pass_word.requestFocus();
                 return;
             }
-            db.collection("usernames").document(username).get().addOnSuccessListener(doc -> {
+            db.collection("usernames").document(username)
+                    .get().addOnSuccessListener(doc -> {
                 if(!doc.exists()){
                     user_name.setError("Username not found");
                     user_name.requestFocus();
