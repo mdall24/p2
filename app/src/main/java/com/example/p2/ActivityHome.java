@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.graphics.Bitmap;
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -73,6 +76,19 @@ public class ActivityHome extends AppCompatActivity {
         SessionManager session = new SessionManager(this);
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvUsername.setText(session.getUsername());
+
+        ImageView ivAvatar = findViewById(R.id.ivAvatar);
+        FirebaseFirestore.getInstance().collection("usernames").document(session.getUsername()).get()
+                .addOnSuccessListener(doc -> {
+                    Long avatarIdx = doc.getLong("avatarIndex");
+                    if (avatarIdx != null) {
+                        List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+                        if (avatarIdx >= 0 && avatarIdx < avatars.size()) {
+                            ivAvatar.setImageBitmap(avatars.get(avatarIdx.intValue()));
+                        }
+                    }
+                });
+
         uploadScreenTime();
         saveAfterBedtimeScreenTime();
         updateGroupTimeCircle();
