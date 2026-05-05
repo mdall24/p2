@@ -28,12 +28,23 @@ public class JoinOrCreateTeam extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_or_create_team);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottomNav), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(0, 0, 0, systemBars.bottom);
             return insets;
         });
-
+        findViewById(R.id.tvNavHome).setOnClickListener(v -> {
+            Intent intent = new Intent(JoinOrCreateTeam.this, ActivityHome.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavStatistics).setOnClickListener(v -> {
+            Intent intent = new Intent(JoinOrCreateTeam.this, statistics.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.tvNavBlock).setOnClickListener(v -> {
+            Intent intent = new Intent(JoinOrCreateTeam.this, ActivityBlock.class);
+            startActivity(intent);
+        });
         EditText etTeamCode = findViewById(R.id.etTeamCode);
         Button btnJoinCode = findViewById(R.id.btnJoinCode);
         Button btnCreateTeam = findViewById(R.id.btnCreateTeam);

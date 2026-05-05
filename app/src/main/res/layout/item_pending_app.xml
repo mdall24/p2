@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="8dp">
+    <ImageView
+        android:id="@+id/ivAppIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="12dp"/>
+
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvProposedBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#AABBCC"
+        android:textSize="11sp"
+        android:layout_marginEnd="8dp" />
+
+    <Button
+        android:id="@+id/btnApprove"
+        android:layout_width="60dp"
+        android:layout_height="32dp"
+        android:backgroundTint="#00C8A0"
+        android:text="✓"
+        android:textColor="#FFFFFF"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:layout_marginEnd="4dp" />
+
+    <Button
+        android:id="@+id/btnReject"
+        android:layout_width="60dp"
+        android:layout_height="32dp"
+        android:backgroundTint="#EF4444"
+        android:text="✗"
+        android:textColor="#FFFFFF"
+        android:insetTop="0dp"
+        android:insetBottom="0dp" />
+
+</LinearLayout>
