@@ -71,8 +71,17 @@ public class Profile extends AppCompatActivity {
         tvUsername.setText(session.getUsername());
 
         findViewById(R.id.cardGroupSettingsContainer).setOnClickListener(v -> {
-            Intent intent = new Intent(Profile.this, TeamPage.class);
-            startActivity(intent);
+            String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+            FirebaseFirestore.getInstance().collection("teams")
+                    .whereArrayContains("members", uid)
+                    .get()
+                    .addOnSuccessListener(query -> {
+                        if (!query.isEmpty()) {
+                            startActivity(new Intent(Profile.this, TeamPage.class));
+                        } else {
+                            startActivity(new Intent(Profile.this, JoinOrCreateTeam.class));
+                        }
+                    });
         });
     }
 
