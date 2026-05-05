@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.PackageManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -31,7 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class TeamPage extends AppCompatActivity {
 
@@ -249,6 +246,7 @@ public class TeamPage extends AppCompatActivity {
                     }
                 });
     }
+
     private void showInviteByUsernameDialog() {
         android.widget.EditText input = new android.widget.EditText(this);
         input.setHint("Enter username");
@@ -286,6 +284,7 @@ public class TeamPage extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
     private void kickMember(String uid) {
         db.collection("teams").document(teamCode)
                 .update("members", com.google.firebase.firestore.FieldValue.arrayRemove(uid))
@@ -300,21 +299,21 @@ public class TeamPage extends AppCompatActivity {
                 .setTitle("Disband Team?")
                 .setMessage("This will permanently disband team for everyone. Are you sure?")
                 .setPositiveButton("Disband", (dialog, which) -> {
-                    db.collection("teams").document(teamCode).delete().addOnSuccessListener(unused ->{
-                        Toast.makeText(this, "Team Disbanded", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(TeamPage.this, ActivityHome.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    })
-                            .addOnFailureListener(e->
+                    db.collection("teams").document(teamCode).delete().addOnSuccessListener(unused -> {
+                                Toast.makeText(this, "Team Disbanded", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(TeamPage.this, ActivityHome.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            })
+                            .addOnFailureListener(e ->
                                     Toast.makeText(this, "Failed to disband team", Toast.LENGTH_SHORT).show());
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void suggestApp(String appName){
+    private void suggestApp(String appName) {
         String currentUsername = new SessionManager(this).getUsername();
 
         Map<String, Object> pending = new HashMap<>();
@@ -328,7 +327,7 @@ public class TeamPage extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("suggestApp", "Failed", e));
     }
 
-    private void suggestRemoveApp(String appName){
+    private void suggestRemoveApp(String appName) {
         String currentUsername = new SessionManager(this).getUsername();
 
         Map<String, Object> pending = new HashMap<>();
@@ -342,59 +341,66 @@ public class TeamPage extends AppCompatActivity {
                 .addOnSuccessListener(a -> Log.d("suggestRemoveApp", appName + " removal suggested"))
                 .addOnFailureListener(e -> Log.e("suggestRemoveApp", "Failed", e));
     }
-    private void loadTeamTotals(){
+
+    private void loadTeamTotals() {
         db.collection("teams").document(teamCode).get()
-                .addOnSuccessListener(doc ->{
-            if (doc.exists()){
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
 
-                String teamName = doc.getString("name");
-                TextView tvTeamName = findViewById(R.id.TeamPage);
-                tvTeamName.setText(teamName != null ? teamName : "No Name");
+                        String teamName = doc.getString("name");
+                        TextView tvTeamName = findViewById(R.id.TeamPage);
+                        tvTeamName.setText(teamName != null ? teamName : "No Name");
 
-                Long totalRaw = (Long) doc.get("totalTimeMinutes");
-                long total = totalRaw != null ? totalRaw : 0L;
+                        Long totalRaw = (Long) doc.get("totalTimeMinutes");
+                        long total = totalRaw != null ? totalRaw : 0L;
 
-                Long usedRaw = (Long) doc.get("timeUsedMinutes");
-                long used = usedRaw != null ? usedRaw : 0L;
+                        Long usedRaw = (Long) doc.get("timeUsedMinutes");
+                        long used = usedRaw != null ? usedRaw : 0L;
 
-                long left = total - used;
+                        long left = total - used;
 
-                tvTeamTotal.setText("Team Time Left: " + left + " min");
-                tvTeamUsed.setText("Total Used: " + used + " min");
+                        tvTeamTotal.setText("Team Time Left: " + left + " min");
+                        tvTeamUsed.setText("Total Used: " + used + " min");
 
-                TextView tvCircleText = findViewById(R.id.tvCircleText);
-                tvCircleText.setText(left + " min");
+                        TextView tvCircleText = findViewById(R.id.tvCircleText);
+                        tvCircleText.setText(left + " min");
 
-                com.google.android.material.progressindicator.CircularProgressIndicator progress = findViewById(R.id.teamProgress);
+                        com.google.android.material.progressindicator.CircularProgressIndicator progress = findViewById(R.id.teamProgress);
 
-                int percent = total > 0 ? (int) ((double) used / total * 100) : 0;
-                progress.setProgress(percent, true); //animates it
-            }
-        });
+                        int percent = total > 0 ? (int) ((double) used / total * 100) : 0;
+                        progress.setProgress(percent, true); //animates it
+                    }
+                });
     }
 
-    private void loadMembers(){
-        db.collection("teams").document(teamCode).collection("members")
-                .get().addOnSuccessListener(query ->{
-            List<MemberModel> list = new ArrayList<>();
+    private void loadMembers() {
+        db.collection("teams").document(teamCode)
+                .get().addOnSuccessListener(doc -> {
+                    if (!doc.exists()) return;
+                    List<String> memberUids = (List<String>) doc.get("members");
+                    if (memberUids == null || memberUids.isEmpty()) {
+                        Log.d("loadMembers", "No members found");
+                        return;
+                    }
+                    List<MemberModel> list = new ArrayList<>();
 
-            for(QueryDocumentSnapshot doc : query) {
-            String username = doc.getId();
+                    for (String memberUid : memberUids) {
+                        db.collection("usernames").whereEqualTo("uid", memberUid).get()
+                                .addOnSuccessListener(userQuery -> {
+                                    String displayName = !userQuery.isEmpty()
+                                            ? userQuery.getDocuments().get(0).getId()
+                                            : memberUid; //Falls back to UID if username isn't found
 
-            //Handles a potential null from Firestore
-            Long timeUsedRaw = doc.getLong("timeUsed");
-            long timeUsed = timeUsedRaw != null ? timeUsedRaw : 0L;
+                                    list.add(new MemberModel(displayName, 0L, null));
 
-            @SuppressWarnings("unchecked") //Suppresses the compiler warnings
-            Map<String, Map<String, Long>> apps = (Map<String, Map<String, Long>>) doc.get("appsUsed");
-
-            list.add(new MemberModel(username, timeUsed, apps));
-            }
-            memberadapter.updateList(list);
-        })
-                //Adds a log if Firestore fails to load
-        .addOnFailureListener(e -> {
-            Log.e("loadMembers", "Failed to load members", e);
-        });
+                                    //This only updates the recyclerview when all members are loaded
+                                    if (list.size() == memberUids.size()) {
+                                        memberadapter.updateList(list);
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.e("loadMembers", "Failed to load user: " + memberUid, e));
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("loadMembers", "Failed to load team", e));
     }
 }
