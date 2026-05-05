@@ -432,28 +432,51 @@ public class TeamPage extends AppCompatActivity {
                         @Override
                         public void onApprove(String appName) {
                             String username = new SessionManager(TeamPage.this).getUsername();
+                            Map<String, Object> appData = (Map<String, Object>) pendingApps.get(appName);
+                            List<String> approvals = (List<String>) appData.get("approvals");
+                            List<String> rejections = (List<String>) appData.get("rejections");
+
+                            if ((approvals != null && approvals.contains(username)) ||
+                                    (rejections != null && rejections.contains(username))) {
+                                Toast.makeText(TeamPage.this, "You already voted!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
                             db.collection("teams").document(teamCode)
                                     .update("pendingApps." + appName + ".approvals",
                                             com.google.firebase.firestore.FieldValue.arrayUnion(username))
-                                    .addOnSuccessListener(a -> checkAndFinalizePendingApp(appName, totalMembers));
+                                    .addOnSuccessListener(a -> checkAndFinalizePendingApp(appName));
                         }
 
                         @Override
                         public void onReject(String appName) {
                             String username = new SessionManager(TeamPage.this).getUsername();
+                            Map<String, Object> appData = (Map<String, Object>) pendingApps.get(appName);
+                            List<String> approvals = (List<String>) appData.get("approvals");
+                            List<String> rejections = (List<String>) appData.get("rejections");
+
+                            if ((approvals != null && approvals.contains(username)) ||
+                                    (rejections != null && rejections.contains(username))) {
+                                Toast.makeText(TeamPage.this, "You already voted!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
                             db.collection("teams").document(teamCode)
                                     .update("pendingApps." + appName + ".rejections",
                                             com.google.firebase.firestore.FieldValue.arrayUnion(username))
-                                    .addOnSuccessListener(a -> checkAndFinalizePendingApp(appName, totalMembers));
+                                    .addOnSuccessListener(a -> checkAndFinalizePendingApp(appName));
                         }
                     }, totalMembers));
                 });
     }
 
-    private void checkAndFinalizePendingApp(String appName, int totalMembers) {
+    private void checkAndFinalizePendingApp(String appName) {
         db.collection("teams").document(teamCode).get()
                 .addOnSuccessListener(doc -> {
                     Map<String, Object> pendingApps = (Map<String, Object>) doc.get("pendingApps");
+                    List<String> memberUids = (List<String>) doc.get("members");
+                    int totalMembers = memberUids != null ? memberUids.size() : 1;
+
                     if (pendingApps == null) return;
 
                     Map<String, Object> appData = (Map<String, Object>) pendingApps.get(appName);
@@ -478,7 +501,6 @@ public class TeamPage extends AppCompatActivity {
                         }
                     }
 
-                    // Remove from pending regardless
                     db.collection("teams").document(teamCode)
                             .update("pendingApps." + appName, com.google.firebase.firestore.FieldValue.delete())
                             .addOnSuccessListener(a -> loadPendingApps());
