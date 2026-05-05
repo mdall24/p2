@@ -3,11 +3,16 @@ package com.example.p2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class AvatarHelper {
+    private static final int TARGET_SIZE = 512;
+
     public static List<Bitmap> getAvatars(Context context) {
         List<Bitmap> avatars = new ArrayList<>();
         Bitmap source = BitmapFactory.decodeResource(context.getResources(), R.drawable.avatars);
@@ -16,20 +21,92 @@ public class AvatarHelper {
             return avatars;
         }
 
-        // Based on the labels in Profile.java, we assume 6 avatars.
-        // Usually these are in a grid, e.g., 2 rows and 3 columns.
-        int rows = 2;
-        int cols = 3;
-        int width = source.getWidth() / cols;
-        int height = source.getHeight() / rows;
+        int width = source.getWidth();
+        int height = source.getHeight();
+        boolean[][] visited = new boolean[width][height];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                // Ensure we don't go out of bounds if rows*cols != count, but here we assume 6.
-                Bitmap avatar = Bitmap.createBitmap(source, j * width, i * height, width, height);
-                avatars.add(avatar);
+        // Scan for non-transparent islands (icons)
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (!visited[x][y] && Color.alpha(source.getPixel(x, y)) > 20) {
+                    Rect bounds = findComponentBounds(source, x, y, visited);
+                    
+                    // Filter out small noise
+                    if (bounds.width() > 30 && bounds.height() > 30) {
+                        try {
+                            // Extract the icon using detected bounds
+                            Bitmap avatar = Bitmap.createBitmap(source, bounds.left, bounds.top, bounds.width(), bounds.height());
+                            
+                            // Scale to a standard square size for consistency across the app
+                            Bitmap scaled = Bitmap.createScaledBitmap(avatar, TARGET_SIZE, TARGET_SIZE, true);
+                            avatars.add(scaled);
+                        } catch (Exception e) {
+                            Log.e("AvatarHelper", "Error processing avatar component", e);
+                        }
+                    }
+                }
             }
         }
+
+        // Fallback: If no transparency-based isolation worked, try a 3x2 grid as a guess
+        if (avatars.isEmpty()) {
+            int cols = 3;
+            int rows = 2;
+            int tileW = width / cols;
+            int tileH = height / rows;
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    Bitmap tile = Bitmap.createBitmap(source, c * tileW, r * tileH, tileW, tileH);
+                    avatars.add(Bitmap.createScaledBitmap(tile, TARGET_SIZE, TARGET_SIZE, true));
+                }
+            }
+        }
+
         return avatars;
+    }
+
+    /**
+     * Finds the bounding box of a connected non-transparent area using a stack-based flood fill.
+     */
+    private static Rect findComponentBounds(Bitmap bitmap, int startX, int startY, boolean[][] visited) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        int minX = startX, maxX = startX, minY = startY, maxY = startY;
+
+        Stack<int[]> stack = new Stack<>();
+        stack.push(new int[]{startX, startY});
+        visited[startX][startY] = true;
+
+        while (!stack.isEmpty()) {
+            int[] curr = stack.pop();
+            int cx = curr[0];
+            int cy = curr[1];
+
+            if (cx < minX) minX = cx;
+            if (cx > maxX) maxX = cx;
+            if (cy < minY) minY = cy;
+            if (cy > maxY) maxY = cy;
+
+            // Check 4-connected neighbors
+            int[] dx = {0, 0, 1, -1};
+            int[] dy = {1, -1, 0, 0};
+
+            for (int i = 0; i < 4; i++) {
+                int nx = cx + dx[i];
+                int ny = cy + dy[i];
+
+                if (nx >= 0 && nx < w && ny >= 0 && ny < h && !visited[nx][ny]) {
+                    if (Color.alpha(bitmap.getPixel(nx, ny)) > 20) {
+                        visited[nx][ny] = true;
+                        stack.push(new int[]{nx, ny});
+                    }
+                }
+            }
+            
+            // Safety break to prevent infinite loops or OOM on extremely large components
+            if (stack.size() > 100000) break;
+        }
+
+        return new Rect(minX, minY, maxX + 1, maxY + 1);
     }
 }

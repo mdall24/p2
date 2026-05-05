@@ -67,7 +67,7 @@ public class Profile extends AppCompatActivity {
         findViewById(R.id.EditAvatar).setOnClickListener(v -> showAvatarPickerDialog());
 
         findViewById(R.id.PSettingsCard).setOnClickListener(v -> {
-            android.widget.Toast.makeText(Profile.this, "Opening Settings...", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(Profile.this, "Opening Settings...", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Profile.this, ProfileSettings.class));
         });
 
