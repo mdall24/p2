@@ -19,6 +19,9 @@ import androidx.core.view.WindowInsetsCompat;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.graphics.Bitmap;
+import android.widget.Toast;
+import java.util.List;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Locale;
@@ -49,6 +52,13 @@ public class Profile extends AppCompatActivity {
             if(bedtime != null){
                 tvBedtimeValue.setText(bedtime);
             }
+            Long avatarIdx = doc.getLong("avatarIndex");
+            if (avatarIdx != null) {
+                List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+                if (avatarIdx >= 0 && avatarIdx < avatars.size()) {
+                    profileImage.setImageBitmap(avatars.get(avatarIdx.intValue()));
+                }
+            }
         });
 
         if (editButton != null) {
@@ -58,7 +68,7 @@ public class Profile extends AppCompatActivity {
         findViewById(R.id.EditAvatar).setOnClickListener(v -> showAvatarPickerDialog());
 
         findViewById(R.id.PSettingsCard).setOnClickListener(v -> {
-            android.widget.Toast.makeText(Profile.this, "Opening Settings...", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(Profile.this, "Opening Settings...", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Profile.this, ProfileSettings.class));
         });
 
@@ -99,15 +109,11 @@ public class Profile extends AppCompatActivity {
     }
 
     private void showAvatarPickerDialog() {
-        final String[] avatarLabels = {"Avatar 1", "Avatar 2", "Avatar 3", "Avatar 4", "Avatar 5", "Avatar 6"};
-        final int[] colors = {
-            0, // Original
-            android.graphics.Color.parseColor("#FFD700"), // Gold
-            android.graphics.Color.parseColor("#C0C0C0"), // Silver
-            android.graphics.Color.parseColor("#CD7F32"), // Bronze
-            android.graphics.Color.parseColor("#2196F3"), // Blue
-            android.graphics.Color.parseColor("#4CAF50")  // Green
-        };
+        final List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+        final String[] avatarLabels = new String[avatars.size()];
+        for (int i = 0; i < avatars.size(); i++) {
+            avatarLabels[i] = "Avatar " + (i + 1);
+        }
 
         GridView gridView = new GridView(this);
         gridView.setNumColumns(3);
@@ -119,12 +125,12 @@ public class Profile extends AppCompatActivity {
         gridView.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
-                return avatarLabels.length;
+                return avatars.size();
             }
 
             @Override
             public Object getItem(int position) {
-                return avatarLabels[position];
+                return avatars.get(position);
             }
 
             @Override
@@ -136,14 +142,8 @@ public class Profile extends AppCompatActivity {
             public android.view.View getView(int position, android.view.View convertView, ViewGroup parent) {
                 ImageView iv = new ImageView(Profile.this);
                 iv.setLayoutParams(new GridView.LayoutParams(250, 250));
-                iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                iv.setImageResource(R.drawable.default_avatar);
-                
-                if (colors[position] != 0) {
-                    iv.setColorFilter(colors[position], android.graphics.PorterDuff.Mode.MULTIPLY);
-                } else {
-                    iv.clearColorFilter();
-                }
+                iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                iv.setImageBitmap(avatars.get(position));
                 return iv;
             }
         });
@@ -163,15 +163,15 @@ public class Profile extends AppCompatActivity {
                 .create();
 
         gridView.setOnItemClickListener((parent, view, position, id) -> {
-            profileImage.setImageResource(R.drawable.default_avatar);
-            if (colors[position] != 0) {
-                profileImage.setColorFilter(colors[position], android.graphics.PorterDuff.Mode.MULTIPLY);
-            } else {
-                profileImage.clearColorFilter();
-            }
+            profileImage.setImageBitmap(avatars.get(position));
             
+            String username = new SessionManager(Profile.this).getUsername();
+            FirebaseFirestore.getInstance().collection("usernames").document(username)
+                    .update("avatarIndex", position)
+                    .addOnSuccessListener(aVoid -> Toast.makeText(Profile.this, "Avatar updated", Toast.LENGTH_SHORT).show());
+
             String label = avatarLabels[position];
-            android.widget.Toast.makeText(this, "Selected: " + label, android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Selected: " + label, Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 
