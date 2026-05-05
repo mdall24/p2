@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout;
@@ -83,6 +84,7 @@ public class TeamPage extends AppCompatActivity {
                         loadTeamTotals();
                         loadMembers();
                         loadPendingApps();
+                        loadApprovedApps();
                     } else {
                         Toast.makeText(this, "No team found. Please join or create a team.", Toast.LENGTH_LONG).show();
                         finish();
@@ -140,18 +142,32 @@ public class TeamPage extends AppCompatActivity {
             List<ApplicationInfo> installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
             List<String> appNames = new ArrayList<>();
+            List<String> packageNames = new ArrayList<>();
             for (ApplicationInfo app : installedApps) {
                 if ((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     appNames.add(pm.getApplicationLabel(app).toString());
+                    packageNames.add(app.packageName);
                 }
             }
-            Collections.sort(appNames);
 
-            String[] appArray = appNames.toArray(new String[0]);
+            // Sort by app name but keep package names in sync
+            List<Integer> indices = new ArrayList<>();
+            for (int i = 0; i < appNames.size(); i++) indices.add(i);
+            indices.sort((a, b) -> appNames.get(a).compareTo(appNames.get(b)));
+
+            List<String> sortedNames = new ArrayList<>();
+            List<String> sortedPackages = new ArrayList<>();
+            for (int i : indices) {
+                sortedNames.add(appNames.get(i));
+                sortedPackages.add(packageNames.get(i));
+            }
+
+            String[] appArray = sortedNames.toArray(new String[0]);
 
             new AlertDialog.Builder(this).setTitle("Suggest an app").setItems(appArray, (dialog, which) -> {
-                        String selectedApps = appArray[which];
-                        suggestApp(selectedApps);
+                        String selectedApp = sortedNames.get(which);
+                        String selectedPackage = sortedPackages.get(which);
+                        suggestApp(selectedApp, selectedPackage);
                     })
                     .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss()).show();
         });
@@ -312,17 +328,18 @@ public class TeamPage extends AppCompatActivity {
                 .show();
     }
 
-    private void suggestApp(String appName) {
+    private void suggestApp(String appName, String packageName) {
         String currentUsername = new SessionManager(this).getUsername();
 
         Map<String, Object> pending = new HashMap<>();
         pending.put("proposedBy", currentUsername);
         pending.put("approvals", Collections.singletonList(currentUsername));
         pending.put("rejections", new ArrayList<>());
+        pending.put("packageName", packageName);
 
         db.collection("teams").document(teamCode)
                 .update("pendingApps." + appName, pending)
-                .addOnSuccessListener(a -> Log.d("suggestApp", appName + "suggested"))
+                .addOnSuccessListener(a -> Log.d("suggestApp", appName + " suggested"))
                 .addOnFailureListener(e -> Log.e("suggestApp", "Failed", e));
     }
 
@@ -417,6 +434,8 @@ public class TeamPage extends AppCompatActivity {
                     int totalMembers = memberUids != null ? memberUids.size() : 1;
 
                     if (pendingApps == null || pendingApps.isEmpty()) return;
+                    findViewById(R.id.tvPendingAppsTitle).setVisibility(View.VISIBLE);
+                    findViewById(R.id.rvPendingApps).setVisibility(View.VISIBLE);
 
                     List<Map.Entry<String, Map<String, Object>>> pendingList = new ArrayList<>();
                     for (Map.Entry<String, Object> entry : pendingApps.entrySet()) {
@@ -504,6 +523,40 @@ public class TeamPage extends AppCompatActivity {
                     db.collection("teams").document(teamCode)
                             .update("pendingApps." + appName, com.google.firebase.firestore.FieldValue.delete())
                             .addOnSuccessListener(a -> loadPendingApps());
+                });
+    }
+    private void loadApprovedApps() {
+        db.collection("teams").document(teamCode).get()
+                .addOnSuccessListener(doc -> {
+                    List<String> suggestedApps = (List<String>) doc.get("suggestedApps");
+                    LinearLayout container = findViewById(R.id.approvedAppsContainer);
+                    container.removeAllViews();
+
+                    if (suggestedApps == null || suggestedApps.isEmpty()) return;
+
+                    PackageManager pm = getPackageManager();
+                    for (String appName : suggestedApps) {
+                        View itemView = LayoutInflater.from(this)
+                                .inflate(R.layout.item_approved_app, container, false);
+
+                        ImageView ivIcon = itemView.findViewById(R.id.ivAppIcon);
+                        TextView tvName = itemView.findViewById(R.id.tvAppName);
+                        TextView tvProposedBy = itemView.findViewById(R.id.tvProposedBy);
+                        Button btnRemove = itemView.findViewById(R.id.btnRemoveApp);
+
+                        tvName.setText(appName);
+                        tvProposedBy.setText("");
+
+                        try {
+                            ivIcon.setImageDrawable(pm.getApplicationIcon(appName));
+                        } catch (PackageManager.NameNotFoundException e) {
+                            ivIcon.setImageResource(android.R.drawable.sym_def_app_icon);
+                        }
+
+                        btnRemove.setOnClickListener(v -> suggestRemoveApp(appName));
+
+                        container.addView(itemView);
+                    }
                 });
     }
 }

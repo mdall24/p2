@@ -1,9 +1,12 @@
 package com.example.p2;
 
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +33,7 @@ public class PendingAppAdapter extends RecyclerView.Adapter<PendingAppAdapter.Pe
     public static class PendingAppViewHolder extends RecyclerView.ViewHolder {
         TextView tvAppName, tvProposedBy;
         Button btnApprove, btnReject;
+        ImageView ivAppIcon;
 
         public PendingAppViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -37,6 +41,7 @@ public class PendingAppAdapter extends RecyclerView.Adapter<PendingAppAdapter.Pe
             tvProposedBy = itemView.findViewById(R.id.tvProposedBy);
             btnApprove = itemView.findViewById(R.id.btnApprove);
             btnReject = itemView.findViewById(R.id.btnReject);
+            ivAppIcon = itemView.findViewById(R.id.ivAppIcon);
         }
     }
 
@@ -56,6 +61,7 @@ public class PendingAppAdapter extends RecyclerView.Adapter<PendingAppAdapter.Pe
 
         String proposedBy = (String) data.get("proposedBy");
         String action = (String) data.get("action");
+        String packageName = (String) data.get("packageName");
         List<String> approvals = (List<String>) data.get("approvals");
         List<String> rejections = (List<String>) data.get("rejections");
 
@@ -65,6 +71,19 @@ public class PendingAppAdapter extends RecyclerView.Adapter<PendingAppAdapter.Pe
 
         holder.tvAppName.setText(action != null && action.equals("remove") ? "Remove: " + appName : appName);
         holder.tvProposedBy.setText("by " + proposedBy + " • ✓" + approvalCount + " ✗" + rejectionCount);
+
+        // Load app icon
+        if (packageName != null) {
+            try {
+                PackageManager pm = holder.itemView.getContext().getPackageManager();
+                Drawable icon = pm.getApplicationIcon(packageName);
+                holder.ivAppIcon.setImageDrawable(icon);
+            } catch (PackageManager.NameNotFoundException e) {
+                holder.ivAppIcon.setImageResource(android.R.drawable.sym_def_app_icon);
+            }
+        } else {
+            holder.ivAppIcon.setImageResource(android.R.drawable.sym_def_app_icon);
+        }
 
         boolean allVoted = totalVotes >= totalMembers;
         holder.btnApprove.setEnabled(!allVoted);
