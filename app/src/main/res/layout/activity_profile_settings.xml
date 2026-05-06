@@ -38,6 +38,43 @@
         app:layout_constraintStart_toEndOf="@+id/btnBackHeader"
         app:layout_constraintTop_toTopOf="@+id/btnBackHeader" />
 
+    <!-- Change Password Button (Styled like Delete Account but Orange) -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardChangePassword"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="64dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardBackgroundColor="#1A2B3C"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBackHeader">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:text="CHANGE PASSWORD"
+            android:textAllCaps="true"
+            android:textColor="#F59E0B"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="32dp"
+        android:background="#33FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/cardChangePassword" />
+
+    <!-- Delete Account Section -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardDeleteAccount"
         android:layout_width="0dp"
@@ -51,7 +88,7 @@
         app:cardElevation="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnBackHeader">
+        app:layout_constraintTop_toBottomOf="@+id/divider">
 
         <TextView
             android:layout_width="wrap_content"
