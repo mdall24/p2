@@ -1,8 +1,8 @@
 package com.example.p2;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,13 +30,26 @@ public class ProfileSettings extends AppCompatActivity {
             return insets;
         });
 
-        TextView btnBackHeader = findViewById(R.id.btnBackHeader);
-        btnBackHeader.setOnClickListener(v -> finish());
+        findViewById(R.id.btnBackHeader).setOnClickListener(v -> finish());
+        findViewById(R.id.btnBackToProfile).setOnClickListener(v -> finish());
 
-        Button btnBackToProfile = findViewById(R.id.btnBackToProfile);
-        btnBackToProfile.setOnClickListener(v -> finish());
+        // Change Password Button - Opens new Activity
+        findViewById(R.id.cardChangePassword).setOnClickListener(v -> {
+            startActivity(new Intent(ProfileSettings.this, ChangePassword.class));
+        });
 
-        findViewById(R.id.cardDeleteAccount).setOnClickListener(v -> deleteAccount());
+        // Delete Account Button - With Confirmation
+        findViewById(R.id.cardDeleteAccount).setOnClickListener(v -> showDeleteConfirmation());
+    }
+
+    private void showDeleteConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Account")
+                .setMessage("Are you sure you want to permanently delete your account? This action cannot be undone.")
+                .setPositiveButton("DELETE", (dialog, which) -> deleteAccount())
+                .setNegativeButton("CANCEL", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     private void deleteAccount() {
@@ -49,6 +62,7 @@ public class ProfileSettings extends AppCompatActivity {
                             user.delete().addOnCompleteListener(authTask -> {
                                 if (authTask.isSuccessful()) {
                                     Toast.makeText(this, "Account and data deleted", Toast.LENGTH_SHORT).show();
+                                    new SessionManager(this).logout();
                                     Intent intent = new Intent(ProfileSettings.this, MainActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
@@ -61,6 +75,7 @@ public class ProfileSettings extends AppCompatActivity {
                 user.delete().addOnCompleteListener(authTask -> {
                     if (authTask.isSuccessful()) {
                         Toast.makeText(this, "Account Deleted", Toast.LENGTH_SHORT).show();
+                        new SessionManager(this).logout();
                         Intent intent = new Intent(ProfileSettings.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
