@@ -43,7 +43,7 @@ private FirebaseFirestore db;
         login.setOnClickListener(V -> loginUser());
         }
     private void loginUser(){
-
+            //Looks at the input text from user, trims any whitespace and shows error if any field is empty
             String username = user_name.getText().toString().trim();
             String password = pass_word.getText().toString().trim();
 
