@@ -1,0 +1,484 @@
+@startuml
+
+skinparam classBackgroundColor #1A2B3C
+skinparam classBorderColor #00C8A0
+skinparam classHeaderBackgroundColor #0D1B2A
+skinparam classArrowColor #AABBCC
+skinparam classFontColor #FFFFFF
+skinparam packageBorderColor #00C8A0
+
+' ─────────────────────────────────────────
+' DATA MODELS
+' ─────────────────────────────────────────
+package "Models" {
+
+    class User {
+        + String username
+        + String email
+        + String uid
+        + int avatarIndex
+        --
+        + User()
+        + User(username, email)
+        + User(username, email, uid)
+        + User(username, email, uid, avatarIndex)
+    }
+
+    class MemberModel {
+        + String username
+        + long timeUsed
+        + Map<String, Map<String, Long>> appsUsed
+        --
+        + MemberModel(username, timeUsed, appsUsed)
+    }
+
+    class MemberStatus {
+        + String status
+        + List<String> apps
+        + int time
+        --
+        + MemberStatus()
+        + MemberStatus(status, apps, time)
+    }
+
+    class AppInfo {
+        + String name
+        + String packageName
+        + Drawable icon
+        + boolean isSelected
+        --
+        + AppInfo(name, packageName, icon)
+    }
+}
+
+' ─────────────────────────────────────────
+' UTILITIES / HELPERS
+' ─────────────────────────────────────────
+package "Utilities" {
+
+    class SessionManager {
+        - SharedPreferences prefs
+        - SharedPreferences.Editor editor
+        --
+        + SessionManager(context)
+        + saveLoginSession(username)
+        + saveTeamCode(teamCode)
+        + getTeamCode() : String
+        + isLoggedIn() : boolean
+        + getUsername() : String
+        + logout()
+        + hasAskedPermission() : boolean
+        + setAskedPermission(asked)
+    }
+
+    class AppListManager {
+        - {static} PREFS_NAME : String
+        - {static} KEY_APPS : String
+        - {static} KEY_SOFT : String
+        - {static} KEY_BUDGET : String
+        --
+        + {static} saveApps(context, packages)
+        + {static} getSavedApps(context) : Set<String>
+        + {static} hasApps(context) : boolean
+        + {static} setSoftBlock(context, packageName, isSoft)
+        + {static} isSoftBlocked(context, packageName) : boolean
+        + {static} getSoftBlockedApps(context) : Set<String>
+        + {static} saveDailyBudget(context, minutes)
+        + {static} getDailyBudget(context) : int
+    }
+
+    class AvatarHelper {
+        - {static} TARGET_SIZE : int
+        --
+        + {static} getAvatars(context) : List<Bitmap>
+        - {static} findComponentBounds(bitmap, startX, startY, visited) : Rect
+    }
+
+    class ScreenTimeHelper {
+        --
+        + {static} getTodayUsage(context) : List<AppUsage>
+        + {static} getTotalUsageForDay(context, targetDay) : long
+        + {static} getUsageForTimeRange(context, startTime, endTime) : long
+    }
+
+    class "ScreenTimeHelper.AppUsage" as AppUsage {
+        + String packageName
+        + long totalTimeMs
+        --
+        + AppUsage(packageName, totalTimeMs)
+        + getReadableTime() : String
+    }
+
+    ScreenTimeHelper +-- AppUsage
+}
+
+' ─────────────────────────────────────────
+' ACTIVITIES
+' ─────────────────────────────────────────
+package "Activities" {
+
+    class MainActivity {
+        - Button btnCreateAcc
+        --
+        + onCreate(savedInstanceState)
+    }
+
+    class Login {
+        - Button login
+        - EditText pass_word, user_name
+        - FirebaseAuth mAuth
+        - FirebaseFirestore db
+        --
+        + onCreate(savedInstanceState)
+        - loginUser()
+    }
+
+    class Registration {
+        - Button sign_up
+        - TextView cancel
+        - EditText user_name, pass_word, e_mail, confirm_password
+        - FirebaseAuth mAuth
+        --
+        + onCreate(savedInstanceState)
+        - registerUser()
+    }
+
+    class ActivityHome {
+        --
+        + onCreate(savedInstanceState)
+        - showBudgetDialog()
+        - setupBarChart()
+        - hasUsagePermission() : boolean
+        - uploadScreenTime()
+        - saveAfterBedtimeScreenTime()
+        - updateGroupTimeCircle()
+        - saveDailyScreenTime()
+    }
+
+    class ActivityBlock {
+        - BlockedAppsAdapter adapter
+        - List<String> blockedAppsList
+        --
+        + onCreate(savedInstanceState)
+        + onResume()
+        - isServiceRunning() : boolean
+    }
+
+    class ActivityAppPicker {
+        --
+        + onCreate(savedInstanceState)
+    }
+
+    class statistics {
+        --
+        + onCreate(savedInstanceState)
+        - setupBarChart()
+        - loadLeaderboard()
+    }
+
+    class ScreenTimeHistory {
+        - RecyclerView rvHistory
+        - List<Map<String, Object>> historyList
+        --
+        + onCreate(savedInstanceState)
+        - loadHistory(mode)
+        - setupChart(data, mode)
+    }
+
+    class Profile {
+        - TextView tvBedtimeValue
+        - ImageView profileImage
+        --
+        + onCreate(savedInstanceState)
+        - showAvatarPickerDialog()
+        - showTimePickerDialog()
+    }
+
+    class ProfileSettings {
+        --
+        + onCreate(savedInstanceState)
+        - showDeleteConfirmation()
+        - deleteAccount()
+    }
+
+    class ChangePassword {
+        - EditText newPassword, confirmNewPassword
+        - FirebaseAuth mAuth
+        --
+        + onCreate(savedInstanceState)
+        - updatePassword()
+    }
+
+    class JoinOrCreateTeam {
+        --
+        + onCreate(savedInstanceState)
+        - loadPendingInvites()
+    }
+
+    class JoinTeam {
+        - Button accept, decline, addApps
+        - String teamCode
+        - List<String> suggestedApps
+        - int suggestedTime
+        --
+        + onCreate(savedInstanceState)
+        - acceptInvite()
+        - openAppPicker()
+    }
+
+    class CreateTeam {
+        - String teamCode
+        - List<String> selectedApps
+        - int suggestedTime
+        --
+        + onCreate(savedInstanceState)
+        + onResume()
+        - generateTeamCode() : String
+    }
+
+    class TeamPage {
+        --
+        + onCreate(savedInstanceState)
+    }
+
+    class AppPicker {
+        - RecyclerView recyclerView
+        - AppAdapter appAdapter
+        - Button doneButton
+        - String teamCode
+        --
+        + onCreate(savedInstanceState)
+        - getInstalledApps() : List<AppInfo>
+        - returnSelectedApps()
+    }
+}
+
+' ─────────────────────────────────────────
+' ADAPTERS
+' ─────────────────────────────────────────
+package "Adapters" {
+
+    class AppAdapter {
+        - List<AppInfo> apps
+        --
+        + AppAdapter(apps)
+        + onCreateViewHolder(parent, viewType)
+        + onBindViewHolder(holder, position)
+        + getItemCount() : int
+        + getSelectedPackageNames() : String
+        + getSelectedPackagesList() : List<String>
+    }
+
+    class AppPickerAdapter {
+        - Context context
+        - List<ApplicationInfo> apps
+        - PackageManager pm
+        - Set<String> selectedPackages
+        --
+        + AppPickerAdapter(context, apps)
+        + onCreateViewHolder(parent, viewType)
+        + onBindViewHolder(holder, position)
+        + getItemCount() : int
+        + getSelectedPackages() : Set<String>
+    }
+
+    class BlockedAppsAdapter {
+        - Context context
+        - List<String> packageNames
+        - PackageManager pm
+        --
+        + BlockedAppsAdapter(context, packageNames)
+        + onCreateViewHolder(parent, viewType)
+        + onBindViewHolder(holder, position)
+        + getItemCount() : int
+    }
+
+    class MemberAdapter {
+        - List<MemberModel> members
+        --
+        + MemberAdapter(newList)
+        + updateList(newList)
+        + onCreateViewHolder(parent, viewType)
+        + onBindViewHolder(holder, position)
+        + getItemCount() : int
+    }
+
+    class HistoryAdapter {
+        - List<Map<String, Object>> historyList
+        --
+        + HistoryAdapter(historyList)
+        + onCreateViewHolder(parent, viewType)
+        + onBindViewHolder(holder, position)
+        + getItemCount() : int
+    }
+
+    class InviteAdapter {
+        - List<Map<String, Object>> inviteList
+        - InviteListener listener
+        --
+        + InviteAdapter(inviteList, listener)
+        + onCreateViewHolder(parent, viewType)
+        + onBindViewHolder(holder, position)
+        + getItemCount() : int
+    }
+
+    interface "InviteAdapter.InviteListener" as InviteListener {
+        + onAccept(teamCode)
+        + onDecline(teamCode)
+    }
+
+    class PendingAppAdapter {
+        - List<Map.Entry> pendingList
+        - PendingAppListener listener
+        - int totalMembers
+        --
+        + PendingAppAdapter(pendingList, listener, totalMembers)
+        + onCreateViewHolder(parent, viewType)
+        + onBindViewHolder(holder, position)
+        + getItemCount() : int
+    }
+
+    interface "PendingAppAdapter.PendingAppListener" as PendingAppListener {
+        + onApprove(appName)
+        + onReject(appName)
+    }
+
+    InviteAdapter --> InviteListener
+    PendingAppAdapter --> PendingAppListener
+}
+
+' ─────────────────────────────────────────
+' SERVICES / RECEIVERS
+' ─────────────────────────────────────────
+package "Services" {
+
+    class OverlayService {
+        - WindowManager windowManager
+        - View overlayView
+        - Handler handler
+        - Runnable checker
+        - String lastBlockedApp
+        - boolean overlayShowing
+        --
+        + onCreate()
+        + onDestroy()
+        + onBind(intent) : IBinder
+        - startForegroundNotification()
+        - startChecking()
+        - checkForegroundApp()
+        - showOverlay(packageName)
+        - removeOverlay()
+    }
+
+    class BootReceiver {
+        --
+        + onReceive(context, intent)
+    }
+}
+
+' ─────────────────────────────────────────
+' INHERITANCE
+' ─────────────────────────────────────────
+MainActivity --|> AppCompatActivity
+Login --|> AppCompatActivity
+Registration --|> AppCompatActivity
+ActivityHome --|> AppCompatActivity
+ActivityBlock --|> AppCompatActivity
+ActivityAppPicker --|> AppCompatActivity
+statistics --|> AppCompatActivity
+ScreenTimeHistory --|> AppCompatActivity
+Profile --|> AppCompatActivity
+ProfileSettings --|> AppCompatActivity
+ChangePassword --|> AppCompatActivity
+JoinOrCreateTeam --|> AppCompatActivity
+JoinTeam --|> AppCompatActivity
+CreateTeam --|> AppCompatActivity
+TeamPage --|> AppCompatActivity
+AppPicker --|> AppCompatActivity
+
+OverlayService --|> Service
+BootReceiver --|> BroadcastReceiver
+
+AppAdapter --|> RecyclerViewAdapter
+AppPickerAdapter --|> RecyclerViewAdapter
+BlockedAppsAdapter --|> RecyclerViewAdapter
+MemberAdapter --|> RecyclerViewAdapter
+HistoryAdapter --|> RecyclerViewAdapter
+InviteAdapter --|> RecyclerViewAdapter
+PendingAppAdapter --|> RecyclerViewAdapter
+
+' ─────────────────────────────────────────
+' KEY RELATIONSHIPS
+' ─────────────────────────────────────────
+
+' Auth flow
+MainActivity --> Login : navigates to
+MainActivity --> Registration : navigates to
+Login --> ActivityHome : on success
+Registration --> ActivityHome : on success
+Login --> SessionManager : uses
+Registration --> SessionManager : uses
+MainActivity --> SessionManager : checks login
+
+' Main nav
+ActivityHome --> ActivityBlock : nav
+ActivityHome --> statistics : nav
+ActivityHome --> Profile : nav
+ActivityBlock --> ActivityHome : nav
+ActivityBlock --> statistics : nav
+statistics --> ActivityHome : nav
+statistics --> ActivityBlock : nav
+statistics --> ScreenTimeHistory : nav
+statistics --> CreateTeam : nav
+
+' Profile flow
+Profile --> ProfileSettings : navigates to
+Profile --> ActivityHome : nav
+Profile --> statistics : nav
+Profile --> ActivityBlock : nav
+Profile --> JoinOrCreateTeam : if no team
+Profile --> TeamPage : if in team
+ProfileSettings --> ChangePassword : navigates to
+ProfileSettings --> MainActivity : after delete
+
+' Team flow
+JoinOrCreateTeam --> CreateTeam : navigates to
+JoinOrCreateTeam --> JoinTeam : navigates to
+JoinOrCreateTeam --> TeamPage : after accept invite
+CreateTeam --> AppPicker : for app selection
+JoinTeam --> AppPicker : add apps
+
+' Block flow
+ActivityBlock --> ActivityAppPicker : add apps
+ActivityBlock --> OverlayService : starts/stops
+BootReceiver --> OverlayService : starts on boot
+
+' Adapter usage
+ActivityBlock --> BlockedAppsAdapter : uses
+ActivityAppPicker --> AppPickerAdapter : uses
+AppPicker --> AppAdapter : uses
+ScreenTimeHistory --> HistoryAdapter : uses
+JoinOrCreateTeam --> InviteAdapter : uses
+TeamPage --> MemberAdapter : uses
+
+' Utility usage
+ActivityHome --> ScreenTimeHelper : uses
+ActivityHome --> AppListManager : uses
+ActivityHome --> AvatarHelper : uses
+ActivityHome --> SessionManager : uses
+statistics --> ScreenTimeHelper : uses
+ScreenTimeHistory --> SessionManager : uses
+ActivityBlock --> AppListManager : uses
+ActivityAppPicker --> AppListManager : uses
+AppPickerAdapter --> AppListManager : uses
+OverlayService --> AppListManager : uses
+Profile --> AvatarHelper : uses
+Profile --> SessionManager : uses
+
+' Model usage
+AppPicker --> AppInfo : creates
+AppAdapter --> AppInfo : uses
+MemberAdapter --> MemberModel : uses
+Registration --> User : creates
+
+@enduml

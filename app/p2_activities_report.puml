@@ -1,0 +1,138 @@
+@startuml
+
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #F5F5F5
+skinparam classBorderColor #333333
+skinparam classHeaderBackgroundColor #DDDDDD
+skinparam classFontColor #000000
+skinparam classHeaderFontColor #000000
+skinparam arrowColor #555555
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 40
+skinparam ranksep 60
+skinparam classFontSize 11
+skinparam packageFontSize 13
+
+package "Auth" {
+    class MainActivity {
+        + onCreate()
+    }
+    class Login {
+        + onCreate()
+        - loginUser()
+    }
+    class Registration {
+        + onCreate()
+        - registerUser()
+    }
+}
+
+package "Main" {
+    class ActivityHome {
+        + onCreate()
+        - setupBarChart()
+        - uploadScreenTime()
+        - saveAfterBedtimeScreenTime()
+        - saveDailyScreenTime()
+        - updateGroupTimeCircle()
+        - showBudgetDialog()
+        - hasUsagePermission()
+    }
+    class ActivityBlock {
+        + onCreate()
+        + onResume()
+        - isServiceRunning()
+    }
+    class statistics {
+        + onCreate()
+        - setupBarChart()
+        - loadLeaderboard()
+    }
+}
+
+package "Profile" {
+    class Profile {
+        + onCreate()
+        - showAvatarPickerDialog()
+        - showTimePickerDialog()
+    }
+    class ProfileSettings {
+        + onCreate()
+        - showDeleteConfirmation()
+        - deleteAccount()
+    }
+    class ChangePassword {
+        + onCreate()
+        - updatePassword()
+    }
+}
+
+package "Team" {
+    class JoinOrCreateTeam {
+        + onCreate()
+        - loadPendingInvites()
+    }
+    class CreateTeam {
+        + onCreate()
+        + onResume()
+        - generateTeamCode()
+    }
+    class JoinTeam {
+        + onCreate()
+        - acceptInvite()
+        - openAppPicker()
+    }
+    class TeamPage {
+        + onCreate()
+    }
+}
+
+package "Apps & History" {
+    class ActivityAppPicker {
+        + onCreate()
+    }
+    class AppPicker {
+        + onCreate()
+        - getInstalledApps()
+        - returnSelectedApps()
+    }
+    class ScreenTimeHistory {
+        + onCreate()
+        - loadHistory()
+        - setupChart()
+    }
+}
+
+' Auth flow
+MainActivity --> Login
+MainActivity --> Registration
+Login --> ActivityHome
+Registration --> ActivityHome
+
+' Main nav
+ActivityHome --> ActivityBlock
+ActivityHome --> statistics
+ActivityHome --> Profile
+
+' Block
+ActivityBlock --> ActivityAppPicker
+
+' Stats
+statistics --> ScreenTimeHistory
+statistics --> CreateTeam
+
+' Profile
+Profile --> ProfileSettings
+Profile --> JoinOrCreateTeam
+Profile --> TeamPage
+ProfileSettings --> ChangePassword
+
+' Team
+JoinOrCreateTeam --> CreateTeam
+JoinOrCreateTeam --> JoinTeam
+JoinOrCreateTeam --> TeamPage
+CreateTeam --> AppPicker
+JoinTeam --> AppPicker
+
+@enduml
