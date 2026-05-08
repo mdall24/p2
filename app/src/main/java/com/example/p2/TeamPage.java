@@ -234,6 +234,7 @@ public class TeamPage extends AppCompatActivity {
                     }
 
                     List<String> usernames = new ArrayList<>();
+                    List<String> matchedUids = new ArrayList<>();
                     for (String memberUid : otherUids) {
                         db.collection("usernames").whereEqualTo("uid", memberUid).get()
                                 .addOnSuccessListener(userQuery -> {
@@ -242,12 +243,13 @@ public class TeamPage extends AppCompatActivity {
                                     } else {
                                         usernames.add(memberUid);
                                     }
+                                    matchedUids.add(memberUid);
 
                                     if (usernames.size() == otherUids.size()) {
                                         String[] namesArray = usernames.toArray(new String[0]);
                                         new AlertDialog.Builder(this).setTitle("Kick a Member")
                                                 .setItems(namesArray, (dialog, which) -> {
-                                                    String kickedUid = otherUids.get(which);
+                                                    String kickedUid = matchedUids.get(which);
                                                     new AlertDialog.Builder(this)
                                                             .setTitle("Kick " + usernames.get(which) + "?")
                                                             .setMessage("Are you sure you want to kick " + usernames.get(which) + "?")
