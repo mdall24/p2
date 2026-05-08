@@ -24,6 +24,6 @@
     <string name="service_status">Service Status</string>
     <string name="agreed_time">Time for the week</string>
     <string name="blocked_apps">Blocked Apps</string>
-    <string name="addplus">+ Add Apps</string>
+    <string name="add_plus">+ Add Apps</string>
 
 </resources>
