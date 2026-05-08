@@ -85,6 +85,18 @@ package "Team" {
     }
     class TeamPage {
         + onCreate()
+        - loadApprovedApps()
+        - checkAndFinalizePendingApp()
+        - loadPendingApps()
+        - loadMembers()
+        - loadTeamTotals()
+        - suggestRemoveApp()
+        - suggestApp()
+        - showDisbandConfirmation()
+        - kickMember()
+        - showInviteByUsernameDialog()
+        - showKickMemberDialog()
+        - showLeaveConfirmation()
     }
 }
 
