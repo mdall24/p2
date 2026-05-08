@@ -61,10 +61,6 @@ public class CreateTeam extends AppCompatActivity {
                                 suggestedTime.setText(time);
                             }
                 });
-        //Maybe wrong?
-        if (suggestedTime != null) {
-            suggestedTime.setOnClickListener(v -> showTimePickerDialog());
-        }
 
         findViewById(R.id.tvNavHome).setOnClickListener(v -> {
             Intent intent = new Intent(CreateTeam.this, ActivityHome.class);
@@ -79,8 +75,13 @@ public class CreateTeam extends AppCompatActivity {
             startActivity(intent);
         });
 
+        suggestedTime = findViewById(R.id.SuggestTime);
+
         Button sendInvite = findViewById(R.id.SendInvite);
         FloatingActionButton suggestTimeBtn = findViewById(R.id.SuggestedTimeButton);
+
+        suggestTimeBtn.setOnClickListener(v -> showTimePickerDialog());
+
         FloatingActionButton addAppsBtn = findViewById(R.id.AddAppButton);
 
         addAppsBtn.setOnClickListener(v-> {
@@ -103,7 +104,7 @@ public class CreateTeam extends AppCompatActivity {
                         put("createdBy", uid);
                         put("name", ((android.widget.EditText) findViewById(R.id.GroupName)).getText().toString().trim());
                         put("suggestedApps", selectedApps);
-                        put("suggestedTime", suggestedTime);
+                        put("suggestedTime", suggestedTime.getText().toString());
                     }});
 
             String appsString = String.join(",", selectedApps);
@@ -112,7 +113,7 @@ public class CreateTeam extends AppCompatActivity {
             String deepLink = "myapp://join"
                     + "?team=" + teamCode
                     + "&apps=" + appsString
-                    + "&time=" + suggestedTime;
+                    + "&time=" + suggestedTime.getText().toString();
 
             String inviteMessage ="Hey! Join my team against screen time!\n" + "Tap to join: " + deepLink;
 
@@ -180,7 +181,8 @@ public class CreateTeam extends AppCompatActivity {
             String time = String.format(Locale.getDefault(), "%02d:%s", hour, minuteStr);
             suggestedTime.setText(time);
             String username = new SessionManager(CreateTeam.this).getTeamCode();
-            FirebaseFirestore.getInstance().collection("teams").document(teamCode).update("time", suggestedTime);
+            FirebaseFirestore.getInstance().collection("teams").document(teamCode)
+                    .update("time", suggestedTime.getText().toString());
         });
 
         builder.setNegativeButton("Cancel", null);

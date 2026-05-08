@@ -59,7 +59,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="80dp"
-        android:text="+ Add Apps"
+        android:text="@string/addplus"
         android:backgroundTint="#00C8A0"
         android:textColor="#FFFFFF"
         android:textSize="15sp"

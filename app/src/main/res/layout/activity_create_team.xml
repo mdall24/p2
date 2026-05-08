@@ -10,17 +10,17 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/AddAppButton"
-        android:contentDescription="@string/desc"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:clickable="true"
+        android:contentDescription="@string/desc"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.041"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/GroupDefinition"
-        app:layout_constraintVertical_bias="0.218"
+        app:layout_constraintVertical_bias="0.192"
         app:srcCompat="@drawable/plus_sign_placeholder" />
 
     <TextView
@@ -118,8 +118,9 @@
         app:layout_constraintHorizontal_bias="0.041"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/GroupDefinition"
-        app:layout_constraintVertical_bias="0.383"
+        app:layout_constraintVertical_bias="0.327"
         app:srcCompat="@drawable/plus_sign_placeholder" />
+
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
