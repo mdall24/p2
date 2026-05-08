@@ -205,7 +205,13 @@ public class TeamPage extends AppCompatActivity {
                 .setTitle("Leave Team")
                 .setMessage("Are you sure you want to leave the team?")
                 .setPositiveButton("Leave", (dialog, which) -> {
-                    //Handles the leave action
+                    String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    db.collection("teams").document(teamCode)
+                            .update("members", com.google.firebase.firestore.FieldValue.arrayRemove(uid))
+                            .addOnSuccessListener(unused ->
+                                    Toast.makeText(this, "You left the team", Toast.LENGTH_SHORT).show());
+
+                    setContentView(R.layout.activity_join_or_create_team);
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
