@@ -236,9 +236,9 @@ public class ActivityHome extends AppCompatActivity {
                     //Get yesterday date as the key
                     Calendar yesterday = Calendar.getInstance();
                     yesterday.add(Calendar.DAY_OF_YEAR, -1);
-                    String dateKey = yesterday.get(Calendar.YEAR) + "-"
+                    String dateKey = yesterday.get(Calendar.DAY_OF_MONTH) + "-"
                             +(yesterday.get(Calendar.MONTH)+ 1)+ "-"
-                            + yesterday.get(Calendar.DAY_OF_MONTH);
+                            + yesterday.get(Calendar.YEAR);
 
                     //Set bedtime start for yesterday
                     Calendar bedtimeStart = (Calendar) yesterday.clone();
@@ -304,9 +304,9 @@ public class ActivityHome extends AppCompatActivity {
 
         Calendar yesterday = Calendar.getInstance();
         yesterday.add(Calendar.DAY_OF_YEAR, -1);
-        String dateKey = yesterday.get(Calendar.YEAR) + "-"
-                + (yesterday.get(Calendar.MONTH) + 1) + "-"
-                + yesterday.get(Calendar.DAY_OF_MONTH);
+        String dateKey = yesterday.get(Calendar.DAY_OF_MONTH) + "-"
+                +(yesterday.get(Calendar.MONTH)+ 1)+ "-"
+                + yesterday.get(Calendar.YEAR);
 
         long totalMinutes = ScreenTimeHelper.getTotalUsageForDay(this, yesterday) / 1000 / 60;
 
