@@ -274,41 +274,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
+        <ImageView
             android:id="@+id/tvNavStatistics"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
             android:minHeight="60dp"
-            android:paddingBottom="8dp"
-            android:text="Statistics"
-            android:textColor="#AABBCC"
-            android:textSize="11sp" />
+            android:layout_weight="1"
+            android:scaleType="center"
+            app:srcCompat="@drawable/stats_icon"/>
 
-        <TextView
+        <ImageView
             android:id="@+id/tvNavHome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
             android:minHeight="60dp"
-            android:paddingBottom="8dp"
-            android:text="Home"
-            android:textColor="#AABBCC"
-            android:textSize="11sp" />
+            android:layout_weight="1"
+            android:scaleType="center"
+            app:srcCompat="@drawable/home_icon"/>
 
-        <TextView
+        <ImageView
             android:id="@+id/tvNavBlock"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
             android:minHeight="60dp"
-            android:paddingBottom="8dp"
-            android:text="Block"
-            android:textColor="#AABBCC"
-            android:textSize="11sp" />
+            android:layout_weight="1"
+            android:scaleType="center"
+            app:srcCompat="@drawable/block_icon"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
