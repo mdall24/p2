@@ -193,9 +193,9 @@ public class statistics extends AppCompatActivity {
                 continue;
             }
 
-            String dateKey = day.get(Calendar.YEAR) + "-"
-                    + (day.get(Calendar.MONTH) + 1) + "-"
-                    + day.get(Calendar.DAY_OF_MONTH);
+            String dateKey = day.get(Calendar.DAY_OF_MONTH) + "-"
+                    +(day.get(Calendar.MONTH)+ 1)+ "-"
+                    + day.get(Calendar.YEAR);
 
             Long myMinutes = myDateMap.get(dateKey);
             myEntries.add(new BarEntry(i, myMinutes != null ? myMinutes : 0f));
