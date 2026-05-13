@@ -219,7 +219,7 @@ public class statistics extends AppCompatActivity {
             }
         }
 
-        BarDataSet myDataSet = new BarDataSet(myEntries, "Your avg");
+        BarDataSet myDataSet = new BarDataSet(myEntries, "Your Total");
         myDataSet.setColor(0xFF00C8A0);
         myDataSet.setValueTextColor(0xFFAABBCC);
         myDataSet.setValueTextSize(9f);
@@ -238,7 +238,7 @@ public class statistics extends AppCompatActivity {
 
         BarData barData;
         if (groupDateMap != null) {
-            BarDataSet groupDataSet = new BarDataSet(groupEntries, "Group avg");
+            BarDataSet groupDataSet = new BarDataSet(groupEntries, "Group Total");
             groupDataSet.setColor(0xFFF4A430);
             groupDataSet.setValueTextColor(0xFFAABBCC);
             groupDataSet.setValueTextSize(9f);
