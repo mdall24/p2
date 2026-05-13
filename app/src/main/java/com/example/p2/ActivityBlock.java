@@ -30,7 +30,7 @@ public class ActivityBlock extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        findViewById(R.id.tvNavBlock).setSelected(true);
         // Set up the blocked apps list
         RecyclerView rv = findViewById(R.id.rvBlockedApps);
         blockedAppsList = new ArrayList<>(AppListManager.getSavedApps(this));

@@ -44,7 +44,7 @@ public class statistics extends AppCompatActivity {
         setContentView(R.layout.activity_statistics);
 
 
-
+        findViewById(R.id.tvNavStatistics).setSelected(true);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.scrollView), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(0, systemBars.top, 0, 0);
@@ -96,12 +96,91 @@ public class statistics extends AppCompatActivity {
     }
     private void setupBarChart() {
         BarChart barChart = findViewById(R.id.barChart);
+        String username = new SessionManager(this).getUsername();
+        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Always start from Monday of the current week
-        // DAY_OF_WEEK: 1=Sun, 2=Mon, 3=Tue, 4=Wed, 5=Thu, 6=Fri, 7=Sat
+        // First get your own screen time history
+        FirebaseFirestore.getInstance().collection("usernames")
+                .document(username)
+                .collection("screenTimeHistory")
+                .get()
+                .addOnSuccessListener(myQuery -> {
+                    Map<String, Long> myDateMap = new HashMap<>();
+                    for (QueryDocumentSnapshot doc : myQuery) {
+                        String date = doc.getString("date");
+                        Long minutes = doc.getLong("totalMinutes");
+                        if (date != null && minutes != null) {
+                            myDateMap.put(date, minutes);
+                        }
+                    }
+
+                    // Then get team members
+                    FirebaseFirestore.getInstance().collection("teams")
+                            .whereArrayContains("members", uid)
+                            .get()
+                            .addOnSuccessListener(teamQuery -> {
+                                if (teamQuery.isEmpty()) {
+                                    buildChart(barChart, myDateMap, null);
+                                    return;
+                                }
+
+                                List<String> memberUids = (List<String>) teamQuery.getDocuments().get(0).get("members");
+                                if (memberUids == null || memberUids.size() <= 1) {
+                                    buildChart(barChart, myDateMap, null);
+                                    return;
+                                }
+
+                                // Fetch all members' screen time history
+                                Map<String, List<Long>> groupDateMap = new HashMap<>();
+                                int[] loadedCount = {0};
+                                int totalMembers = memberUids.size();
+
+                                for (String memberUid : memberUids) {
+                                    FirebaseFirestore.getInstance().collection("usernames")
+                                            .whereEqualTo("uid", memberUid)
+                                            .get()
+                                            .addOnSuccessListener(userQuery -> {
+                                                if (!userQuery.isEmpty()) {
+                                                    String memberUsername = userQuery.getDocuments().get(0).getId();
+                                                    FirebaseFirestore.getInstance().collection("usernames")
+                                                            .document(memberUsername)
+                                                            .collection("screenTimeHistory")
+                                                            .get()
+                                                            .addOnSuccessListener(historyQuery -> {
+                                                                for (QueryDocumentSnapshot doc : historyQuery) {
+                                                                    String date = doc.getString("date");
+                                                                    Long minutes = doc.getLong("totalMinutes");
+                                                                    if (date != null && minutes != null) {
+                                                                        if (!groupDateMap.containsKey(date)) {
+                                                                            groupDateMap.put(date, new ArrayList<>());
+                                                                        }
+                                                                        groupDateMap.get(date).add(minutes);
+                                                                    }
+                                                                }
+                                                                loadedCount[0]++;
+                                                                if (loadedCount[0] == totalMembers) {
+                                                                    buildChart(barChart, myDateMap, groupDateMap);
+                                                                }
+                                                            });
+                                                } else {
+                                                    loadedCount[0]++;
+                                                    if (loadedCount[0] == totalMembers) {
+                                                        buildChart(barChart, myDateMap, groupDateMap);
+                                                    }
+                                                }
+                                            });
+                                }
+                            });
+                });
+    }
+
+    private void buildChart(BarChart barChart, Map<String, Long> myDateMap, Map<String, List<Long>> groupDateMap) {
+        ArrayList<BarEntry> myEntries = new ArrayList<>();
+        ArrayList<BarEntry> groupEntries = new ArrayList<>();
+        String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
+
         Calendar monday = Calendar.getInstance();
         int dayOfWeek = monday.get(Calendar.DAY_OF_WEEK);
-        // How many days back is Monday? (if today is Wed=4, we go back 2 days)
         int daysBackToMonday = (dayOfWeek == Calendar.SUNDAY) ? 6 : dayOfWeek - Calendar.MONDAY;
         monday.add(Calendar.DAY_OF_YEAR, -daysBackToMonday);
         monday.set(Calendar.HOUR_OF_DAY, 0);
@@ -109,9 +188,6 @@ public class statistics extends AppCompatActivity {
         monday.set(Calendar.SECOND, 0);
         monday.set(Calendar.MILLISECOND, 0);
 
-        // Build one bar per day Mon→Sun, only up to today
-        String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
-        ArrayList<BarEntry> entries = new ArrayList<>();
         Calendar today = Calendar.getInstance();
 
         for (int i = 0; i < 7; i++) {
@@ -119,26 +195,36 @@ public class statistics extends AppCompatActivity {
             day.add(Calendar.DAY_OF_YEAR, i);
 
             if (day.after(today)) {
-                entries.add(new BarEntry(i, 0f));
+                myEntries.add(new BarEntry(i, 0f));
+                groupEntries.add(new BarEntry(i, 0f));
                 continue;
             }
 
-            // Pass the actual Calendar day directly — no more daysAgo calculation
-            long totalMs = ScreenTimeHelper.getTotalUsageForDay(this, day);
-            float totalMinutes = totalMs / 1000f / 60f;
-            entries.add(new BarEntry(i, totalMinutes));
-            barChart.setTouchEnabled(false);
-            barChart.setClickable(false);
+            String dateKey = day.get(Calendar.YEAR) + "-"
+                    + (day.get(Calendar.MONTH) + 1) + "-"
+                    + day.get(Calendar.DAY_OF_MONTH);
+
+            Long myMinutes = myDateMap.get(dateKey);
+            myEntries.add(new BarEntry(i, myMinutes != null ? myMinutes : 0f));
+
+            if (groupDateMap != null) {
+                List<Long> groupValues = groupDateMap.get(dateKey);
+                if (groupValues != null && !groupValues.isEmpty()) {
+                    long sum = 0;
+                    for (Long v : groupValues) sum += v;
+                    groupEntries.add(new BarEntry(i, (float) sum / groupValues.size()));
+                } else {
+                    groupEntries.add(new BarEntry(i, 0f));
+                }
+            }
         }
 
-        // Create the dataset and style it
-        BarDataSet dataSet = new BarDataSet(entries, "Your avg");
-        dataSet.setColor(0xFF00C8A0);
-        dataSet.setValueTextColor(0xFFAABBCC);
-        dataSet.setValueTextSize(9f);
+        BarDataSet myDataSet = new BarDataSet(myEntries, "Your Total");
+        myDataSet.setColor(0xFF00C8A0);
+        myDataSet.setValueTextColor(0xFFAABBCC);
+        myDataSet.setValueTextSize(9f);
 
-        // Format values as whole minutes e.g. "45m"
-        dataSet.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+        com.github.mikephil.charting.formatter.ValueFormatter formatter = new com.github.mikephil.charting.formatter.ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
                 if (value <= 0) return "";
@@ -146,17 +232,36 @@ public class statistics extends AppCompatActivity {
                 if (mins >= 60) return (mins / 60) + "h" + (mins % 60 > 0 ? (mins % 60) + "m" : "");
                 return mins + "m";
             }
-        });
+        };
 
-        BarData barData = new BarData(dataSet);
-        barData.setBarWidth(0.5f);
+        myDataSet.setValueFormatter(formatter);
+
+        BarData barData;
+        if (groupDateMap != null) {
+            BarDataSet groupDataSet = new BarDataSet(groupEntries, "Group Total");
+            groupDataSet.setColor(0xFFF4A430);
+            groupDataSet.setValueTextColor(0xFFAABBCC);
+            groupDataSet.setValueTextSize(9f);
+            groupDataSet.setValueFormatter(formatter);
+            barData = new BarData(myDataSet, groupDataSet);
+            barData.setBarWidth(0.35f);
+        } else {
+            barData = new BarData(myDataSet);
+            barData.setBarWidth(0.5f);
+        }
+
         barChart.setData(barData);
+
+        if (groupDateMap != null) {
+            barChart.groupBars(0, 0.1f, 0.05f);
+        }
 
         barChart.setBackgroundColor(0xFF0D1B2A);
         barChart.setGridBackgroundColor(0xFF0D1B2A);
         barChart.getDescription().setEnabled(false);
         barChart.getLegend().setEnabled(false);
         barChart.setDrawGridBackground(false);
+        barChart.setTouchEnabled(false);
         barChart.animateY(800);
 
         XAxis xAxis = barChart.getXAxis();
@@ -165,11 +270,13 @@ public class statistics extends AppCompatActivity {
         xAxis.setTextColor(0xFFAABBCC);
         xAxis.setTextSize(10f);
         xAxis.setGranularity(1f);
+        xAxis.setAxisMinimum(0f);
+        xAxis.setAxisMaximum(7f);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(dayLabels));
+        xAxis.setCenterAxisLabels(true);
 
         barChart.getAxisLeft().setEnabled(false);
         barChart.getAxisRight().setEnabled(false);
-
         barChart.invalidate();
     }
     private void loadLeaderboard() {

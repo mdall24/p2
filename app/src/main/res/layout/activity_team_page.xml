@@ -215,36 +215,32 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <TextView
+        <ImageView
             android:id="@+id/tvNavStatistics"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="Statistics"
-            android:textColor="#AABBCC"
-            android:textSize="11sp" />
+            android:scaleType="center"
+            app:srcCompat="@drawable/stats_icon"/>
 
-        <TextView
+        <ImageView
             android:id="@+id/tvNavHome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="Home"
-            android:textColor="#AABBCC"
-            android:textSize="11sp" />
+            android:scaleType="center"
+            app:srcCompat="@drawable/home_icon"/>
 
-        <TextView
+        <ImageView
             android:id="@+id/tvNavBlock"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="Block"
-            android:textColor="#AABBCC"
-            android:textSize="11sp" />
-
+            android:scaleType="center"
+            app:srcCompat="@drawable/block_icon"/>
     </LinearLayout>
 
 </LinearLayout>
