@@ -5,6 +5,8 @@ import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -32,6 +34,40 @@ public class ScreenTimeHelper {
             return minutes + "m";
         }
     }
+
+    /*Helps return Calendar for Monday 00:00 of the current week
+    Used by both the getTotalUsageForDay in the bar char on statistics
+    as well as the getWeeklyUsagePackages in team tracker, so the logic
+    only lives in one place */
+public static Calendar getMondayOfCurrentWeek(){
+        Calendar monday = Calendar.getInstance();
+        int dayOfWeek = monday.get(Calendar.DAY_OF_WEEK);
+        int daysBack = (dayOfWeek == Calendar.SUNDAY) ? 6 : dayOfWeek + Calendar.MONDAY;
+        monday.add(Calendar.DAY_OF_YEAR, -daysBack);
+        monday.set(Calendar.HOUR_OF_DAY, 0);
+        monday.set(Calendar.MINUTE, 0);
+        monday.set(Calendar.MILLISECOND, 0);
+        return monday;
+}
+/* Sums the usage from Monday 00:00 until now, filtered to a specific list of package names.
+* Used by TeamUsageTracker for team app tracking. Returns total minutes.*/
+public static long getWeeklyUsageForPackages(Context context, List<String> packageNames){
+    if (packageNames == null || packageNames.isEmpty()) return 0;
+
+    UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+    long startTime = getMondayOfCurrentWeek().getTimeInMillis();
+    long endTime = System.currentTimeMillis();
+
+    Map<String, UsageStats> statsMap = usm.queryAndAggregateUsageStats(startTime, endTime);
+
+    long totalMs = 0;
+    for (String packageName : packageNames){
+        if (statsMap.containsKey(packageName)){
+            totalMs += statsMap.get(packageName).getTotalTimeInForeground();
+        }
+    }
+    return totalMs / 1000 / 60; //Converts ms to minutes
+}
 
     // Gets total screen time per app for today
     public static List<AppUsage> getTodayUsage(Context context) {

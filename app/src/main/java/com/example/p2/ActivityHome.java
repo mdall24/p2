@@ -89,6 +89,10 @@ public class ActivityHome extends AppCompatActivity {
                     }
                 });
 
+        TeamUsageWorker.scheduleIfNeeded(this);
+        WeeklyResetWorker.scheduleIfNeeded(this);
+        BlockScheduler.schedule(this);
+
         uploadScreenTime();
         saveAfterBedtimeScreenTime();
         updateGroupTimeCircle();

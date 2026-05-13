@@ -40,6 +40,8 @@ dependencies {
     implementation libs.firebase.auth
     implementation libs.cardview
     implementation libs.cardview
+    implementation libs.work.runtime
+    implementation "androidx.work:work-runtime:2.11.2"
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

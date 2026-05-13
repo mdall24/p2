@@ -366,6 +366,4 @@
             app:srcCompat="@drawable/block_icon"/>
     </LinearLayout>
 
-    </LinearLayout>
-
 </FrameLayout>

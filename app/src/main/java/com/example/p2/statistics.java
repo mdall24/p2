@@ -179,14 +179,7 @@ public class statistics extends AppCompatActivity {
         ArrayList<BarEntry> groupEntries = new ArrayList<>();
         String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
 
-        Calendar monday = Calendar.getInstance();
-        int dayOfWeek = monday.get(Calendar.DAY_OF_WEEK);
-        int daysBackToMonday = (dayOfWeek == Calendar.SUNDAY) ? 6 : dayOfWeek - Calendar.MONDAY;
-        monday.add(Calendar.DAY_OF_YEAR, -daysBackToMonday);
-        monday.set(Calendar.HOUR_OF_DAY, 0);
-        monday.set(Calendar.MINUTE, 0);
-        monday.set(Calendar.SECOND, 0);
-        monday.set(Calendar.MILLISECOND, 0);
+        Calendar monday = ScreenTimeHelper.getMondayOfCurrentWeek();
 
         Calendar today = Calendar.getInstance();
 

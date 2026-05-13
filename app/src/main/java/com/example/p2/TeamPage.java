@@ -85,6 +85,9 @@ public class TeamPage extends AppCompatActivity {
                         loadMembers();
                         loadPendingApps();
                         loadApprovedApps();
+
+                        TeamUsageWorker.scheduleIfNeeded(this);
+                        WeeklyResetWorker.scheduleIfNeeded(this);
                     } else {
                         Toast.makeText(this, "No team found. Please join or create a team.", Toast.LENGTH_LONG).show();
                         finish();
@@ -530,7 +533,10 @@ public class TeamPage extends AppCompatActivity {
 
                     db.collection("teams").document(teamCode)
                             .update("pendingApps." + appName, com.google.firebase.firestore.FieldValue.delete())
-                            .addOnSuccessListener(a -> loadPendingApps());
+                            .addOnSuccessListener(a -> {
+                                loadPendingApps();
+                                BlockScheduler.schedule(TeamPage.this);
+                            });
                 });
     }
     private void loadApprovedApps() {
