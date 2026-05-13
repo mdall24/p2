@@ -102,7 +102,7 @@ public class ScreenTimeHistory extends AppCompatActivity {
 
         for (int i = 0; i < data.size() && i < 7; i++) {
             Map<String, Object> item = data.get(i);
-            Long minutes = (Long) item.get(mode.equals("total") ? "totalMinutes" : "afterBedtimeMinutes");
+            Long minutes = (Long) item.get("minutes");
             entries.add(new BarEntry(i, minutes != null ? minutes : 0));
             labels[i] = (String) item.get("date");
         }
