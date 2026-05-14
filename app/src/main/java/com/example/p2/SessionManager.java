@@ -59,4 +59,5 @@ public class SessionManager {
     public String getLastUploadDate(){
         return prefs.getString("lastUploadDate", null);
     }
+
 }

@@ -238,19 +238,14 @@ public class ActivityHome extends AppCompatActivity {
         );
         return mode == AppOpsManager.MODE_ALLOWED;
     }
-    private void uploadScreenTime(){
+    private void uploadScreenTime() {
         long totalMS = ScreenTimeHelper.getTotalUsageForDay(this, Calendar.getInstance());
         long totalMinutes = totalMS / 1000 / 60;
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String username = new SessionManager(this).getUsername();
         FirebaseFirestore.getInstance().collection("usernames")
-                .whereEqualTo("uid", uid)
-                .get().addOnSuccessListener(query ->{
-                    if(!query.isEmpty()){
-                        String username = query.getDocuments().get(0).getId();
-                        FirebaseFirestore.getInstance().collection("usernames").document(username).update("ScreenTime", totalMinutes);
-                    }
-                });
+                .document(username)
+                .update("ScreenTime", totalMinutes);
     }
     private void saveAfterBedtimeScreenTime(){
         String username = new SessionManager(this).getUsername();

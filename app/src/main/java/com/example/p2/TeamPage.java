@@ -213,6 +213,7 @@ public class TeamPage extends AppCompatActivity {
                             .update("members", com.google.firebase.firestore.FieldValue.arrayRemove(uid))
                             .addOnSuccessListener(unused ->
                                     Toast.makeText(this, "You left the team", Toast.LENGTH_SHORT).show());
+                    new SessionManager(TeamPage.this).saveTeamCode(null);
 
                     setContentView(R.layout.activity_join_or_create_team);
                 })
@@ -327,6 +328,7 @@ public class TeamPage extends AppCompatActivity {
                 .setPositiveButton("Disband", (dialog, which) -> {
                     db.collection("teams").document(teamCode).delete().addOnSuccessListener(unused -> {
                                 Toast.makeText(this, "Team Disbanded", Toast.LENGTH_SHORT).show();
+                                new SessionManager(TeamPage.this).saveTeamCode(null);
                                 Intent intent = new Intent(TeamPage.this, ActivityHome.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);

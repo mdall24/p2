@@ -23,11 +23,9 @@ import java.util.Calendar;
 
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -42,7 +40,6 @@ public class statistics extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_statistics);
-
 
         findViewById(R.id.tvNavStatistics).setSelected(true);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.scrollView), (v, insets) -> {
@@ -62,44 +59,58 @@ public class statistics extends AppCompatActivity {
             Intent intent = new Intent(statistics.this, ScreenTimeHistory.class);
             startActivity(intent);
         });
-        String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseFirestore.getInstance().collection("teams")
-                .whereArrayContains("members", currentUid)
-                .get()
-                .addOnSuccessListener(query -> {
-                    String teamCode = query.isEmpty() ? null : query.getDocuments().get(0).getId();
-                    Button btnCreateTeam = findViewById(R.id.btnCreateTeam);
-                    if (teamCode != null) {
-                        btnCreateTeam.setText("+ Invite Friends");
-                        btnCreateTeam.setOnClickListener(v -> {
-                            String deepLink = "myapp://join"
-                                    + "?team=" + teamCode;
 
-                            String inviteMessage = "Hey! Join my team against screen time!\n" + "Tap to join: " + deepLink;
+        String teamCode = new SessionManager(this).getTeamCode();
+        Button btnCreateTeam = findViewById(R.id.btnCreateTeam);
 
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("text/plain");
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
-                            startActivity(Intent.createChooser(shareIntent, "Send invite via"));
-                        });
-                    } else {
-                        btnCreateTeam.setText("+     Create Team");
-                        btnCreateTeam.setOnClickListener(v -> {
-                            Intent intent = new Intent(statistics.this, CreateTeam.class);
-                            startActivity(intent);
-                        });
-                    }
-                });
+        if (teamCode != null) {
+            btnCreateTeam.setText("+ Invite Friends");
+            btnCreateTeam.setOnClickListener(v -> {
+                String deepLink = "myapp://join?team=" + teamCode;
+                String inviteMessage = "Hey! Join my team against screen time!\n" + "Tap to join: " + deepLink;
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+                startActivity(Intent.createChooser(shareIntent, "Send invite via"));
+            });
+            } else {
+            // Fallback - fetch from Firestore and cache it
+            String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+            FirebaseFirestore.getInstance().collection("teams")
+                    .whereArrayContains("members", uid)
+                    .get()
+                    .addOnSuccessListener(query -> {
+                        if (!query.isEmpty()) {
+                            String fetchedCode = query.getDocuments().get(0).getId();
+                            new SessionManager(this).saveTeamCode(fetchedCode);
+                            btnCreateTeam.setText("+ Invite Friends");
+                            btnCreateTeam.setOnClickListener(v -> {
+                                String deepLink = "myapp://join?team=" + fetchedCode;
+                                String inviteMessage = "Hey! Join my team against screen time!\n" + "Tap to join: " + deepLink;
+                                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                shareIntent.setType("text/plain");
+                                shareIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+                                startActivity(Intent.createChooser(shareIntent, "Send invite via"));
+                            });
+                        } else {
+                            btnCreateTeam.setText("+     Create Team");
+                            btnCreateTeam.setOnClickListener(v -> {
+                                Intent intent = new Intent(statistics.this, CreateTeam.class);
+                                startActivity(intent);
+                            });
+                        }
+                    });
+        }
+
         setupBarChart();
         loadLeaderboard();
-
     }
+
     private void setupBarChart() {
         BarChart barChart = findViewById(R.id.barChart);
         String username = new SessionManager(this).getUsername();
-        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String teamCode = new SessionManager(this).getTeamCode();
 
-        // First get your own screen time history
         FirebaseFirestore.getInstance().collection("usernames")
                 .document(username)
                 .collection("screenTimeHistory")
@@ -114,23 +125,24 @@ public class statistics extends AppCompatActivity {
                         }
                     }
 
-                    // Then get team members
-                    FirebaseFirestore.getInstance().collection("teams")
-                            .whereArrayContains("members", uid)
-                            .get()
-                            .addOnSuccessListener(teamQuery -> {
-                                if (teamQuery.isEmpty()) {
+                    if (teamCode == null) {
+                        buildChart(barChart, myDateMap, null);
+                        return;
+                    }
+
+                    FirebaseFirestore.getInstance().collection("teams").document(teamCode).get()
+                            .addOnSuccessListener(teamDoc -> {
+                                if (!teamDoc.exists()) {
                                     buildChart(barChart, myDateMap, null);
                                     return;
                                 }
 
-                                List<String> memberUids = (List<String>) teamQuery.getDocuments().get(0).get("members");
+                                List<String> memberUids = (List<String>) teamDoc.get("members");
                                 if (memberUids == null || memberUids.size() <= 1) {
                                     buildChart(barChart, myDateMap, null);
                                     return;
                                 }
 
-                                // Fetch all members' screen time history
                                 Map<String, List<Long>> groupDateMap = new HashMap<>();
                                 int[] loadedCount = {0};
                                 int totalMembers = memberUids.size();
@@ -180,7 +192,6 @@ public class statistics extends AppCompatActivity {
         String[] dayLabels = {"M", "T", "W", "T", "F", "S", "S"};
 
         Calendar monday = ScreenTimeHelper.getMondayOfCurrentWeek();
-
         Calendar today = Calendar.getInstance();
 
         for (int i = 0; i < 7; i++) {
@@ -194,7 +205,7 @@ public class statistics extends AppCompatActivity {
             }
 
             String dateKey = day.get(Calendar.DAY_OF_MONTH) + "-"
-                    +(day.get(Calendar.MONTH)+ 1)+ "-"
+                    + (day.get(Calendar.MONTH) + 1) + "-"
                     + day.get(Calendar.YEAR);
 
             Long myMinutes = myDateMap.get(dateKey);
@@ -272,18 +283,16 @@ public class statistics extends AppCompatActivity {
         barChart.getAxisRight().setEnabled(false);
         barChart.invalidate();
     }
+
     private void loadLeaderboard() {
-        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String teamCode = new SessionManager(this).getTeamCode();
+        if (teamCode == null) return;
 
-        FirebaseFirestore.getInstance().collection("teams")
-                .whereArrayContains("members", uid)
-                .get()
-                .addOnSuccessListener(teamQuery -> {
-                    if (teamQuery.isEmpty()) return;
+        FirebaseFirestore.getInstance().collection("teams").document(teamCode).get()
+                .addOnSuccessListener(teamDoc -> {
+                    if (!teamDoc.exists()) return;
 
-                    String teamCode = teamQuery.getDocuments().get(0).getId();
-                    List<String> memberUids = (List<String>) teamQuery.getDocuments().get(0).get("members");
-
+                    List<String> memberUids = (List<String>) teamDoc.get("members");
                     if (memberUids == null) return;
 
                     List<Map<String, Object>> members = new ArrayList<>();
