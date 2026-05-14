@@ -78,16 +78,33 @@ public class ActivityHome extends AppCompatActivity {
         tvUsername.setText(session.getUsername());
 
         ImageView ivAvatar = findViewById(R.id.ivAvatar);
-        FirebaseFirestore.getInstance().collection("usernames").document(session.getUsername()).get()
-                .addOnSuccessListener(doc -> {
-                    Long avatarIdx = doc.getLong("avatarIndex");
-                    if (avatarIdx != null) {
-                        List<Bitmap> avatars = AvatarHelper.getAvatars(this);
-                        if (avatarIdx >= 0 && avatarIdx < avatars.size()) {
-                            ivAvatar.setImageBitmap(avatars.get(avatarIdx.intValue()));
+        int cachedAvatar = session.getAvatarIndex();
+
+        if (cachedAvatar != -1) {
+            new Thread(() -> {
+                List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+                if (cachedAvatar < avatars.size()) {
+                    Bitmap avatar = avatars.get(cachedAvatar);
+                    runOnUiThread(() -> ivAvatar.setImageBitmap(avatar));
+                }
+            }).start();
+        } else {
+            FirebaseFirestore.getInstance().collection("usernames").document(session.getUsername()).get()
+                    .addOnSuccessListener(doc ->{
+                        Long avatarIdx = doc.getLong("avatarIndex");
+                        if(avatarIdx !=null){
+                            session.saveAvatarIndex(avatarIdx.intValue());
+                            new Thread(()->{
+                                List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+                                if(avatarIdx >= 0 && avatarIdx < avatars.size()){
+                                    Bitmap avatar = avatars.get(avatarIdx.intValue());
+                                    runOnUiThread(()-> ivAvatar.setImageBitmap(avatar));
+                                }
+                            }).start();
                         }
-                    }
-                });
+                    });
+        }
+
 
         TeamUsageWorker.scheduleIfNeeded(this);
         WeeklyResetWorker.scheduleIfNeeded(this);

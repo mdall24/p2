@@ -45,4 +45,11 @@ public class SessionManager {
         editor.putBoolean("askedPermission", asked);
         editor.apply();
     }
+    public void saveAvatarIndex(int index){
+        editor.putInt("avatarIndex", index);
+        editor.apply();
+    }
+    public int getAvatarIndex(){
+        return prefs.getInt("avatarIndex", -1);
+    }
 }
