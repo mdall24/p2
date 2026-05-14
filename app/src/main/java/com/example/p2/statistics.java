@@ -43,7 +43,7 @@ public class statistics extends AppCompatActivity {
         setContentView(R.layout.activity_statistics);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         findViewById(R.id.tvNavStatistics).setSelected(true);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.scrollView), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottomNav), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(0, 0, 0, systemBars.bottom);
             return insets;
