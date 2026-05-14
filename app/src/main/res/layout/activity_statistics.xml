@@ -429,7 +429,8 @@
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:backgroundTint="#00C8A0"
-                    android:text="Previous Time"
+                    android:textColor="#FFFFFF"
+                    android:text="History"
                     android:textSize="16dp"
                     android:drawableStart="@drawable/rounded_button" />
 
