@@ -205,7 +205,6 @@
 
         </LinearLayout>
     </ScrollView>
-
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
@@ -242,5 +241,4 @@
             android:scaleType="center"
             app:srcCompat="@drawable/block_icon"/>
     </LinearLayout>
-
 </LinearLayout>
