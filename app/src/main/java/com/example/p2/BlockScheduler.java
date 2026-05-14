@@ -35,10 +35,12 @@ public class BlockScheduler {
                         Log.w(TAG, "No time set for team, skipping schedule");
                         return;
                     }
-                    String timeStr = query.getDocuments().get(0).getString("suggestedTime");
-                    if (timeStr != null) {
-                        scheduleWorker(context, timeStr);
-                    }
+                    Long suggestedTimeLong = query.getDocuments().get(0).getLong("suggestedTime");
+                    if(suggestedTimeLong == null) return;
+                    int hours = (int) (suggestedTimeLong / 60);
+                    int minutes = (int) (suggestedTimeLong % 60);
+                    String timeStr = String.format("%02d:%02d", hours, minutes);
+                    scheduleWorker(context, timeStr);
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to fetch team for scheduling", e));
     }

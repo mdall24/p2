@@ -78,16 +78,33 @@ public class ActivityHome extends AppCompatActivity {
         tvUsername.setText(session.getUsername());
 
         ImageView ivAvatar = findViewById(R.id.ivAvatar);
-        FirebaseFirestore.getInstance().collection("usernames").document(session.getUsername()).get()
-                .addOnSuccessListener(doc -> {
-                    Long avatarIdx = doc.getLong("avatarIndex");
-                    if (avatarIdx != null) {
-                        List<Bitmap> avatars = AvatarHelper.getAvatars(this);
-                        if (avatarIdx >= 0 && avatarIdx < avatars.size()) {
-                            ivAvatar.setImageBitmap(avatars.get(avatarIdx.intValue()));
+        int cachedAvatar = session.getAvatarIndex();
+
+        if (cachedAvatar != -1) {
+            new Thread(() -> {
+                List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+                if (cachedAvatar < avatars.size()) {
+                    Bitmap avatar = avatars.get(cachedAvatar);
+                    runOnUiThread(() -> ivAvatar.setImageBitmap(avatar));
+                }
+            }).start();
+        } else {
+            FirebaseFirestore.getInstance().collection("usernames").document(session.getUsername()).get()
+                    .addOnSuccessListener(doc ->{
+                        Long avatarIdx = doc.getLong("avatarIndex");
+                        if(avatarIdx !=null){
+                            session.saveAvatarIndex(avatarIdx.intValue());
+                            new Thread(()->{
+                                List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+                                if(avatarIdx >= 0 && avatarIdx < avatars.size()){
+                                    Bitmap avatar = avatars.get(avatarIdx.intValue());
+                                    runOnUiThread(()-> ivAvatar.setImageBitmap(avatar));
+                                }
+                            }).start();
                         }
-                    }
-                });
+                    });
+        }
+
 
         TeamUsageWorker.scheduleIfNeeded(this);
         WeeklyResetWorker.scheduleIfNeeded(this);
@@ -240,9 +257,9 @@ public class ActivityHome extends AppCompatActivity {
                     //Get yesterday date as the key
                     Calendar yesterday = Calendar.getInstance();
                     yesterday.add(Calendar.DAY_OF_YEAR, -1);
-                    String dateKey = yesterday.get(Calendar.YEAR) + "-"
+                    String dateKey = yesterday.get(Calendar.DAY_OF_MONTH) + "-"
                             +(yesterday.get(Calendar.MONTH)+ 1)+ "-"
-                            + yesterday.get(Calendar.DAY_OF_MONTH);
+                            + yesterday.get(Calendar.YEAR);
 
                     //Set bedtime start for yesterday
                     Calendar bedtimeStart = (Calendar) yesterday.clone();
@@ -308,9 +325,9 @@ public class ActivityHome extends AppCompatActivity {
 
         Calendar yesterday = Calendar.getInstance();
         yesterday.add(Calendar.DAY_OF_YEAR, -1);
-        String dateKey = yesterday.get(Calendar.YEAR) + "-"
-                + (yesterday.get(Calendar.MONTH) + 1) + "-"
-                + yesterday.get(Calendar.DAY_OF_MONTH);
+        String dateKey = yesterday.get(Calendar.DAY_OF_MONTH) + "-"
+                +(yesterday.get(Calendar.MONTH)+ 1)+ "-"
+                + yesterday.get(Calendar.YEAR);
 
         long totalMinutes = ScreenTimeHelper.getTotalUsageForDay(this, yesterday) / 1000 / 60;
 

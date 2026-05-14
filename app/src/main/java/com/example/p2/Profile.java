@@ -52,11 +52,28 @@ public class Profile extends AppCompatActivity {
             if(bedtime != null){
                 tvBedtimeValue.setText(bedtime);
             }
-            Long avatarIdx = doc.getLong("avatarIndex");
-            if (avatarIdx != null) {
-                List<Bitmap> avatars = AvatarHelper.getAvatars(this);
-                if (avatarIdx >= 0 && avatarIdx < avatars.size()) {
-                    profileImage.setImageBitmap(avatars.get(avatarIdx.intValue()));
+           SessionManager session = new SessionManager(this);
+            int cachedAvatar = session.getAvatarIndex();
+
+            if (cachedAvatar != -1){
+                new Thread(()->{
+                    List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+                    if (cachedAvatar < avatars.size()){
+                        Bitmap avatar = avatars.get(cachedAvatar);
+                        runOnUiThread(()-> profileImage.setImageBitmap(avatar));
+                    }
+                }).start();
+            }else{
+                Long avatarIdx = doc.getLong("avatarIndex");
+                if(avatarIdx != null){
+                    session.saveAvatarIndex(avatarIdx.intValue());
+                    new Thread(()-> {
+                        List<Bitmap> avatars = AvatarHelper.getAvatars(this);
+                        if(avatarIdx >= 0 && avatarIdx < avatars.size()){
+                            Bitmap avatar = avatars.get(avatarIdx.intValue());
+                            runOnUiThread(()->profileImage.setImageBitmap(avatar));
+                        }
+                    }).start();
                 }
             }
         });
