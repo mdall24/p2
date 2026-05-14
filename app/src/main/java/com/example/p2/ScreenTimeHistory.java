@@ -33,9 +33,9 @@ public class ScreenTimeHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_time_history);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottomNav), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(0, systemBars.top, 0, 0);
+            v.setPadding(0, 0, 0, systemBars.bottom);
             return insets;
         });
         findViewById(R.id.tvNavHome).setOnClickListener(v -> {

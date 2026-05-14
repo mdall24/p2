@@ -49,11 +49,11 @@ public class CreateTeam extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_team);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottomNav), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(0, 0, 0, systemBars.bottom);
             return insets;
-            });
+        });
         FirebaseFirestore.getInstance().collection("teams").document(teamCode)
                 .get().addOnSuccessListener(doc -> {
                             String time = doc.getString("suggestedTime");
