@@ -89,6 +89,7 @@
                     android:padding="12dp">
 
                     <LinearLayout
+                        android:id="@+id/btnShowProfile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -112,7 +113,6 @@
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/btnShowProfile"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Show profile"

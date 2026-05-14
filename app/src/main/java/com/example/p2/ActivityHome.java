@@ -111,9 +111,20 @@ public class ActivityHome extends AppCompatActivity {
         BlockScheduler.schedule(this);
 
         uploadScreenTime();
-        saveAfterBedtimeScreenTime();
         updateGroupTimeCircle();
-        saveDailyScreenTime();
+        Calendar yesterday =  Calendar.getInstance();
+        yesterday.add(Calendar.DAY_OF_YEAR, -1);
+        String yesterdaykey = String.format("%02d-%02d-%04d",
+                yesterday.get(Calendar.DAY_OF_MONTH),
+                yesterday.get(Calendar.MONTH) + 1,
+                yesterday.get(Calendar.YEAR));
+
+        String lastUpload = session.getLastUploadDate();
+        if(!yesterdaykey.equals(lastUpload)) {
+            session.saveLastUploadDate(yesterdaykey);
+            saveDailyScreenTime();
+            saveAfterBedtimeScreenTime();
+        }
     }
 
     private void showBudgetDialog() {
@@ -227,19 +238,14 @@ public class ActivityHome extends AppCompatActivity {
         );
         return mode == AppOpsManager.MODE_ALLOWED;
     }
-    private void uploadScreenTime(){
+    private void uploadScreenTime() {
         long totalMS = ScreenTimeHelper.getTotalUsageForDay(this, Calendar.getInstance());
         long totalMinutes = totalMS / 1000 / 60;
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String username = new SessionManager(this).getUsername();
         FirebaseFirestore.getInstance().collection("usernames")
-                .whereEqualTo("uid", uid)
-                .get().addOnSuccessListener(query ->{
-                    if(!query.isEmpty()){
-                        String username = query.getDocuments().get(0).getId();
-                        FirebaseFirestore.getInstance().collection("usernames").document(username).update("ScreenTime", totalMinutes);
-                    }
-                });
+                .document(username)
+                .update("ScreenTime", totalMinutes);
     }
     private void saveAfterBedtimeScreenTime(){
         String username = new SessionManager(this).getUsername();

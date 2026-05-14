@@ -52,4 +52,12 @@ public class SessionManager {
     public int getAvatarIndex(){
         return prefs.getInt("avatarIndex", -1);
     }
+    public void saveLastUploadDate(String date){
+        editor.putString("lastUploadDate", date);
+        editor.apply();
+    }
+    public String getLastUploadDate(){
+        return prefs.getString("lastUploadDate", null);
+    }
+
 }

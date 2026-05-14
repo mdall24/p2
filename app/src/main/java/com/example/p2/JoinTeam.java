@@ -78,17 +78,9 @@ private int suggestedTime;
         FirebaseFirestore.getInstance().collection("teams").document(teamCode)
                 .update("members", com.google.firebase.firestore.FieldValue.arrayUnion(uid))
                 .addOnSuccessListener(a -> {
+                    new SessionManager(JoinTeam.this).saveTeamCode(teamCode);
+                    startActivity(new Intent(JoinTeam.this, TeamPage.class));
                     finish();
-                    FirebaseFirestore.getInstance().collection("teams")
-                            .whereArrayContains("members", uid)
-                            .get()
-                            .addOnSuccessListener(query -> {
-                                if (!query.isEmpty()) {
-                                    startActivity(new Intent(JoinTeam.this, TeamPage.class));
-                                } else {
-                                    startActivity(new Intent(JoinTeam.this, JoinOrCreateTeam.class));
-                                }
-                            });
                 });
     }
     private void openAppPicker() {
