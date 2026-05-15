@@ -36,7 +36,7 @@ import java.util.Map;
 
 public class TeamPage extends AppCompatActivity {
 
-    private TextView tvTeamTotal, tvTeamUsed;
+    private TextView tvTeamUsed;
 
     private Button btnAddApps, btnRemoveApps;
 
@@ -68,7 +68,6 @@ public class TeamPage extends AppCompatActivity {
             startActivity(intent);
         });
 
-        tvTeamTotal = findViewById(R.id.tvTeamTotal);
         tvTeamUsed = findViewById(R.id.tvTeamUsed);
         btnAddApps = findViewById(R.id.btnAddApps);
         btnRemoveApps = findViewById(R.id.btnRemoveApps);
@@ -359,7 +358,6 @@ public class TeamPage extends AppCompatActivity {
 
                         long left = total - used;
 
-                        tvTeamTotal.setText("Team Time Left: " + left + " min");
                         tvTeamUsed.setText("Total Used: " + used + " min");
 
                         TextView tvCircleText = findViewById(R.id.tvCircleText);
