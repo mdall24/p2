@@ -296,7 +296,7 @@ public class ActivityHome extends AppCompatActivity {
                                 put("afterBedtimeMinutes", afterBedtimeMinutes);
                                 put("bedtime", bedtime);
                                 put("date", dateKey);
-                            }});
+                            }}, com.google.firebase.firestore.SetOptions.merge());
                 });
 
     }
