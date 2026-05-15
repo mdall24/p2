@@ -141,39 +141,10 @@ public class TeamPage extends AppCompatActivity {
             bottomSheet.show();
         });
         btnAddApps.setOnClickListener(v -> {
-            PackageManager pm = getPackageManager();
-            List<ApplicationInfo> installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-
-            List<String> appNames = new ArrayList<>();
-            List<String> packageNames = new ArrayList<>();
-            for (ApplicationInfo app : installedApps) {
-                if ((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                    appNames.add(pm.getApplicationLabel(app).toString());
-                    packageNames.add(app.packageName);
-                }
-            }
-
-            // Sort by app name but keep package names in sync
-            List<Integer> indices = new ArrayList<>();
-            for (int i = 0; i < appNames.size(); i++) indices.add(i);
-            indices.sort((a, b) -> appNames.get(a).compareTo(appNames.get(b)));
-
-            List<String> sortedNames = new ArrayList<>();
-            List<String> sortedPackages = new ArrayList<>();
-            for (int i : indices) {
-                sortedNames.add(appNames.get(i));
-                sortedPackages.add(packageNames.get(i));
-            }
-
-            String[] appArray = sortedNames.toArray(new String[0]);
-
-            new AlertDialog.Builder(this).setTitle("Suggest an app").setItems(appArray, (dialog, which) -> {
-                        String selectedApp = sortedNames.get(which);
-                        String selectedPackage = sortedPackages.get(which);
-                        suggestApp(selectedApp, selectedPackage);
-                    })
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss()).show();
-        });
+                    Intent intent = new Intent(this, ActivityAppPicker.class);
+                    intent.putExtra("returnResult", true);
+                    startActivityForResult(intent, 100);
+                });
 
         btnRemoveApps.setOnClickListener(v -> {
             db.collection("teams").document(teamCode).get()
@@ -571,5 +542,22 @@ public class TeamPage extends AppCompatActivity {
                         container.addView(itemView);
                     }
                 });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null){
+            List<String> packages = data.getStringArrayListExtra("selectedPackages");
+            PackageManager pm = getPackageManager();
+            for (String packageName : packages) {
+                try {
+                    String appName = pm.getApplicationLabel(
+                            pm.getApplicationInfo(packageName, 0)).toString();
+                    suggestApp(appName, packageName);
+                } catch (PackageManager.NameNotFoundException e){
+                    Log.e("TeamPage", "App not found; " + packageName);
+                }
+            }
+        }
     }
 }

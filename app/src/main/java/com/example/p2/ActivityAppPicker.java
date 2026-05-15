@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class ActivityAppPicker extends AppCompatActivity {
 
@@ -66,7 +67,16 @@ public class ActivityAppPicker extends AppCompatActivity {
 
         // Save button — saves selected apps and goes back to Block screen
         btnSave.setOnClickListener(v -> {
-            AppListManager.saveApps(this, adapter.getSelectedPackages());
+            Set<String> selectedPackages = adapter.getSelectedPackages();
+            boolean returnResult = getIntent().getBooleanExtra("returnResult", false);
+
+            if (returnResult){
+                Intent result = new Intent();
+                result.putStringArrayListExtra("selectedPackages", new ArrayList<>(selectedPackages));
+                setResult(RESULT_OK, result);
+            } else {
+                AppListManager.saveApps(this, new java.util.HashSet<>(selectedPackages));
+            }
             finish();
         });
     }
