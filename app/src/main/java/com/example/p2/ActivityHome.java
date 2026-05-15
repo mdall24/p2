@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.graphics.Bitmap;
@@ -112,16 +113,15 @@ public class ActivityHome extends AppCompatActivity {
 
         uploadScreenTime();
         updateGroupTimeCircle();
-        Calendar yesterday =  Calendar.getInstance();
-        yesterday.add(Calendar.DAY_OF_YEAR, -1);
-        String yesterdaykey = String.format("%02d-%02d-%04d",
-                yesterday.get(Calendar.DAY_OF_MONTH),
-                yesterday.get(Calendar.MONTH) + 1,
-                yesterday.get(Calendar.YEAR));
+        Calendar today = Calendar.getInstance();
+        String todayKey = String.format("%02d-%02d-%04d",
+                today.get(Calendar.DAY_OF_MONTH),
+                today.get(Calendar.MONTH) + 1,
+                today.get(Calendar.YEAR));
 
         String lastUpload = session.getLastUploadDate();
-        if(!yesterdaykey.equals(lastUpload)) {
-            session.saveLastUploadDate(yesterdaykey);
+        if (!todayKey.equals(lastUpload)) {
+            session.saveLastUploadDate(todayKey);
             saveDailyScreenTime();
             saveAfterBedtimeScreenTime();
         }
@@ -263,9 +263,10 @@ public class ActivityHome extends AppCompatActivity {
                     //Get yesterday date as the key
                     Calendar yesterday = Calendar.getInstance();
                     yesterday.add(Calendar.DAY_OF_YEAR, -1);
-                    String dateKey = yesterday.get(Calendar.DAY_OF_MONTH) + "-"
-                            +(yesterday.get(Calendar.MONTH)+ 1)+ "-"
-                            + yesterday.get(Calendar.YEAR);
+                    String dateKey = String.format("%02d-%02d-%04d",
+                            yesterday.get(Calendar.DAY_OF_MONTH),
+                            yesterday.get(Calendar.MONTH) + 1,
+                            yesterday.get(Calendar.YEAR));
 
                     //Set bedtime start for yesterday
                     Calendar bedtimeStart = (Calendar) yesterday.clone();
@@ -331,9 +332,10 @@ public class ActivityHome extends AppCompatActivity {
 
         Calendar yesterday = Calendar.getInstance();
         yesterday.add(Calendar.DAY_OF_YEAR, -1);
-        String dateKey = yesterday.get(Calendar.DAY_OF_MONTH) + "-"
-                +(yesterday.get(Calendar.MONTH)+ 1)+ "-"
-                + yesterday.get(Calendar.YEAR);
+        String dateKey = String.format("%02d-%02d-%04d",
+                yesterday.get(Calendar.DAY_OF_MONTH),
+                yesterday.get(Calendar.MONTH) + 1,
+                yesterday.get(Calendar.YEAR));
 
         long totalMinutes = ScreenTimeHelper.getTotalUsageForDay(this, yesterday) / 1000 / 60;
 
