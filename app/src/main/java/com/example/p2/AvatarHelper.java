@@ -25,19 +25,15 @@ public class AvatarHelper {
         int height = source.getHeight();
         boolean[][] visited = new boolean[width][height];
 
-        // Scan for non-transparent islands (icons)
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (!visited[x][y] && Color.alpha(source.getPixel(x, y)) > 20) {
                     Rect bounds = findComponentBounds(source, x, y, visited);
-                    
-                    // Filter out small noise
+
                     if (bounds.width() > 30 && bounds.height() > 30) {
                         try {
-                            // Extract the icon using detected bounds
                             Bitmap avatar = Bitmap.createBitmap(source, bounds.left, bounds.top, bounds.width(), bounds.height());
-                            
-                            // Scale to a standard square size for consistency across the app
+
                             Bitmap scaled = Bitmap.createScaledBitmap(avatar, TARGET_SIZE, TARGET_SIZE, true);
                             avatars.add(scaled);
                         } catch (Exception e) {
@@ -48,7 +44,6 @@ public class AvatarHelper {
             }
         }
 
-        // Fallback: If no transparency-based isolation worked, try a 3x2 grid as a guess
         if (avatars.isEmpty()) {
             int cols = 3;
             int rows = 2;
@@ -65,9 +60,6 @@ public class AvatarHelper {
         return avatars;
     }
 
-    /**
-     * Finds the bounding box of a connected non-transparent area using a stack-based flood fill.
-     */
     private static Rect findComponentBounds(Bitmap bitmap, int startX, int startY, boolean[][] visited) {
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
@@ -102,8 +94,7 @@ public class AvatarHelper {
                     }
                 }
             }
-            
-            // Safety break to prevent infinite loops or OOM on extremely large components
+
             if (stack.size() > 100000) break;
         }
 

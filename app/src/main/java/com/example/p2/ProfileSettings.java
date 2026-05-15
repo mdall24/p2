@@ -33,12 +33,10 @@ public class ProfileSettings extends AppCompatActivity {
         findViewById(R.id.btnBackHeader).setOnClickListener(v -> finish());
         findViewById(R.id.btnBackToProfile).setOnClickListener(v -> finish());
 
-        // Change Password Button - Opens new Activity
         findViewById(R.id.cardChangePassword).setOnClickListener(v -> {
             startActivity(new Intent(ProfileSettings.this, ChangePassword.class));
         });
 
-        // Delete Account Button - With Confirmation
         findViewById(R.id.cardDeleteAccount).setOnClickListener(v -> showDeleteConfirmation());
     }
 
