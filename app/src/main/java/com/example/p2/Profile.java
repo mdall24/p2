@@ -215,7 +215,6 @@ public class Profile extends AppCompatActivity {
         minutePicker.setDisplayedValues(displayedValues);
 
 
-        // Add a colon text view between pickers
         TextView colon = new TextView(this);
         colon.setText(" : ");
         colon.setTextSize(20);
