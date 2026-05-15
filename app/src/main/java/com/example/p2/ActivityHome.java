@@ -54,7 +54,7 @@ public class ActivityHome extends AppCompatActivity {
             Intent intent = new Intent(ActivityHome.this, Profile.class);
             startActivity(intent);
         });
-        // Check if we have permission to read usage stats
+        /* Check if we have permission to read usage stats
         if (!hasUsagePermission()) {
             SessionManager permSession = new SessionManager(this);
             if (!permSession.hasAskedPermission()) {
@@ -62,7 +62,7 @@ public class ActivityHome extends AppCompatActivity {
                 Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
                 startActivity(intent);
             }
-        }
+        }*/
 
         // For testing: Click the time circle or long-press title to set budget
         findViewById(R.id.flGroupTimeCircle).setOnClickListener(v -> showBudgetDialog());

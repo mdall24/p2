@@ -55,10 +55,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        //Creates a dialog box (with use of XML) that informs the user that it needs access to system info
         SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
         boolean hasSeenIntro = prefs.getBoolean("hasSeenIntro", false);
 
         if (!hasSeenIntro) {
+            //Uses the XML created
             View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_info, null);
             AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogView)
                     .setCancelable(false)
@@ -80,6 +82,5 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
 
         }
-
     }
 }
