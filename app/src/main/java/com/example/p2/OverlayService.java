@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.Calendar;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -102,14 +103,99 @@ public class OverlayService extends Service {
         if (foregroundApp.equals(getPackageName())) return;
 
         Set<String> softBlocked = AppListManager.getSoftBlockedApps(this);
-        if (softBlocked.contains(foregroundApp) && !overlayShowing
-                && !foregroundApp.equals(lastBlockedApp)) {
-            lastBlockedApp = foregroundApp;
-            showOverlay(foregroundApp);
+        Set<String> hardBlocked = AppListManager.getHardBlockedApps(this);
+        boolean pastBedtime = isPastBedtime();
+
+        if (overlayShowing) {
+            // If we are showing an overlay, check if we need to switch from Soft to Hard block
+            // or if the foreground app has changed
+            if (!foregroundApp.equals(lastBlockedApp)) {
+                removeOverlay();
+            } else if (pastBedtime && hardBlocked.contains(foregroundApp)) {
+                // If it's now bedtime and we're only showing the soft popup, switch to hard block
+                if (overlayView != null && overlayView.findViewById(R.id.btnHardBlockLeave) == null) {
+                    removeOverlay();
+                    showHardBlock(foregroundApp);
+                }
+            }
+            return;
+        }
+
+        if (!foregroundApp.equals(lastBlockedApp)) {
+            if (hardBlocked.contains(foregroundApp)) {
+                lastBlockedApp = foregroundApp;
+                if (pastBedtime) {
+                    showHardBlock(foregroundApp);
+                } else {
+                    showOverlay(foregroundApp); // Act like soft block before bedtime
+                }
+            } else if (softBlocked.contains(foregroundApp)) {
+                lastBlockedApp = foregroundApp;
+                showOverlay(foregroundApp);
+            }
         }
 
         if (!foregroundApp.equals(lastBlockedApp)) {
             lastBlockedApp = "";
+        }
+    }
+
+    private boolean isPastBedtime() {
+        String bedtimeStr = AppListManager.getBedtimeString(this);
+        try {
+            String[] parts = bedtimeStr.split(":");
+            int bedHour = Integer.parseInt(parts[0]);
+            int bedMinute = Integer.parseInt(parts[1]);
+            Calendar now = Calendar.getInstance();
+            int hour = now.get(Calendar.HOUR_OF_DAY);
+            int minute = now.get(Calendar.MINUTE);
+
+            // Block from bedtime (e.g. 22:00) until morning (e.g. 06:00)
+            boolean afterBedtime = hour > bedHour || (hour == bedHour && minute >= bedMinute);
+            boolean beforeMorning = hour < 6;
+
+            return afterBedtime || beforeMorning;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void showHardBlock(String packageName) {
+        overlayShowing = true;
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        overlayView = inflater.inflate(R.layout.overlay_hardblock, null);
+
+        try {
+            PackageManager pm = getPackageManager();
+            android.content.pm.ApplicationInfo info = pm.getApplicationInfo(packageName, 0);
+            TextView tvMessage = overlayView.findViewById(R.id.tvHardBlockMessage);
+            if (tvMessage != null) {
+                tvMessage.setText(pm.getApplicationLabel(info) + " is blocked until morning.");
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            // keep default
+        }
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_DIM_BEHIND,
+                PixelFormat.TRANSLUCENT);
+        params.dimAmount = 0.8f;
+
+        windowManager.addView(overlayView, params);
+
+        View btnLeave = overlayView.findViewById(R.id.btnHardBlockLeave);
+        if (btnLeave != null) {
+            btnLeave.setOnClickListener(v -> {
+                removeOverlay();
+                Intent home = new Intent(Intent.ACTION_MAIN);
+                home.addCategory(Intent.CATEGORY_HOME);
+                home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(home);
+            });
         }
     }
 

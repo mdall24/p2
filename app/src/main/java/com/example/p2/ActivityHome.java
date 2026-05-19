@@ -113,6 +113,7 @@ public class ActivityHome extends AppCompatActivity {
 
         uploadScreenTime();
         updateGroupTimeCircle();
+        syncBedtime();
         Calendar today = Calendar.getInstance();
         String todayKey = String.format("%02d-%02d-%04d",
                 today.get(Calendar.DAY_OF_MONTH),
@@ -125,6 +126,12 @@ public class ActivityHome extends AppCompatActivity {
             saveDailyScreenTime();
             saveAfterBedtimeScreenTime();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        syncBedtime();
     }
 
     private void showBudgetDialog() {
@@ -327,6 +334,23 @@ public class ActivityHome extends AppCompatActivity {
             tvGroupTime.setText(display);
         }
     }
+    private void syncBedtime() {
+        String username = new SessionManager(this).getUsername();
+        FirebaseFirestore.getInstance().collection("usernames").document(username).get()
+                .addOnSuccessListener(doc -> {
+                    String bedtime = doc.getString("bedtime");
+                    if (bedtime != null) {
+                        // Update local storage for the background service
+                        AppListManager.saveBedtimeString(this, bedtime);
+                        // Update the home screen text
+                        TextView tvBedtime = findViewById(R.id.tvBedtime);
+                        if (tvBedtime != null) {
+                            tvBedtime.setText(bedtime);
+                        }
+                    }
+                });
+    }
+
     private void saveDailyScreenTime() {
         String username = new SessionManager(this).getUsername();
 
