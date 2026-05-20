@@ -121,10 +121,14 @@ public class ActivityHome extends AppCompatActivity {
                 today.get(Calendar.YEAR));
 
         String lastUpload = session.getLastUploadDate();
+        Log.d("ScreenTime", "todayKey: " + todayKey + " lastUpload: " + lastUpload);
         if (!todayKey.equals(lastUpload)) {
+            Log.d("ScreenTime", "Saving screen time data...");
             session.saveLastUploadDate(todayKey);
             saveDailyScreenTime();
             saveAfterBedtimeScreenTime();
+        } else {
+            Log.d("ScreenTime", "Already uploaded today, skipping");
         }
     }
 
