@@ -128,9 +128,10 @@ public static long getWeeklyUsageForPackages(Context context, List<String> packa
         );
 
         // Get the apps the user has chosen to track
-        Set<String> trackedApps = AppListManager.getSavedApps(context);
+        Set<String> trackedApps = new java.util.HashSet<>();
+        trackedApps.addAll(AppListManager.getSavedApps(context));
+        trackedApps.addAll(AppListManager.getSoftBlockedApps(context));
 
-        // If no apps have been added yet, fall back to counting everything
         if (trackedApps.isEmpty()) {
             return 0;
         }
@@ -153,10 +154,11 @@ public static long getWeeklyUsageForPackages(Context context, List<String> packa
                 startTime, endTime
         );
 
-        Set<String> trackedApps = AppListManager.getSavedApps(context);
-        if (trackedApps.isEmpty()) {
-            return 0;
-        }
+        Set<String> trackedApps = new java.util.HashSet<>();
+        trackedApps.addAll(AppListManager.getSavedApps(context));
+        trackedApps.addAll(AppListManager.getSoftBlockedApps(context));
+
+        if (trackedApps.isEmpty()) return 0;
 
         long total = 0;
         for (Map.Entry<String, UsageStats> entry : statsMap.entrySet()) {
