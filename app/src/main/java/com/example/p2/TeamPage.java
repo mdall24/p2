@@ -686,7 +686,7 @@ public class TeamPage extends AppCompatActivity {
 
         final NumberPicker hourPicker = new NumberPicker(this);
         hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(23);
+        hourPicker.setMaxValue(200);
         hourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
 
         final NumberPicker minutePicker = new NumberPicker(this);
