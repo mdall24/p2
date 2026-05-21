@@ -80,6 +80,34 @@
                         android:textColor="#F59E0B"
                         android:textSize="14sp"
                         android:layout_marginTop="10dp"/>
+                    <!-- Suggest New Time -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="8dp"
+                        android:paddingStart="2dp">
+
+                        <TextView
+                            android:id="@+id/changeTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Suggest new time"
+                            android:textColor="#F59E0B"
+                            android:textSize="14sp"/>
+                        <Button
+                            android:id="@+id/changeTimeBtn"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:backgroundTint="#14BBAB"
+                            android:text="+"
+                            android:padding="0dp"
+                            android:layout_marginStart="10dp"
+                            android:textSize="20sp"/>
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <FrameLayout
@@ -93,13 +121,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:padding="6dp"
                         android:indeterminate="false"
-                        app:indicatorColor="#0F172A"
-                        app:indicatorSize="150dp"
                         android:max="100"
+                        android:padding="6dp"
                         android:progress="0"
-                        app:trackColor="#14BBAB"
+                        app:indicatorColor="#14BBAB"
+                        app:indicatorSize="150dp"
+                        app:trackColor="#151E35"
                         app:trackThickness="12dp" />
 
                     <TextView
@@ -148,7 +176,8 @@
                     android:backgroundTint="#FF0000"
                     android:padding="0dp"
                     android:text="-"
-                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 

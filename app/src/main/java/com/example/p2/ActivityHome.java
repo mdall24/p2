@@ -24,6 +24,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,6 +78,7 @@ public class ActivityHome extends AppCompatActivity {
         SessionManager session = new SessionManager(this);
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvUsername.setText(session.getUsername());
+        loadTeamProgress();
 
         ImageView ivAvatar = findViewById(R.id.ivAvatar);
         int cachedAvatar = session.getAvatarIndex();
@@ -375,5 +377,41 @@ public class ActivityHome extends AppCompatActivity {
                     put("totalMinutes", totalMinutes);
                     put("date", dateKey);
                 }}, com.google.firebase.firestore.SetOptions.merge());
+    }
+
+    //Circle time progress
+    private void loadTeamProgress() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        FirebaseFirestore.getInstance().collection("teams")
+                .whereArrayContains("members", uid)
+                .get()
+                .addOnSuccessListener(query -> {
+                    if (query.isEmpty()) return;
+
+                    query.getDocuments().get(0).getReference().get()
+                            .addOnSuccessListener(doc -> {
+                                Long totalRaw = (Long) doc.get("suggestedTime");
+                                long total = totalRaw != null ? totalRaw : 0L;
+
+                                Long usedRaw = (Long) doc.get("timeUsedMinutes");
+                                long used = usedRaw != null ? usedRaw : 0L;
+
+                                CircularProgressIndicator progress = findViewById(R.id.teamProgress);
+                                TextView tvGroupTime = findViewById(R.id.tvGroupTimeRemaining);
+
+                                int percent = total > 0 ? (int) ((double) used / total * 100) : 0;
+                                if (progress != null) progress.setProgress(100 - percent, true);
+                                if (tvGroupTime != null) tvGroupTime.setText(formatMinutes(total - used));
+                            });
+                });
+    }
+    private String formatMinutes(long minutes){
+        if (minutes < 60) return minutes + " min";
+        long hours = minutes / 60;
+        long mins = minutes % 60;
+        if (mins == 0) return hours + "h";
+        return hours + "h" + mins + "m";
     }
 }

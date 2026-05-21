@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout;
@@ -28,17 +31,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class TeamPage extends AppCompatActivity {
 
     private TextView tvTeamUsed;
 
-    private Button btnAddApps, btnRemoveApps;
+    private Button btnAddApps, btnRemoveApps, changeTimeBtn;
 
     private String teamCode;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -72,6 +78,9 @@ public class TeamPage extends AppCompatActivity {
         btnAddApps = findViewById(R.id.btnAddApps);
         btnRemoveApps = findViewById(R.id.btnRemoveApps);
         ImageButton btnOptions = findViewById(R.id.btnTeamOptions);
+        changeTimeBtn = findViewById(R.id.changeTimeBtn);
+
+        changeTimeBtn.setOnClickListener(v -> showTimePickerDialog());
 
         String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore.getInstance().collection("teams")
@@ -84,6 +93,7 @@ public class TeamPage extends AppCompatActivity {
                         loadMembers();
                         loadPendingApps();
                         loadApprovedApps();
+                        loadPendingTimeLimit();
 
                         TeamUsageWorker.scheduleIfNeeded(this);
                         WeeklyResetWorker.scheduleIfNeeded(this);
@@ -350,7 +360,7 @@ public class TeamPage extends AppCompatActivity {
                         TextView tvTeamName = findViewById(R.id.TeamPage);
                         tvTeamName.setText(teamName != null ? teamName : "No Name");
 
-                        Long totalRaw = (Long) doc.get("totalTimeMinutes");
+                        Long totalRaw = (Long) doc.get("suggestedTime");
                         long total = totalRaw != null ? totalRaw : 0L;
 
                         Long usedRaw = (Long) doc.get("timeUsedMinutes");
@@ -358,15 +368,15 @@ public class TeamPage extends AppCompatActivity {
 
                         long left = total - used;
 
-                        tvTeamUsed.setText("Total Used: " + used + " min");
+                        tvTeamUsed.setText("Total Used: " + formatMinutes(used));
 
                         TextView tvCircleText = findViewById(R.id.tvCircleText);
-                        tvCircleText.setText(left + " min");
+                        tvCircleText.setText(formatMinutes(left));
 
                         com.google.android.material.progressindicator.CircularProgressIndicator progress = findViewById(R.id.teamProgress);
 
                         int percent = total > 0 ? (int) ((double) used / total * 100) : 0;
-                        progress.setProgress(percent, true); //animates it
+                        progress.setProgress(100 - percent, true); //animates it (inverts the colours so it actually tracks
                     }
                 });
     }
@@ -407,9 +417,9 @@ public class TeamPage extends AppCompatActivity {
                                                         List<String> usedApps = (List<String>) userDoc.get("usedApps");
                                                         List<String> teamApps = (List<String>) doc.get("suggestedApps");
 
-                                                        tvTime.setText("Used: " + used + " min");
-                                                        tvDaily.setText("Daily: " + daily + " min");
-                                                        tvWeekly.setText("Weekly: " + weekly + " min");
+                                                        tvTime.setText("Used: " + formatMinutes(used));
+                                                        tvDaily.setText("Daily: " + formatMinutes(daily));
+                                                        tvWeekly.setText("Weekly: " + formatMinutes(weekly));
 
                                                         if (usedApps != null && teamApps != null){
                                                             List<String> overlap = new ArrayList<>(usedApps);
@@ -574,5 +584,144 @@ public class TeamPage extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void suggestTimeLimit(long newLimitMinutes){
+        String currentUsername = new SessionManager(this).getUsername();
+
+        Map<String, Object> proposal = new HashMap<>();
+        proposal.put("proposedBy", currentUsername);
+        proposal.put("approvals", Collections.singletonList(currentUsername));
+        proposal.put("rejections", new ArrayList<>());
+        proposal.put("newLimit", newLimitMinutes);
+
+        db.collection("teams").document(teamCode)
+                .update("pendingTimeLimit", proposal)
+                .addOnSuccessListener(a -> Toast.makeText(this, "Time Limit change suggested!", Toast.LENGTH_SHORT). show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to suggest time", Toast.LENGTH_SHORT).show());
+    }
+
+    private void loadPendingTimeLimit() {
+        db.collection("teams").document(teamCode).get()
+                .addOnSuccessListener(doc -> {
+                    Map<String, Object> proposal = (Map<String, Object>) doc.get("pendingTimeLimit");
+                    if (proposal == null) return;
+
+                    List<String> memberUids = (List<String>) doc.get("members");
+                    int totalMembers = memberUids != null ? memberUids.size() : 1;
+
+                    String proposedBy = (String) proposal.get("proposedBy");
+                    long newLimit = (long) proposal.get("newLimit");
+                    List<String> approvals = (List<String>) proposal.get("approvals");
+                    List<String> rejections = (List<String>) proposal.get("rejections");
+                    String currentUsername = new SessionManager(this).getUsername();
+
+                    //Show a banner/dialog to vote if not yet voted
+                    boolean alreadyVoted = (approvals != null && approvals.contains(currentUsername))
+                            || (rejections != null && rejections.contains(currentUsername));
+
+                    if (!alreadyVoted){
+                        new AlertDialog.Builder(this)
+                                .setTitle("Pending: Change Time Limit")
+                                .setMessage(proposedBy + " suggests changing the team time limit to " + formatMinutes(newLimit) + ". Do you approve?")
+                                .setPositiveButton("Approve", (dialog, which) -> {
+                                    db.collection("teams").document(teamCode)
+                                            .update("pendingTimeLimit.approvals",
+                                                    com.google.firebase.firestore.FieldValue.arrayUnion(currentUsername))
+                                            .addOnSuccessListener(a -> checkAndFinalizeTimeLimit());
+                                })
+                                .setNegativeButton("Reject", (dialog, which) -> {
+                                    db.collection("teams").document(teamCode)
+                                            .update("pendingTimeLimit.rejections",
+                                                    com.google.firebase.firestore.FieldValue.arrayUnion(currentUsername))
+                                            .addOnSuccessListener(a -> checkAndFinalizeTimeLimit());
+                                })
+                                .setCancelable(false)
+                                .show();
+                    }
+                });
+    }
+    private void checkAndFinalizeTimeLimit() {
+        db.collection("teams").document(teamCode).get()
+                .addOnSuccessListener(doc -> {
+                    Map<String, Object> proposal = (Map<String, Object>) doc.get("pendingTimeLimit");
+                    if (proposal == null) return;
+
+                    List<String> memberUids = (List<String>) doc.get("members");
+                    int totalMembers = memberUids != null ? memberUids.size() : 1;
+
+                    List<String> approvals = (List<String>) proposal.get("approvals");
+                    List<String> rejections = (List<String>) proposal.get("rejections");
+                    long newLimit = (long) proposal.get("newLimit");
+
+                    int approvalCount = approvals != null ? approvals.size() : 0;
+                    int rejectionCount = rejections != null ? rejections.size() : 0;
+
+                    if (approvalCount + rejectionCount < totalMembers) return;
+
+                    if (approvalCount > rejectionCount) {
+                        db.collection("teams").document(teamCode)
+                                .update("suggestedTime", newLimit)
+                                .addOnSuccessListener(a -> {
+                                    Toast.makeText(this, "Time limit updated to " + formatMinutes(newLimit)+ "!", Toast.LENGTH_SHORT).show();
+                                    loadTeamTotals();
+                                });
+                    } else {
+                        Toast.makeText(this, "Time limit change rejected by the team.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    //Clears the proposal either way
+                    db.collection("teams").document(teamCode)
+                            .update("pendingTimeLimit", com.google.firebase.firestore.FieldValue.delete());
+                });
+    }
+    private void showTimePickerDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Suggest Time Limit");
+
+        final LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setGravity(Gravity.CENTER);
+        layout.setPadding(50, 40, 50, 40);
+
+        final NumberPicker hourPicker = new NumberPicker(this);
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(23);
+        hourPicker.setFormatter(value -> String.format(Locale.getDefault(), "%02d", value));
+
+        final NumberPicker minutePicker = new NumberPicker(this);
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(5);
+        final String[] displayedValues = {"00", "10", "20", "30", "40", "50"};
+        minutePicker.setDisplayedValues(displayedValues);
+
+
+        // Add a colon text view between pickers
+        TextView colon = new TextView(this);
+        colon.setText(" : ");
+        colon.setTextSize(20);
+
+        layout.addView(hourPicker);
+        layout.addView(colon);
+        layout.addView(minutePicker);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            int hours = hourPicker.getValue();
+            int minutes = Integer.parseInt(displayedValues[minutePicker.getValue()]);
+            long totalMinutes = (hours * 60L) + minutes;
+            suggestTimeLimit(totalMinutes);
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+    private String formatMinutes(long minutes){
+        if (minutes < 60) return minutes + " min";
+        long hours = minutes / 60;
+        long mins = minutes % 60;
+        if (mins == 0) return hours + "h";
+        return hours + "h" + mins + "m";
     }
 }

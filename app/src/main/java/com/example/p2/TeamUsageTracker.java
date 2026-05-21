@@ -52,7 +52,7 @@ public class TeamUsageTracker {
                         return;
                     }
 
-                    Long totalMinutes = query.getDocuments().get(0).getLong("totalTimeMinutes");
+                    Long totalMinutes = query.getDocuments().get(0).getLong("suggestedTime");
                     if (totalMinutes == null || totalMinutes <= 0){
                         Log.w(TAG, "No total time set for team");
                         return;
