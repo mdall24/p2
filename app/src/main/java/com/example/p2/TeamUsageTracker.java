@@ -70,6 +70,19 @@ public class TeamUsageTracker {
                             .set(usageUpdate, SetOptions.merge())
                             .addOnSuccessListener(a -> {
                                 Log.d(TAG, "Updated usage for " + uid + ": " + usageMinutes + " min");
+                                //Gets the list used by the member
+                                List<String> usedAppNames = ScreenTimeHelper.getUsedAppNames(context, agreedApps);
+
+                                Map<String, Object> userUpdate = new HashMap<>();
+                                userUpdate.put("weeklyMinutes", usageMinutes);
+                                userUpdate.put("dailyMinutes", ScreenTimeHelper.getDailyUsageForPackages(context, agreedApps));
+                                userUpdate.put("timeUsedMinutes", usageMinutes);
+                                userUpdate.put("usedApps", usedAppNames);
+
+                                db.collection("members").document(uid)
+                                                .set(userUpdate, SetOptions.merge())
+                                                        .addOnSuccessListener(b -> Log.d(TAG, "Updated user stats for " + uid))
+                                                                .addOnFailureListener(e -> Log.e(TAG, "Failed to update user stats", e));
 
                                 //Re-reads all members' usage and sums them
                                 db.collection("teams").document(teamCode).get()

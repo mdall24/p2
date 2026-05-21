@@ -4,6 +4,7 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 
 import org.checkerframework.checker.units.qual.C;
 
@@ -165,5 +166,67 @@ public static long getWeeklyUsageForPackages(Context context, List<String> packa
             }
         }
         return total;
+    }
+
+    /*Returns total minutes used today, filtered to a specific list of package names.
+    * Used by TeamUsageTracker to write dailyMinutes per user.*/
+    public static long getDailyUsageForPackages(Context context, List<String> packageNames) {
+        if (packageNames == null || packageNames.isEmpty()) return 0;
+
+        UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+
+        Calendar startOfDay = Calendar.getInstance();
+        startOfDay.set(Calendar.HOUR_OF_DAY, 0);
+        startOfDay.set(Calendar.MINUTE, 0);
+        startOfDay.set(Calendar.SECOND, 0);
+        startOfDay.set(Calendar.MILLISECOND, 0);
+
+        long startTime = startOfDay.getTimeInMillis();
+        long endTime = System.currentTimeMillis();
+
+        Map<String, UsageStats> statsMap = usm.queryAndAggregateUsageStats(startTime, endTime);
+
+        long totalMs = 0;
+        for (String packageName : packageNames) {
+            if (statsMap.containsKey(packageName)){
+                totalMs += statsMap.get(packageName).getTotalTimeInForeground();
+            }
+        }
+        return totalMs / 1000 / 60;
+    }
+    /*Returns a list of app names (not package names) from the agreed list that the user
+    * has actually used today. Used by TeamUsageTracker to write usedApps per user*/
+    public static List<String> getUsedAppNames(Context context, List<String> packageNames){
+        if (packageNames == null || packageNames.isEmpty()) return new ArrayList<>();
+
+        UsageStatsManager usm = (UsageStatsManager) context.getSystemService(context.USAGE_STATS_SERVICE);
+
+        Calendar startOfDay = Calendar.getInstance();
+        startOfDay.set(Calendar.HOUR_OF_DAY, 0);
+        startOfDay.set(Calendar.MINUTE, 0);
+        startOfDay.set(Calendar.SECOND, 0);
+        startOfDay.set(Calendar.MILLISECOND, 0);
+
+        long startTime = startOfDay.getTimeInMillis();
+        long endTime = System.currentTimeMillis();
+
+        Map<String, UsageStats> statsMap = usm.queryAndAggregateUsageStats(startTime, endTime);
+
+        android.content.pm.PackageManager pm = context.getPackageManager();
+        List<String> usedNames = new ArrayList<>();
+
+        for(String packageName : packageNames)  {
+            UsageStats stats = statsMap.get(packageName);
+            if (stats != null && stats.getTotalTimeInForeground() > 0){
+                try {
+                    String appName = pm.getApplicationLabel(
+                            pm.getApplicationInfo(packageName, 0)).toString();
+                    usedNames.add(appName);
+                } catch (android.content.pm.PackageManager.NameNotFoundException e) {
+                    usedNames.add(packageName); //Fall back to package name if label not found
+                }
+            }
+        }
+        return usedNames;
     }
 }

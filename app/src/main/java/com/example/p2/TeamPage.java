@@ -398,12 +398,29 @@ public class TeamPage extends AppCompatActivity {
                                     TextView tvApps = itemView.findViewById(R.id.tvMemberApps);
 
                                     tvName.setText(displayName);
-                                    tvTime.setText("Used: 0 min");
-                                    tvDaily.setText("Daily: 0 min");
-                                    tvWeekly.setText("Weekly: 0 min");
-                                    tvApps.setText("Apps: None");
 
-                                    container.addView(itemView);
+                                    db.collection("users").document(memberUid).get()
+                                                    .addOnSuccessListener(userDoc -> {
+                                                        long used = userDoc.getLong("timeUsedMinutes") != null ? userDoc.getLong("timeUsedMinutes") : 0;
+                                                        long daily = userDoc.getLong("dailyMinutes") != null ? userDoc.getLong("dailyMinutes") : 0;
+                                                        long weekly = userDoc.getLong("weeklyMinutes") != null ? userDoc.getLong("weeklyMinutes") : 0;
+                                                        List<String> usedApps = (List<String>) userDoc.get("usedApps");
+                                                        List<String> teamApps = (List<String>) doc.get("suggestedApps");
+
+                                                        tvTime.setText("Used: " + used + " min");
+                                                        tvDaily.setText("Daily: " + daily + " min");
+                                                        tvWeekly.setText("Weekly: " + weekly + " min");
+
+                                                        if (usedApps != null && teamApps != null){
+                                                            List<String> overlap = new ArrayList<>(usedApps);
+                                                            overlap.retainAll(teamApps);
+                                                            tvApps.setText(overlap.isEmpty() ? "Apps: None" : "Apps: " + String.join(",", overlap));
+                                                        } else {
+                                                            tvApps.setText("Apps: None");
+                                                        }
+                                                        container.addView(itemView);
+                                                    });
+
                                 });
                     }
                 });
