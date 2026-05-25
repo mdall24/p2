@@ -1,5 +1,7 @@
 package com.example.p2;
 
+import static java.lang.reflect.Array.set;
+
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
@@ -79,7 +81,7 @@ public class TeamUsageTracker {
                                 userUpdate.put("timeUsedMinutes", usageMinutes);
                                 userUpdate.put("usedApps", usedAppNames);
 
-                                db.collection("members").document(uid)
+                                db.collection("teams").document(teamCode).collection("members").document(uid)
                                                 .set(userUpdate, SetOptions.merge())
                                                         .addOnSuccessListener(b -> Log.d(TAG, "Updated user stats for " + uid))
                                                                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update user stats", e));
