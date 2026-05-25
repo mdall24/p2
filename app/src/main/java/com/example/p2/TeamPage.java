@@ -516,25 +516,29 @@ public class TeamPage extends AppCompatActivity {
 
                     int approvalCount = approvals != null ? approvals.size() : 0;
                     int rejectionCount = rejections != null ? rejections.size() : 0;
+                    int majority = (totalMembers / 2) + 1;
 
-                    if (approvalCount + rejectionCount < totalMembers) return;
-
-                    if (approvalCount > rejectionCount) {
-                        if (action != null && action.equals("remove")) {
+                    if (approvalCount >= majority){
+                        if (action != null && action.equals("remove")){
+                            //Approves immediately as soon as majority votes
                             db.collection("teams").document(teamCode)
                                     .update("suggestedApps", com.google.firebase.firestore.FieldValue.arrayRemove(appName));
                         } else {
                             db.collection("teams").document(teamCode)
                                     .update("suggestedApps", com.google.firebase.firestore.FieldValue.arrayUnion(appName));
                         }
+                        db.collection("teams").document(teamCode)
+                                .update("pendingApps." + appName, com.google.firebase.firestore.FieldValue.delete())
+                                .addOnSuccessListener(a -> {
+                                    loadPendingApps();
+                                    BlockScheduler.schedule(TeamPage.this);
+                                });
+                    } else if (rejectionCount >= majority){
+                        //Rejects immediately once majority has decided even if not all all has voted
+                        db.collection("teams").document(teamCode)
+                                .update("pendingApps." + appName, com.google.firebase.firestore.FieldValue.delete())
+                                .addOnSuccessListener(a -> loadPendingApps());
                     }
-
-                    db.collection("teams").document(teamCode)
-                            .update("pendingApps." + appName, com.google.firebase.firestore.FieldValue.delete())
-                            .addOnSuccessListener(a -> {
-                                loadPendingApps();
-                                BlockScheduler.schedule(TeamPage.this);
-                            });
                 });
     }
     private void loadApprovedApps() {
