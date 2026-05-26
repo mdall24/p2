@@ -105,6 +105,7 @@ public class statistics extends AppCompatActivity {
 
         setupBarChart();
         loadLeaderboard();
+        loadAverageScreenTime();
     }
 
     private void setupBarChart() {
@@ -339,6 +340,41 @@ public class statistics extends AppCompatActivity {
                                         }
                                     }
                                 });
+                    }
+                });
+    }
+    private void loadAverageScreenTime(){
+        String username = new SessionManager(this).getUsername();
+
+        FirebaseFirestore.getInstance().collection("usernames")
+                .document(username)
+                .collection("screenTimeHistory")
+                .get()
+                .addOnSuccessListener(query ->{
+                    if(query.isEmpty()) return;
+
+                    long total = 0;
+                    int count = 0;
+
+                    for (QueryDocumentSnapshot doc : query){
+                        Long minutes = doc.getLong("totalMinutes");
+                        if(minutes != null && minutes > 0){
+                            total += minutes;
+                            count++;
+                        }
+                    }
+                    if (count ==0) return;
+
+                    long avg = total / count;
+                    String display;
+                    if(avg >= 60){
+                        display = (avg / 60) + "h " + (avg % 60) + "m";
+                    } else{
+                        display = avg + "m";
+                    }
+                    TextView tvAvg = findViewById(R.id.tvAverageScreenTime);
+                    if(tvAvg != null){
+                        tvAvg.setText("Daily avg: " + display);
                     }
                 });
     }
