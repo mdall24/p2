@@ -22,6 +22,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -346,19 +347,21 @@ public class statistics extends AppCompatActivity {
     private void loadAverageScreenTime(){
         String username = new SessionManager(this).getUsername();
 
+        Calendar weekAgo = Calendar.getInstance();
+        weekAgo.add(Calendar.DAY_OF_YEAR, -7);
+
         FirebaseFirestore.getInstance().collection("usernames")
                 .document(username)
                 .collection("screenTimeHistory")
                 .get()
-                .addOnSuccessListener(query ->{
-                    if(query.isEmpty()) return;
-
+                .addOnSuccessListener(query -> {
                     long total = 0;
                     int count = 0;
 
-                    for (QueryDocumentSnapshot doc : query){
+                    for (QueryDocumentSnapshot doc : query) {
                         Long minutes = doc.getLong("totalMinutes");
-                        if(minutes != null && minutes > 0){
+                        Log.d("AvgScreenTime", "Date: " + doc.getString("date") + " Minutes: " + minutes);
+                        if (minutes != null && minutes > 0) {
                             total += minutes;
                             count++;
                         }
