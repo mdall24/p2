@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import org.w3c.dom.Text;
 
@@ -47,6 +48,8 @@ public class TeamPage extends AppCompatActivity {
     private Button btnAddApps, btnRemoveApps, changeTimeBtn;
 
     private String teamCode;
+
+    private ListenerRegistration pendingAppsListener;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -436,8 +439,9 @@ public class TeamPage extends AppCompatActivity {
                 });
     }
     private void loadPendingApps() {
-        db.collection("teams").document(teamCode).get()
-                .addOnSuccessListener(doc -> {
+        pendingAppsListener = db.collection("teams").document(teamCode).
+                addSnapshotListener((doc, e) ->{
+            if (e != null || doc == null) return;
                     Map<String, Object> pendingApps = (Map<String, Object>) doc.get("pendingApps");
                     List<String> memberUids = (List<String>) doc.get("members");
                     int totalMembers = memberUids != null ? memberUids.size() : 1;
@@ -464,6 +468,11 @@ public class TeamPage extends AppCompatActivity {
                             List<String> approvals = (List<String>) appData.get("approvals");
                             List<String> rejections = (List<String>) appData.get("rejections");
 
+                            Log.d("Finalize", "totalMembers: " + totalMembers);
+                            Log.d("Finalize", "approvals: " + approvals);
+                            Log.d("Finalize", "rejections: " + rejections);
+                            Log.d("Finalize", "majority needed: " + ((totalMembers / 2) + 1));
+
                             if ((approvals != null && approvals.contains(username)) ||
                                     (rejections != null && rejections.contains(username))) {
                                 Toast.makeText(TeamPage.this, "You already voted!", Toast.LENGTH_SHORT).show();
@@ -473,8 +482,14 @@ public class TeamPage extends AppCompatActivity {
                             db.collection("teams").document(teamCode)
                                     .update("pendingApps." + appName + ".approvals",
                                             com.google.firebase.firestore.FieldValue.arrayUnion(username))
-                                    .addOnSuccessListener(a -> checkAndFinalizePendingApp(appName));
+                                    .addOnSuccessListener(a -> {
+                                        Log.d("VoteDebug", "Vote written successfully, calling finalize");
+                                        checkAndFinalizePendingApp(appName);
+
+                                    })
+                                    .addOnFailureListener(e -> Log.e("VoteDebug", "Vote write FAILED: " + e.getMessage()));
                         }
+
 
                         @Override
                         public void onReject(String appName) {
@@ -492,7 +507,11 @@ public class TeamPage extends AppCompatActivity {
                             db.collection("teams").document(teamCode)
                                     .update("pendingApps." + appName + ".rejections",
                                             com.google.firebase.firestore.FieldValue.arrayUnion(username))
-                                    .addOnSuccessListener(a -> checkAndFinalizePendingApp(appName));
+                                    .addOnSuccessListener(a -> {
+                                        Log.d("VoteDebug", "Vote written successfully, calling finalize");
+                                        checkAndFinalizePendingApp(appName);
+                                    })
+                                    .addOnFailureListener(e -> Log.e("VoteDebug", "Vote write FAILEd: " + e.getMessage()));
                         }
                     }, totalMembers));
                 });
@@ -534,7 +553,7 @@ public class TeamPage extends AppCompatActivity {
                                     BlockScheduler.schedule(TeamPage.this);
                                 });
                     } else if (rejectionCount >= majority){
-                        //Rejects immediately once majority has decided even if not all all has voted
+                        //Rejects immediately once majority has decided even if not all has voted
                         db.collection("teams").document(teamCode)
                                 .update("pendingApps." + appName, com.google.firebase.firestore.FieldValue.delete())
                                 .addOnSuccessListener(a -> loadPendingApps());
@@ -660,18 +679,20 @@ public class TeamPage extends AppCompatActivity {
 
                     int approvalCount = approvals != null ? approvals.size() : 0;
                     int rejectionCount = rejections != null ? rejections.size() : 0;
+                    int majority = (totalMembers / 2) + 1;
 
-                    if (approvalCount + rejectionCount < totalMembers) return;
-
-                    if (approvalCount > rejectionCount) {
+                    if (approvalCount >= majority){
                         db.collection("teams").document(teamCode)
                                 .update("suggestedTime", newLimit)
                                 .addOnSuccessListener(a -> {
-                                    Toast.makeText(this, "Time limit updated to " + formatMinutes(newLimit)+ "!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, "Time limited updated to " + formatMinutes(newLimit) + "!", Toast.LENGTH_SHORT).show();
                                     loadTeamTotals();
                                 });
-                    } else {
-                        Toast.makeText(this, "Time limit change rejected by the team.", Toast.LENGTH_SHORT).show();
+                        db.collection("teams").document(teamCode)
+                                .update("pendingTimeLimit", com.google.firebase.firestore.FieldValue.delete());
+                    } else if (rejectionCount >= majority) {
+                        Toast.makeText(this, "Time limit change rejected by team.", Toast.LENGTH_SHORT).show();
+                        db.collection("teams").document(teamCode).update("pendingTimeLimit", com.google.firebase.firestore.FieldValue.delete());
                     }
 
                     //Clears the proposal either way
@@ -727,5 +748,10 @@ public class TeamPage extends AppCompatActivity {
         long mins = minutes % 60;
         if (mins == 0) return hours + "h";
         return hours + "h" + mins + "m";
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        if (pendingAppsListener != null) pendingAppsListener.remove();
     }
 }
